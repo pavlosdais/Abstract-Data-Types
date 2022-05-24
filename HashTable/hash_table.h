@@ -20,7 +20,7 @@ typedef int (*CompareFunc)(Pointer a, Pointer b);
 // Pointer to function that destroys an element value
 typedef void (*DestroyFunc)(Pointer value);
 
-// Pointer to function that hashes a value to an positive integer
+// Pointer to function that hashes a value to a positive integer
 typedef unsigned int (*HashFunc)(Pointer value);
 
 // initializes hash table
