@@ -56,7 +56,7 @@ void hash_insert(HashTable ht, Pointer value)
     new_node->next = ht->bucket[h];
     ht->bucket[h] = new_node;
 
-    ht->elements++;  // value inserted, increment the number of elements in the tree
+    ht->elements++;  // value inserted, increment the number of elements in the hash table
 }
 
 bool hash_remove(HashTable ht, Pointer value)
@@ -81,7 +81,7 @@ bool hash_remove(HashTable ht, Pointer value)
                 ht->destroy(tmp->data);
             
             free(tmp);
-            ht->elements--;  // value removed, decrement the number of elements in the tree
+            ht->elements--;  // value removed, decrement the number of elements in the hash table
             return true;
         }
         else bkt = &((*bkt)->next);
