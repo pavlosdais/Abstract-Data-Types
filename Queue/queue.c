@@ -55,11 +55,11 @@ void queue_enqueue(Queue Q, Pointer value)
 
     Q->tail = new_node;
 
-    // queue is now empty, reset
+    // queue was previously empty, reset
     if (is_queue_empty(Q))
         Q->head = new_node;
 
-    // Pushing at the end was successful, increase the number of elements by 1
+    // pushing at the end was successful, increase the number of elements by 1
     Q->num_of_elements++;
 }
 
