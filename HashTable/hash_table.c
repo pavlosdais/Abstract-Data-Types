@@ -85,13 +85,13 @@ static void rehash(HashTable ht)
     natural_num prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]), old_size = ht->capacity;
     int low = 0, high = prime_numbers-1;
 
-    // Find the next, in order, size or if it doesn't exist double the current size
+    // Find the next, in order, size
     while (low <= high)
     {
         int mid = (high + low) / 2;
         if (old_size == hash_sizes[mid])
         {
-            ht->capacity = hash_sizes[mid+1];
+            ht->capacity = hash_sizes[mid+1];  // get next size
             break;
         }
         else if (old_size < hash_sizes[mid])
