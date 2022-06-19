@@ -1,20 +1,10 @@
 #include <stdbool.h>
 
-// Recommended sizes:
-// 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241
-// 786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611,
-// 402653189, 805306457, 1610612741, 3221225479
-
-#define HASH_CAPACITY 53  // bucket size
-
 typedef struct hash_table* HashTable;
 
 typedef void* Pointer;
 
-// Pointer to function that compares 2 elements a and b and returns:
-// < 0  if a < b
-//   0  if a and b are equal
-// > 0  if a > b
+// Pointer to function that compares 2 elements a and b and returns 0 if a and b are equal
 typedef int (*CompareFunc)(Pointer a, Pointer b);
 
 // Pointer to function that destroys an element value
