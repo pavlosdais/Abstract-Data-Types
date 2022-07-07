@@ -13,6 +13,7 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive integer
 typedef unsigned int (*HashFunc)(Pointer value);
 
+
 // initializes hash table
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);
 

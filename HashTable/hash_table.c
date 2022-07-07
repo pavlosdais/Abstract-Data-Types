@@ -5,7 +5,7 @@
 
 typedef unsigned int natural_num;
 
-// buckets
+// bucket
 typedef struct n
 {
     Pointer data;            // pointer to the data we are storing
@@ -20,7 +20,7 @@ typedef struct hash_table
     node* buckets;         // buckets (lists) storing the data
     natural_num capacity;  // number of buckets
     natural_num elements;  // number of elements in the hash table
-    HashFunc hash;         // function that hashes the elements into positive integers
+    HashFunc hash;         // function that hashes an element into a positive integer
     CompareFunc compare;   // function that compares the elements
     DestroyFunc destroy;   // function that destroys the elements, NULL if not
 }
@@ -62,19 +62,23 @@ static void insert(HashTable ht, Pointer value, natural_num hash_value)
 
     // fill the node's contents
     new_node->data = value;
-    new_node->hash_value = hash_value % ht->capacity;
+    new_node->hash_value = hash_value;
 
     // insert the value at the start of the buckets
-    new_node->next = ht->buckets[new_node->hash_value];
-    ht->buckets[new_node->hash_value] = new_node;
+    unsigned int bucket = hash_value % ht->capacity;
+    new_node->next = ht->buckets[bucket];
+    ht->buckets[bucket] = new_node;
 }
 
 void hash_insert(HashTable ht, Pointer value)
 {
-    float load_factor = ht->elements / ht->capacity;
-    if (load_factor >= MAX_LOAD_FACTOR && hash_sizes[sizeof(hash_sizes) / sizeof(hash_sizes[0]) - 1] != ht->capacity)  // max load factor exceeded, rehash
-        rehash(ht);
-    
+    if (((float)ht->elements / ht->capacity) >= MAX_LOAD_FACTOR)  // max load factor exceeded
+    {
+        natural_num num_of_sizes = sizeof(hash_sizes) / sizeof(hash_sizes[0]);  // number of (prime) sizes
+        if (ht->capacity != hash_sizes[num_of_sizes-1])  // if there is an available new size
+            rehash(ht);  // rehash
+    }
+
     insert(ht, value, ht->hash(value));
 
     ht->elements++;  // value inserted, increment the number of elements in the hash table
@@ -105,7 +109,8 @@ static void rehash(HashTable ht)
     
     // create more buckets
     ht->buckets = calloc(sizeof(n), ht->capacity);
-    assert(ht->buckets != NULL);
+
+    assert(ht->buckets != NULL);  // allocation failure
 
     for (natural_num i = 0; i < old_size; i++)
     {

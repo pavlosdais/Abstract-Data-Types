@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "pq.h"
 
-#define ROOT 1
+#define ROOT 0
 
 typedef unsigned int natural_num;
 
@@ -159,17 +159,17 @@ void pq_destroy(PQueue PQ)
 
 static natural_num find_parent(natural_num node)
 {
-    return node / 2;
+    return (node-1)/2;
 }
 
 static natural_num find_left_child(natural_num node)
 {
-    return node * 2;
+    return 2*node + 1;
 }
 
 static natural_num find_right_child(natural_num node)
 {
-    return 2*node + 1;
+    return 2*node + 2;
 }
 
 static void swap_nodes(node a, node b)

@@ -110,6 +110,7 @@ bool rbt_insert(RBTree Tree, Pointer value)
     // Standard BST insertion - by the end the node prev will 
     // be the parent of the node we will insert
     RBTreeNode prev = NULL, tmp = *root;
+    int prev_comp;
     while(tmp != &NULLNode)
     {
         prev = tmp;
@@ -124,17 +125,17 @@ bool rbt_insert(RBTree Tree, Pointer value)
             tmp = tmp->left;
         else  // value >= tmp->data
             tmp = tmp->right;
+        prev_comp = comp;
     }
 
     new_node->parent = prev;
 
-    int comp = Tree->compare(prev->data, value);
-    if (comp < 0)
+    if (prev_comp < 0)
         prev->right = new_node;
     else
         prev->left = new_node;
 
-    // Fix possible violations
+    // fix possible violations
     fix_insert(root, &new_node);  
 
     Tree->size++;  // value inserted, increment the number of elements in the tree
@@ -191,8 +192,8 @@ bool rbt_remove(RBTree Tree, Pointer value)
         Tree->destroy(node_to_be_deleted->data);
     free(node_to_be_deleted);
 
-    if (col == BLACK)            // No violations if the node deleted is red
-        fix_remove(root, &tmp);  // if node is black, fix possible violations
+    if (col == BLACK)            // no violations if the node deleted is red
+        fix_remove(root, &tmp);  // if node is black, fix violations
     
     Tree->size--;  // value removed, decrement the number of elements in the tree
     return true;
