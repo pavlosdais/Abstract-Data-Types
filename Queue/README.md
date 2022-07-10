@@ -5,8 +5,10 @@ The 2 basic operations performed are:
 * Dequeue: Removes an item from the start of the queue.
  
 # Performance
+If n is the number of elements in the queue:
+
 Algorithm  | Average case | Worst case
 ---------- | -------      | ----------
-Space	     | O(n)	        | O(n)
-Enqueue	   | O(1)	        | O(1)
-Dequeue	   | O(1)	        | O(1)
+Space	   | O(n)	      | O(n)
+Enqueue	   | O(1)	      | O(1)
+Dequeue	   | O(1)	      | O(1)

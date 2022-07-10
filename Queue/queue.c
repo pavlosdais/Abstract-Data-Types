@@ -12,10 +12,10 @@ QueueNode;
 
 typedef struct queue
 {
-    QueueNode* head;               // head node
-    QueueNode* tail;               // tail node
-    unsigned int num_of_elements;  // number of elements in the queue
-    DestroyFunc destroy;           // function that destroys the elements, NULL if not
+    QueueNode* head;       // head node
+    QueueNode* tail;       // tail node
+    uint num_of_elements;  // number of elements in the queue
+    DestroyFunc destroy    // function that destroys the elements, NULL if not
 }
 queue;
 
@@ -30,7 +30,7 @@ void queue_init(Queue* Q, DestroyFunc destroy)
     (*Q)->num_of_elements = 0;
 }
 
-unsigned int queue_size(Queue Q)
+uint queue_size(Queue Q)
 {
     return Q->num_of_elements;
 }

@@ -12,7 +12,7 @@ typedef struct queue* Queue;
 void queue_init(Queue* Q, DestroyFunc destroy);
 
 // returns the size of the queue
-unsigned int queue_size(Queue Q);
+uint queue_size(Queue Q);
 
 // enqueues value at the end of the queue
 void queue_enqueue(Queue Q, Pointer value);

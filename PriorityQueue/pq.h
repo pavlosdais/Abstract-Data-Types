@@ -21,7 +21,7 @@ typedef void (*DestroyFunc)(Pointer value);
 void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy);
 
 // returns the size of the priority queue
-unsigned int pq_size(PQueue PQ);
+uint pq_size(PQueue PQ);
 
 // inserts value at the priority queue
 void pq_insert(PQueue PQ, Pointer value);

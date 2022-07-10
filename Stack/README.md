@@ -5,6 +5,7 @@ The 2 basic operations performed are:
 * Pop: Removes an item from the top of the stack.
 
 # Performance
+If n is the number of elements in the stack:
 
 Algorithm  | Average case | Worst case
 ---------- | -------      | ----------

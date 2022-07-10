@@ -27,7 +27,7 @@ bool rbt_remove(RBTree Tree, Pointer value);
 bool rbt_find(RBTree Tree, Pointer value);
 
 // returns the number of elements in the tree
-unsigned int rbt_size(RBTree Tree);
+uint rbt_size(RBTree Tree);
 
 // changes the destroy function and returns the old one
 DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func);

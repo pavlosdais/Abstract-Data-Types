@@ -22,4 +22,4 @@ Remove	   | O(log n)	  | O(log n)
 Search	   | O(log n)	  | O(log n)
 
 # Learn more
-For more information and examples as well as examples click [here](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm)
+For more information as well as examples click [here](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm).

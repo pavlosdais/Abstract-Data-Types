@@ -5,8 +5,6 @@
 
 #define ROOT 0
 
-typedef unsigned int natural_num;
-
 typedef struct n
 {
     Pointer data;
@@ -16,22 +14,22 @@ typedef struct n* node;
 
 typedef struct pq
 {
-    node arr;               // array of nodes containing the data
-    natural_num curr_size;  // current size of the heap
-    natural_num capacity;   // max capacity of the heap
-    CompareFunc compare;    // function that compares the data - dictates the order of the elements
-    DestroyFunc destroy;    // function that destroys the elements, NULL if not
+    node arr;             // array of nodes containing the data
+    uint curr_size;       // current size of the heap
+    uint capacity;        // max capacity of the heap
+    CompareFunc compare;  // function that compares the data - dictates the order of the elements
+    DestroyFunc destroy;  // function that destroys the elements, NULL if not
 }
 pq;
 
 // Function prototypes
 unsigned int pq_size(PQueue PQ);
-static natural_num find_parent(natural_num node);
-static natural_num find_left_child(natural_num node);
-static natural_num find_right_child(natural_num node);
+static uint find_parent(uint node);
+static uint find_left_child(uint node);
+static uint find_right_child(uint node);
 static void swap_nodes(node a, node b);
-static void bubble_up(PQueue PQ, natural_num node);
-static void bubble_down(PQueue PQ, natural_num node);
+static void bubble_up(PQueue PQ, uint node);
+static void bubble_down(PQueue PQ, uint node);
 
 void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy)
 {
@@ -78,13 +76,13 @@ void pq_insert(PQueue PQ, Pointer value)
     bubble_up(PQ, PQ->curr_size);
 }
 
-static void bubble_up(PQueue PQ, natural_num node)
+static void bubble_up(PQueue PQ, uint node)
 {
     if (node == ROOT)  // reached the root
         return;
     
     // swap values with parent// bubble up if the current node has higher priority
-    natural_num parent = find_parent(node);
+    uint parent = find_parent(node);
 
     if (PQ->compare(PQ->arr[parent].data, PQ->arr[node].data) < 0)
     {
@@ -112,15 +110,15 @@ Pointer pq_remove(PQueue PQ)
     return hp;
 }
 
-static void bubble_down(PQueue PQ, natural_num node)
+static void bubble_down(PQueue PQ, uint node)
 {
-    natural_num left_child = find_left_child(node);
+    uint left_child = find_left_child(node);
     if (left_child > PQ->curr_size)  // children do not exist
         return;
     
     // find the child with the highest priority
-    natural_num right_child = find_right_child(node);
-    natural_num max_child = left_child;
+    uint right_child = find_right_child(node);
+    uint max_child = left_child;
 
     if (right_child <= PQ->curr_size && PQ->compare(PQ->arr[left_child].data, PQ->arr[right_child].data) < 0)
         max_child = right_child;
@@ -146,7 +144,7 @@ void pq_destroy(PQueue PQ)
     // if a destroy function was given
     if (PQ->destroy != NULL)
     {
-        for (natural_num i = 0; i < PQ->capacity; i++)
+        for (uint i = 0; i < PQ->capacity; i++)
         {
             // if the element has not already been removed before, destroy it
             if (PQ->arr[i].data != NULL)
@@ -157,17 +155,17 @@ void pq_destroy(PQueue PQ)
     free(PQ);
 }
 
-static natural_num find_parent(natural_num node)
+static uint find_parent(uint node)
 {
     return (node-1)/2;
 }
 
-static natural_num find_left_child(natural_num node)
+static uint find_left_child(uint node)
 {
     return 2*node + 1;
 }
 
-static natural_num find_right_child(natural_num node)
+static uint find_right_child(uint node)
 {
     return 2*node + 2;
 }

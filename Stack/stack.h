@@ -10,7 +10,7 @@ typedef struct StackSet* Stack;
 void stack_init(Stack* S, DestroyFunc destroy);
 
 // returns number of elements in the stack
-unsigned int stack_size(Stack S);
+uint stack_size(Stack S);
 
 // pushes value at the top of the stack
 void stack_push(Stack S, Pointer value);

@@ -3,26 +3,24 @@
 #include <assert.h>
 #include "hash_table.h"
 
-typedef unsigned int natural_num;
-
 // bucket
 typedef struct n
 {
-    Pointer data;            // pointer to the data we are storing
-    natural_num hash_value;  // hash value of the data
-    struct n *next;          // next element in the buckets (NULL if it's the last)
+    Pointer data;     // pointer to the data we are storing
+    uint hash_value;  // hash value of the data
+    struct n* next;   // next element in the bucket (NULL if it's the last)
 }
 n;
 typedef struct n* node;
 
 typedef struct hash_table
 {
-    node* buckets;         // buckets (lists) storing the data
-    natural_num capacity;  // number of buckets
-    natural_num elements;  // number of elements in the hash table
-    HashFunc hash;         // function that hashes an element into a positive integer
-    CompareFunc compare;   // function that compares the elements
-    DestroyFunc destroy;   // function that destroys the elements, NULL if not
+    node* buckets;        // buckets (lists) storing the data
+    uint capacity;        // number of buckets
+    uint elements;        // number of elements in the hash table
+    HashFunc hash;        // function that hashes an element into a positive integer
+    CompareFunc compare;  // function that compares the elements
+    DestroyFunc destroy;  // function that destroys the elements, NULL if not
 }
 hash_table;
 
@@ -54,9 +52,9 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->destroy = destroy;
 }
 
-static void insert(HashTable ht, Pointer value, natural_num hash_value)
+static void insert(HashTable ht, Pointer value, uint hash_value)
 {
-    // create new buckets (list)
+    // create new bucket (list)
     node new_node = malloc(sizeof(n));
     assert(new_node != NULL);  // allocation failure
 
@@ -65,7 +63,7 @@ static void insert(HashTable ht, Pointer value, natural_num hash_value)
     new_node->hash_value = hash_value;
 
     // insert the value at the start of the buckets
-    unsigned int bucket = hash_value % ht->capacity;
+    uint bucket = hash_value % ht->capacity;
     new_node->next = ht->buckets[bucket];
     ht->buckets[bucket] = new_node;
 }
@@ -74,7 +72,7 @@ void hash_insert(HashTable ht, Pointer value)
 {
     if (((float)ht->elements / ht->capacity) >= MAX_LOAD_FACTOR)  // max load factor exceeded
     {
-        natural_num num_of_sizes = sizeof(hash_sizes) / sizeof(hash_sizes[0]);  // number of (prime) sizes
+        uint num_of_sizes = sizeof(hash_sizes) / sizeof(hash_sizes[0]);  // number of (prime) sizes
         if (ht->capacity != hash_sizes[num_of_sizes-1])  // if there is an available new size
             rehash(ht);  // rehash
     }
@@ -86,7 +84,7 @@ void hash_insert(HashTable ht, Pointer value)
 
 static void rehash(HashTable ht)
 {
-    natural_num prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]), old_size = ht->capacity;
+    uint prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]), old_size = ht->capacity;
     int low = 0, high = prime_numbers-1;
 
     // Find the next, in order, size
@@ -109,10 +107,9 @@ static void rehash(HashTable ht)
     
     // create more buckets
     ht->buckets = calloc(sizeof(n), ht->capacity);
-
     assert(ht->buckets != NULL);  // allocation failure
 
-    for (natural_num i = 0; i < old_size; i++)
+    for (uint i = 0; i < old_size; i++)
     {
         node bkt = old_buckets[i];
     
@@ -132,7 +129,7 @@ static void rehash(HashTable ht)
 bool hash_remove(HashTable ht, Pointer value)
 {
     // rehash to the find the potential buckets the value belongs to
-    natural_num h = ht->hash(value) % ht->capacity;
+    uint h = ht->hash(value) % ht->capacity;
 
     node* bkt = &(ht->buckets[h]);
     
@@ -163,9 +160,10 @@ bool hash_remove(HashTable ht, Pointer value)
 bool hash_exists(HashTable ht, Pointer value)
 {
     // rehash to the find the potential bucket the value belongs to
-    natural_num h = ht->hash(value) % ht->capacity;
+    uint h = ht->hash(value) % ht->capacity;
     node bkt = ht->buckets[h];
     
+    // search for the value in the bucket h
     while (bkt != NULL)
     {
         Pointer bkt_value = bkt->data;
@@ -177,7 +175,7 @@ bool hash_exists(HashTable ht, Pointer value)
     return false;
 }
 
-unsigned int hash_size(HashTable ht)
+uint hash_size(HashTable ht)
 {
     return ht->elements;
 }
@@ -192,7 +190,7 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 void hash_destroy(HashTable ht)
 {
     // destroy buckets
-    for (natural_num i = 0; i < ht->capacity; i++)
+    for (uint i = 0; i < ht->capacity; i++)
     {
         node bkt = ht->buckets[i];
         while (bkt != NULL)

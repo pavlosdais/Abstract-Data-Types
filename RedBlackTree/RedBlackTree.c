@@ -23,7 +23,7 @@ typedef struct tnode* RBTreeNode;
 struct Set
 {
     RBTreeNode root;      // root node, NULL if the the tree is empty
-    unsigned int size;    // number of elements in the tree
+    uint size;            // number of elements in the tree
     CompareFunc compare;  // function that compares the elements - dictates the order of the elements
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
 };
@@ -51,7 +51,7 @@ void rbt_init(RBTree* Tree, CompareFunc compare, DestroyFunc destroy)
     (*Tree)->destroy = destroy;
 }
 
-unsigned int rbt_size(RBTree Tree) { return Tree->size; }
+uint rbt_size(RBTree Tree) { return Tree->size; }
 
 // creates node
 static RBTreeNode CreateNode()
