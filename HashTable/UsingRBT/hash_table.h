@@ -16,8 +16,8 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef uint (*HashFunc)(Pointer value);
 
 
-// when max load factor is exceeded, rehashing operation occurs
-#define MAX_LOAD_FACTOR 1.2
+// number of buckets used
+#define NUM_OF_BUCKETS 1000
 
 // initializes hash table
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);

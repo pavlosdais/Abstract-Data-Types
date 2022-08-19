@@ -1,3 +1,5 @@
+#pragma once  // include at most once
+
 #include <stdbool.h>
 
 typedef void* Pointer;
@@ -24,7 +26,7 @@ bool rbt_insert(RBTree Tree, Pointer value);
 bool rbt_remove(RBTree Tree, Pointer value);
 
 // returns true if the value exists, false otherwise
-bool rbt_find(RBTree Tree, Pointer value);
+bool rbt_exists(RBTree Tree, Pointer value);
 
 // returns the number of elements in the tree
 uint rbt_size(RBTree Tree);
@@ -46,14 +48,14 @@ Pointer rbt_node_value(RBTreeNode rbt_node);
 // returns the node with that value, if it exists, otherwise NULL
 RBTreeNode rbt_find_node(RBTree Tree, Pointer value);
 
+// returns the previous, in order, node of target or NULL if there is no previous value
+RBTreeNode rbt_find_previous(RBTreeNode target);
+
+// returns the next, in order, node of target or NULL if there is no next value
+RBTreeNode rbt_find_next(RBTreeNode target);
+
 // returns the node with the lowest value
 RBTreeNode rbt_first(RBTree Tree);
 
 // returns the node with the highest value
 RBTreeNode rbt_last(RBTree Tree);
-
-// returns the previous node of target, or NULL if there is no previous value
-RBTreeNode rbt_find_previous(RBTree Tree, RBTreeNode target);
-
-// returns the next node of target, or NULL if there is no next value
-RBTreeNode rbt_find_next(RBTree Tree, RBTreeNode target);

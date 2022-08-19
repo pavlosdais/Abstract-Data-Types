@@ -60,7 +60,7 @@ void pq_insert(PQueue PQ, Pointer value)
 
     PQ->curr_size++;
 
-    // heap is full , double its size
+    // heap is full, double its size
     if (PQ->curr_size == PQ->capacity)
     {
         node new_arr = realloc(PQ->arr, 2*PQ->capacity * sizeof(*new_arr));
@@ -78,7 +78,7 @@ void pq_insert(PQueue PQ, Pointer value)
 
 static void bubble_up(PQueue PQ, uint node)
 {
-    if (node == ROOT)  // reached the root
+    if (node == ROOT)  // reached the root - base case
         return;
     
     // swap values with parent// bubble up if the current node has higher priority

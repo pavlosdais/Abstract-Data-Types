@@ -14,7 +14,7 @@ typedef struct StackNode* StackNodePointer;
 typedef struct StackSet
 {
     StackNodePointer top;  // node at the top of the stack, NULL if the stack is empty
-    uint size;     // number of elements in the stack
+    uint size;             // number of elements in the stack
     DestroyFunc destroy;   // function that destroys the elements, NULL if not
 }
 StackSet;
@@ -39,7 +39,7 @@ Pointer stack_top_value(Stack S)
     return (S->top->value);
 }
 
-DestroyFunc stack_set_destroy_value(Stack S, DestroyFunc new_destroy_func)
+DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func)
 {
     DestroyFunc old_destroy_func = S->destroy;
     S->destroy = new_destroy_func;

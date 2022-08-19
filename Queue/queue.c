@@ -82,7 +82,7 @@ Pointer queue_dequeue(Queue Q)
     return value;
 }
 
-DestroyFunc queue_set_destroy_value(Queue Q, DestroyFunc new_destroy_func)
+DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func)
 {
     DestroyFunc old_destroy_func = Q->destroy;
     Q->destroy = new_destroy_func;

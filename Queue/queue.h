@@ -1,3 +1,5 @@
+#pragma once  // include at most once
+
 #include <stdbool.h>
 
 typedef void* Pointer;
@@ -11,17 +13,17 @@ typedef struct queue* Queue;
 // initializes queue
 void queue_init(Queue* Q, DestroyFunc destroy);
 
-// returns the size of the queue
-uint queue_size(Queue Q);
-
 // enqueues value at the end of the queue
 void queue_enqueue(Queue Q, Pointer value);
 
-// dequeues value from the start of the queue
+// dequeues value from the start of the queue and returns it
 Pointer queue_dequeue(Queue Q);
 
-// changes the destroy function and return the old one
-DestroyFunc queue_set_destroy_value(Queue Q, DestroyFunc new_destroy_func);
+// returns the size of the queue
+uint queue_size(Queue Q);
+
+// changes the destroy function and returns the old one
+DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func);
 
 // frees queue and its values if a destroy function is given
 void queue_destroy(Queue Q);

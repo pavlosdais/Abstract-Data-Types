@@ -4,7 +4,7 @@ Implemented data structures
 * Queue
 * Priority Queue
 * Red-Black Tree
-* Hash Table (Seperate chaining & Linear hashing)
+* Hash Table
 
 # Usage
 These data structures are fully modular and designed to work with any kind of data. This is achieved by saving all the data in the heap by manually allocating memory and using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to refer to it. In order to use a module one must provide the following following functions upon initialization:

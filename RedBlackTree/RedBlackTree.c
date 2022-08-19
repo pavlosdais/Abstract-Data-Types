@@ -3,6 +3,8 @@
 #include <assert.h>
 #include "RedBlackTree.h"
 
+// source: http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
+
 typedef enum COLORS
 {
     RED,
@@ -62,12 +64,12 @@ static RBTreeNode CreateNode()
     new_node->col = RED;  // default color is red
     new_node->left = &NULLNode;
     new_node->right = &NULLNode;
-    new_node->parent = NULL;
     return new_node;
 }
 
 // traverse the tree to find the node with the value
-static RBTreeNode find_node(RBTree Tree, Pointer value)
+// returns NULL if the value is not found
+RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
 {
     RBTreeNode node = Tree->root;
     
@@ -86,10 +88,7 @@ static RBTreeNode find_node(RBTree Tree, Pointer value)
     return NULL;
 }
 
-Pointer rbt_node_value(RBTreeNode rbt_node)
-{
-    return rbt_node->data;
-}
+Pointer rbt_node_value(RBTreeNode rbt_node) { return rbt_node->data; }
 
 bool rbt_insert(RBTree Tree, Pointer value)
 {
@@ -99,35 +98,46 @@ bool rbt_insert(RBTree Tree, Pointer value)
     assert(new_node != NULL);  // allocation failure
     
     new_node->data = value;
-    if (*root == NULL)  // Empty tree
+    if (*root == NULL)  // empty tree
     {
         Tree->size = 1;
         new_node->col = BLACK;  // root is black
+        new_node->parent = NULL;  // root's parent is NULL
         *root = new_node;
         return true;
     }
     
-    // Standard BST insertion - by the end the node prev will 
+    // standard BST insertion - by the end the node prev will 
     // be the parent of the node we will insert
     RBTreeNode prev = NULL, tmp = *root;
-    int prev_comp;
-    while(tmp != &NULLNode)
+
+    int prev_comp, comp = Tree->compare(tmp->data, value);
+    while(true)
     {
         prev = tmp;
-        int comp = Tree->compare(value, tmp->data);
-        if (comp == 0)   // tmp->data == value
+        prev_comp = comp;
+
+        if (comp == 0)  // value already exists
         {
-            // value already exists, avoid making duplicates
             free(new_node);
+
+            // if a destroy function exists, destroy the value
+            if (Tree->destroy != NULL)
+                Tree->destroy(value);
+            
             return false;
         }
-        else if (comp < 0)  // value < tmp->data
-            tmp = tmp->left;
-        else  // value >= tmp->data
+        else if (comp < 0)  // tmp->data < value
             tmp = tmp->right;
-        prev_comp = comp;
+        else  // tmp->data >= value
+            tmp = tmp->left;
+        
+        if (tmp != &NULLNode)
+            comp = Tree->compare(tmp->data, value);
+        else break;
     }
 
+    // save parent
     new_node->parent = prev;
 
     if (prev_comp < 0)
@@ -146,8 +156,7 @@ bool rbt_remove(RBTree Tree, Pointer value)
 {
     RBTreeNode* root = &(Tree->root);
     
-    RBTreeNode tmp = find_node(Tree, value);
-
+    RBTreeNode tmp = rbt_find_node(Tree, value);
     if (tmp == NULL)  // value does not exist
         return false;
     
@@ -386,35 +395,69 @@ void rbt_destroy(RBTree Tree)
     free(Tree);                                    // then the tree
 }
 
-bool rbt_find(RBTree Tree, Pointer value)
+bool rbt_exists(RBTree Tree, Pointer value)
 {
-    if (find_node(Tree, value) == NULL) 
-        return false;
-    
-    return true;
-}
-
-static RBTreeNode node_min(RBTreeNode node)
-{
-    RBTreeNode tmp = node;
-    while (tmp->left != &NULLNode && tmp->left != NULL)
-        tmp = tmp->left;
-    
-    return tmp;
+    return rbt_find_node(Tree, value) != NULL;
 }
 
 static RBTreeNode node_max(RBTreeNode node)
 {
     RBTreeNode tmp = node;
-    while (tmp->right != &NULLNode && tmp->right != NULL)
+    while (tmp->right != &NULLNode)
         tmp = tmp->right;
 
     return tmp;
 }
 
-RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
+static RBTreeNode node_min(RBTreeNode node)
 {
-    return find_node(Tree, value);
+    RBTreeNode tmp = node;
+    while (tmp->left != &NULLNode)
+        tmp = tmp->left;
+    
+    return tmp;
+}
+
+static RBTreeNode find_predecessor(RBTreeNode node)
+{
+    return node_max(node->left);
+}
+
+static RBTreeNode find_successor(RBTreeNode node)
+{
+    return node_min(node->right);
+}
+
+RBTreeNode rbt_find_previous(RBTreeNode target)
+{
+    if (target->left != &NULLNode)
+        return find_predecessor(target);
+    
+    // left tree does not exist, the next in order node is one of the ancestors
+    RBTreeNode parent = target->parent;
+    while(parent != NULL && target == parent->left)
+    {
+        target = parent;
+        parent = parent->parent;
+    }
+
+    return parent;
+}
+
+RBTreeNode rbt_find_next(RBTreeNode target)
+{
+    if (target->right != &NULLNode)
+        return find_successor(target);
+    
+    // right tree does not exist, the previous in order node is one of the predecessors
+    RBTreeNode parent = target->parent;
+    while(parent != NULL && target == parent->right)
+    {
+        target = parent;
+        parent = parent->parent;
+    }
+
+    return parent;
 }
 
 RBTreeNode rbt_first(RBTree Tree)
@@ -425,51 +468,6 @@ RBTreeNode rbt_first(RBTree Tree)
 RBTreeNode rbt_last(RBTree Tree)
 {
     return node_max(Tree->root);
-}
-
-static RBTreeNode find_successor(RBTreeNode node)
-{
-    return node_min(node->right);
-}
-
-static RBTreeNode find_previous(RBTreeNode node, CompareFunc comp, RBTreeNode target)
-{
-    // target is found, the previous node is the the node with the highest value of the
-    // left sub-tree
-    if (node == target)
-        return node_max(node->left);
-    else if (comp(target->data, node->data) < 0)
-        return find_previous(node->left, comp, target);
-    else 
-    {
-        RBTreeNode res = find_previous(node->right, comp, target);
-        return res != &NULLNode ? res : node;
-    }
-}
-
-RBTreeNode rbt_find_previous(RBTree Tree, RBTreeNode target)
-{
-    return find_previous(Tree->root, Tree->compare, target);
-}
-
-static RBTreeNode find_next(RBTreeNode node, CompareFunc comp, RBTreeNode target)
-{
-    // target is found, the previous node is the the node with the lowest value of the
-    // right sub-tree
-    if (node == target)
-        return node_min(node->right);
-    else if (comp(target->data, node->data) > 0)
-        return find_next(node->right, comp, target);
-    else
-    {
-        RBTreeNode res = find_next(node->left, comp, target);
-        return res != &NULLNode ? res : node;
-    }
-}
-
-RBTreeNode rbt_find_next(RBTree Tree, RBTreeNode target)
-{
-    return find_next(Tree->root, Tree->compare, target);
 }
 
 DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func)

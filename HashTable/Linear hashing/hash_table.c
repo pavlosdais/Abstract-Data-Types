@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <limits.h>
 #include "hash_table.h"
 
 typedef unsigned char small_int;
@@ -30,11 +31,7 @@ typedef struct hash_table
 }
 hash_table;
 
-
-#define STARTING_HASH_CAPACITY 50  // starting maximum number of buckets
-#define MAX_BUCKET_ELEMENTS 4      // maximum number of elements in the bucket
-#define INCREASE_SIZE 1.8          // increase percentage of maximum number of buckets
-
+#define INCREASE_SIZE 1.8  // increase percentage of maximum number of buckets
 
 // Function Prototypes
 static void hash_resize(HashTable ht);
@@ -68,12 +65,19 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->destroy = destroy;
 }
 
+uint hash_size(HashTable ht) { return ht->elements; }
+
 bool hash_insert(HashTable ht, Pointer value)
 {
     // check to see if value already exists
     uint bucket = hash_search(ht, value);
-    if (bucket == -1)  // value already exists
+    if (hash_search(ht, value) == UINT_MAX)  // value already exists
+    {
+        // if a destroy function exists, destroy the value
+        if (ht->destroy != NULL)
+            ht->destroy(value);
         return false;
+    }
     
     // create new node
     node new_node = malloc(sizeof(n));
@@ -81,11 +85,9 @@ bool hash_insert(HashTable ht, Pointer value)
 
     // fill node's contents
     new_node->data = value;
-    
-    uint hash_value = ht->hash(value);
-    new_node->hash_value = hash_value;
+    new_node->hash_value = ht->hash(value);
 
-    // insert the value at the start of the bucket
+    // insert value at the start of the bucket
     new_node->next = ht->buckets[bucket];
     ht->buckets[bucket] = new_node;
 
@@ -107,7 +109,7 @@ bool hash_insert(HashTable ht, Pointer value)
         node* old_bucket = &(ht->buckets[ht->next_split]);
 
         ht->next_split++;        
-
+        
         // split operation
         while ((*old_bucket) != NULL)
         {
@@ -141,10 +143,9 @@ bool hash_remove(HashTable ht, Pointer value)
 {
     // find the potential bucket the value belongs to
     uint h = get_bucket(ht, ht->hash(value));
-
     node* bkt = &(ht->buckets[h]);
     
-    // search for the value in the bucket
+    // search for the value at the bucket
     while (*bkt != NULL)
     {
         Pointer bkt_value = (*bkt)->data;
@@ -172,14 +173,14 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    if (hash_search(ht, value) == -1)  // value exists
+    if (hash_search(ht, value) == UINT_MAX)  // value exists
         return true;
     
     // value does not exist
     return false;
 }
 
-// returns -1 if the value exists
+// returns UINT_MAX if the value exists
 // if it does not exist, returns the bucket in which it should exist
 static uint hash_search(HashTable ht, Pointer value)
 {
@@ -192,7 +193,7 @@ static uint hash_search(HashTable ht, Pointer value)
     {
         Pointer bkt_value = bkt->data;
         if (ht->compare(value, bkt_value) == 0)  // value found
-            return -1;
+            return UINT_MAX;
             
         bkt = bkt->next;
     }
@@ -214,7 +215,7 @@ static uint get_bucket(HashTable ht, uint hash_value)
 // resize by INCREASE_SIZE
 static void hash_resize(HashTable ht)
 {
-    uint old_cap = ht->max_capacity;
+    uint old_cap = ht->max_capacity;  // old number of buckets
     ht->max_capacity *= INCREASE_SIZE;  // increase capacity
     
     ht->buckets = realloc(ht->buckets, sizeof(*(ht->buckets)) * ht->max_capacity);
@@ -223,35 +224,12 @@ static void hash_resize(HashTable ht)
     ht->curr_num_of_elements = realloc(ht->curr_num_of_elements, sizeof(small_int) * ht->max_capacity);
     assert(ht->curr_num_of_elements != NULL);  // allocation failure
 
-    // initialize arrays to avoid annoying errors
+    // initialize arrays to avoid errors
     for (uint i = old_cap; i < ht->max_capacity; i++)
     {
         ht->buckets[i] = NULL;
         ht->curr_num_of_elements[i] = 0;
     }
-}
-
-void print_table(HashTable ht, VisitFunc visit)
-{
-    for (uint i = 0; i < ht->curr_size; i++)
-    {
-        node tmp = ht->buckets[i];
-        printf("(%d): ", i);
-        while (tmp != NULL)
-        {
-            visit(tmp->data);
-            tmp = tmp->next;
-        }
-
-        // print the number of elements in the bucket
-        printf("|%d|", ht->curr_num_of_elements[i]);
-        printf("\n");
-    }
-}
-
-uint hash_size(HashTable ht)
-{
-    return ht->elements;
 }
 
 // returns 2^i

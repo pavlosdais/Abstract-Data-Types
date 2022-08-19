@@ -1,3 +1,5 @@
+#pragma once  // include at most once
+
 #include <stdbool.h>
 
 typedef struct hash_table* HashTable;
@@ -13,9 +15,9 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive integer
 typedef uint (*HashFunc)(Pointer value);
 
-// Pointer to function that visits an element
-typedef void (*VisitFunc)(Pointer value);
 
+#define STARTING_HASH_CAPACITY 53  // starting maximum number of buckets
+#define MAX_BUCKET_ELEMENTS 4      // maximum number of elements in the bucket before split operation starts
 
 // initializes hash table
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);
@@ -31,14 +33,11 @@ bool hash_remove(HashTable ht, Pointer value);
 // returns true if value exists in the hash table, false otherwise
 bool hash_exists(HashTable ht, Pointer value);
 
-// changes destroy function and return the old one
+// returns the number of elements in the hash table
+uint hash_size(HashTable ht);
+
+// changes the destroy function and returns the old one
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func);
-
-// returns the number of elements inserted
-unsigned int hash_size(HashTable ht);
-
-// prints hash table
-void print_table(HashTable ht, VisitFunc visit);
 
 // destroys the hash table and its values, if a destroy function is given
 void hash_destroy(HashTable ht);
