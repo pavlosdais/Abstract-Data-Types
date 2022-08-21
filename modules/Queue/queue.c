@@ -15,7 +15,7 @@ typedef struct queue
     QueueNode* head;       // head node
     QueueNode* tail;       // tail node
     uint num_of_elements;  // number of elements in the queue
-    DestroyFunc destroy    // function that destroys the elements, NULL if not
+    DestroyFunc destroy;   // function that destroys the elements, NULL if not
 }
 queue;
 
@@ -35,7 +35,7 @@ uint queue_size(Queue Q)
     return Q->num_of_elements;
 }
 
-const bool is_queue_empty(Queue Q)
+bool is_queue_empty(Queue Q)
 {
     return (Q->head == NULL);
 }

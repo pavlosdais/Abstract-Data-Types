@@ -6,7 +6,7 @@
 #include "../../RedBlackTree/RedBlackTree.h"
 
 #define FIXED_SIZE 3  // minimum number of elements in the array before inserting them at a rbt
-#define OVERFLOW_SIZE 4
+#define OVERFLOW_SIZE 4  // size at which elements are inserted at a rbt (FIXED_SIZE+1)
 
 typedef unsigned char small_int;
 
@@ -123,8 +123,9 @@ bool hash_insert(HashTable ht, Pointer value)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
-    // find the potential bucket the value belongs to
+    // find the potential bucket the value exists in
     uint bucket = ht->hash(value) % ht->capacity;
+
     if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)
     {
         if (rbt_remove(ht->buckets[bucket].rbt, value))
@@ -135,7 +136,7 @@ bool hash_remove(HashTable ht, Pointer value)
     }
     else
     {
-        // search to see if value already exists
+        // search for the value
         bool found = false;
         small_int i = 0;
         for (i = 0; i < FIXED_SIZE; i++)
@@ -146,14 +147,15 @@ bool hash_remove(HashTable ht, Pointer value)
                 break;
             }
         }
-        if (found)
+        if (found)  // value found
         {
+            // if a destroy function exists, destroy the value
             if (ht->destroy != NULL)
                 ht->destroy(ht->buckets[bucket].data[i]);
             
-            ht->buckets[bucket].data[i] = NULL;
-            ht->elements--;  // value removed, decrement the number of elements in the hash table
+            ht->buckets[bucket].data[i] = NULL;  // mark the spot empty
             ht->buckets[bucket].arr_el--;
+            ht->elements--;  // value removed, decrement the number of elements in the hash table
             return true;
         }
     }
@@ -168,7 +170,7 @@ bool hash_exists(HashTable ht, Pointer value)
     uint bucket = ht->hash(value) % ht->capacity;
     
     // search the rbt
-    if (ht->buckets[bucket].arr_el == FIXED_SIZE+1)
+    if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)
         return rbt_exists(ht->buckets[bucket].rbt, value);
     else  // search the array
     {
@@ -183,10 +185,13 @@ bool hash_exists(HashTable ht, Pointer value)
 
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 {
-    DestroyFunc old_destroy_func = ht->destroy;    
     for (uint i = 0; i < ht->capacity; i++)
-        rbt_set_destroy(ht->buckets[i].rbt, new_destroy_func);
+    {
+        if (ht->buckets[i].arr_el == OVERFLOW_SIZE)  // elements are at a rbt in this bucket
+            rbt_set_destroy(ht->buckets[i].rbt, new_destroy_func);
+    }
     
+    DestroyFunc old_destroy_func = ht->destroy;
     ht->destroy = new_destroy_func;
     return old_destroy_func;
 }
@@ -195,7 +200,7 @@ void hash_destroy(HashTable ht)
 {
     for (uint i = 0; i < ht->capacity; i++)
     {
-        if (ht->destroy != NULL && ht->buckets[i].arr_el <= FIXED_SIZE)
+        if (ht->buckets[i].arr_el != OVERFLOW_SIZE && ht->destroy != NULL)
         {
             for (small_int j = 0; j < FIXED_SIZE; j++)
             {
@@ -203,9 +208,9 @@ void hash_destroy(HashTable ht)
                     ht->destroy(ht->buckets[i].data[j]);
             }
         }
-        if (ht->buckets[i].arr_el == OVERFLOW_SIZE)
+        if (ht->buckets[i].arr_el == OVERFLOW_SIZE)  // elements are at a rbt
             rbt_destroy(ht->buckets[i].rbt);
-        else
+        else  // elements are at an array
             free(ht->buckets[i].data);
     }
     free(ht->buckets);

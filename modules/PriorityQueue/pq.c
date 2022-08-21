@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "pq.h"
 
-#define ROOT 0
+#define ROOT 1
 
 typedef struct n
 {
@@ -56,8 +56,6 @@ unsigned int pq_size(PQueue PQ)
 
 void pq_insert(PQueue PQ, Pointer value)
 {
-    assert(PQ != NULL);
-
     PQ->curr_size++;
 
     // heap is full, double its size
@@ -78,16 +76,13 @@ void pq_insert(PQueue PQ, Pointer value)
 
 static void bubble_up(PQueue PQ, uint node)
 {
-    if (node == ROOT)  // reached the root - base case
-        return;
-    
-    // swap values with parent// bubble up if the current node has higher priority
     uint parent = find_parent(node);
-
-    if (PQ->compare(PQ->arr[parent].data, PQ->arr[node].data) < 0)
+    while (node != ROOT && PQ->compare(PQ->arr[parent].data, PQ->arr[node].data) < 0)
     {
         swap_nodes(&(PQ->arr[parent]), &(PQ->arr[node]));
-        bubble_up(PQ, parent);
+
+        node = parent;
+        parent = find_parent(node);
     }
 }
 
@@ -157,17 +152,17 @@ void pq_destroy(PQueue PQ)
 
 static uint find_parent(uint node)
 {
-    return (node-1)/2;
+    return node / 2;
 }
 
 static uint find_left_child(uint node)
 {
-    return 2*node + 1;
+    return 2*node;
 }
 
 static uint find_right_child(uint node)
 {
-    return 2*node + 2;
+    return 2*node + 1;
 }
 
 static void swap_nodes(node a, node b)

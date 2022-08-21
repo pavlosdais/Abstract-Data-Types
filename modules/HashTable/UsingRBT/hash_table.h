@@ -6,7 +6,10 @@ typedef struct hash_table* HashTable;
 
 typedef void* Pointer;
 
-// Pointer to function that compares 2 elements a and b and returns 0 if a and b are equal
+// Pointer to function that compares 2 elements a and b and returns:
+// < 0  if a < b
+//   0  if a and b are equal
+// > 0  if a > b
 typedef int (*CompareFunc)(Pointer a, Pointer b);
 
 // Pointer to function that destroys an element value
@@ -17,7 +20,7 @@ typedef uint (*HashFunc)(Pointer value);
 
 
 // number of buckets used
-#define NUM_OF_BUCKETS 1000
+#define NUM_OF_BUCKETS 1543
 
 // initializes hash table
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);

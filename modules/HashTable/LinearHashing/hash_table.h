@@ -1,5 +1,7 @@
 #pragma once  // include at most once
 
+// requires a hash, compare and destroy function
+
 #include <stdbool.h>
 
 typedef struct hash_table* HashTable;
@@ -16,8 +18,8 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef uint (*HashFunc)(Pointer value);
 
 
-#define STARTING_HASH_CAPACITY 53  // starting maximum number of buckets
-#define MAX_BUCKET_ELEMENTS 4      // maximum number of elements in the bucket before split operation starts
+#define STARTING_HASH_CAPACITY 1543  // starting number of buckets
+#define MAX_BUCKET_ELEMENTS 4        // maximum number of elements in the bucket before split operation starts
 
 // initializes hash table
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);
