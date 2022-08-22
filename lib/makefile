@@ -2,7 +2,7 @@
 ADTs = ../modules
 
 # choose implementation of the hash table (LinearHashing/ SeparateChaining/ UsingRBT)
-HT_IMPLEMENTATION = LinearHashing
+HT_IMPLEMENTATION = SeparateChaining
 
 # object files
 OBJ = $(ADTs)/Stack/stack.o \

@@ -7,7 +7,7 @@ CC = gcc
 # flags
 CFLAGS = -Wall -Wextra -Werror -ggdb3
 
-# object files
+# object file
 OBJS = test_$(ADT_TO_BE_TESTED).o
 
 # ADTlib path
@@ -24,6 +24,6 @@ run: $(ADT_TO_BE_TESTED)
 help: $(ADT_TO_BE_TESTED)
 	valgrind --leak-check=full -v --show-leak-kinds=all --track-origins=yes ./$(ADT_TO_BE_TESTED)
 
-# delete files
+# delete all files created during the test of the ADT
 clear:
 	rm -f $(OBJS) $(ADT_TO_BE_TESTED)

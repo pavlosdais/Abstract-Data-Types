@@ -7,8 +7,8 @@ Algorithm  | Average case | Worst case
 ---------- | -------      | ----------
 Space	   | O(n)	      | O(n)
 Insert	   | O(1)	      | O(n)
-Remove	   | O(1)	      | O(1)
-Search	   | O(1)	      | O(1)
+Remove	   | O(1)	      | O(n)
+Search	   | O(1)	      | O(n)
 
 # Learn more
 For more information as well as examples click [here](https://www.alexdelis.eu/M149/e_ds_linearhashing.pdf).
