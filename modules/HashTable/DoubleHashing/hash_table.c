@@ -183,14 +183,13 @@ static uint find_bucket(HashTable ht, Pointer value)
     uint count = 0;
     const uint h1 = ht->hash(value), interval = hash_func2(PRIME_NUM, h1);
     
-	for (uint pos = h1%ht->capacity; ht->buckets[pos].state != EMPTY; pos = (pos + interval) % ht->capacity)
+    for (uint pos = h1%ht->capacity; ht->buckets[pos].state != EMPTY; pos = (pos + interval) % ht->capacity)
     {
-		if (ht->buckets[pos].state == OCCUPIED && ht->compare(ht->buckets[pos].data, value) == 0)
-			return pos;
-
-		if (++count == ht->capacity)  // searched all buckets containing data, value does not exist
-			return ht->capacity;
-	}
+        if (ht->buckets[pos].state == OCCUPIED && ht->compare(ht->buckets[pos].data, value) == 0)
+            return pos;
+        if (++count == ht->capacity)  // searched all buckets containing data, value does not exist
+            return ht->capacity;
+    }
 
     // reached an empty bucket, value does not exist
     return ht->capacity;
