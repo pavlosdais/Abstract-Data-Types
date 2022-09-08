@@ -126,7 +126,7 @@ void wug_minspantree(wu_graph G)
 static void print_min_span_tree(wu_graph G, int* E, int n)
 {
    cost total_weight = 0;
-	for (int i = 1; i < n; i++)
+   for (int i = 1; i < n; i++)
    {
       // vertex is not included in the minimum spanning tree
       if (E[i] == INT_MIN)
@@ -147,7 +147,7 @@ static void print_min_span_tree(wu_graph G, int* E, int n)
          ed = ed->nextedge;
       }
    }
-	printf("Total weight = %d\n", total_weight);
+   printf("Total weight = %d\n", total_weight);
 }
 
 void wug_print(wu_graph G)
@@ -212,7 +212,7 @@ static void pq_init(PQueue* PQ, unsigned int size)
    assert((*PQ)->arr != NULL);  // allocation failure
 
    (*PQ)->pos = calloc(size, sizeof(int));
-      assert((*PQ)->pos != NULL);  // allocation failure
+   assert((*PQ)->pos != NULL);  // allocation failure
 
    (*PQ)->capacity = size;
    (*PQ)->curr_size = size;
@@ -253,7 +253,7 @@ static n pq_remove(PQueue PQ)
 
    // swap positions
    PQ->pos[root.v] = PQ->curr_size-1;
-	   PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
+	PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
 
    PQ->arr[ROOT] = PQ->arr[PQ->curr_size-1];
 

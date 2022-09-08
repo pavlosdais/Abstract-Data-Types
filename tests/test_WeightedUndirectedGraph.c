@@ -4,6 +4,7 @@
 
 int main(void)
 {
+    // create graph
     wu_graph A;
     wug_init(&A, 7);
 

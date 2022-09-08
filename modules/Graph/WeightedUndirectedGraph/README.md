@@ -1,4 +1,4 @@
-This is an implementations of [weighted undirected graph](https://www.codewars.com/kata/5aaea7a25084d71006000082) using adjecency list. A weighted undirected graph is an undirected graph with the exception that each edge has a "weight" associated with it.
+This is an implementations of [weighted undirected graph](https://www.codewars.com/kata/5aaea7a25084d71006000082) using adjecency list. A weighted undirected graph is the same as a undirected graph except that each edge has a weight or cost associated with it.
 
 # Performance
 <img align="right" width=360 alt="weighted undirected graph picture" src="https://study.com/cimages/multimages/16/weighted_graph4176817323068517144.png">

@@ -1,4 +1,4 @@
-This is an implementations of [undirected graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Undirected_graph) using adjecency list. An undirected graph is graph, i.e., a set of objects (called vertices or nodes) that are connected together, where all the edges are bidirectional. An undirected graph is sometimes called an undirected network.
+This is an implementations of [undirected graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Undirected_graph) using adjecency list. An undirected graph is graph, i.e., a set of objects (called vertices or nodes) that are connected together, where all the edges are bidirectional. This means that if {v,w} is an edge, we can travel both from v to w and from w to v. An undirected graph is sometimes called an undirected network.
 
 # Performance
 <img align="right" width=310 alt="undirected graph picture" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Undirected_graph_no_background.svg/1200px-Undirected_graph_no_background.svg.png">
