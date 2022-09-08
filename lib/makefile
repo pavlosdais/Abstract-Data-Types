@@ -10,7 +10,10 @@ OBJ = $(ADTs)/Stack/stack.o \
 	  $(ADTs)/PriorityQueue/pq.o \
 	  $(ADTs)/RedBlackTree/RedBlackTree.o \
 	  $(ADTs)/HashTable/$(HT_IMPLEMENTATION)/hash_table.o \
-	  $(ADTs)/HashTable/hash_functions.o
+	  $(ADTs)/HashTable/hash_functions.o \
+	  $(ADTs)/Graph/DirectedGraph/DirectedGraph.o \
+	  $(ADTs)/Graph/UndirectedGraph/UndirectedGraph.o \
+	  $(ADTs)/Graph/WeightedUndirectedGraph/WeightedUndirectedGraph.o 
 
 # library
 LIB = ADTlib.a

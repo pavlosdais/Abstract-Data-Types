@@ -1,5 +1,5 @@
-# ADT to be tested (Stack/ Queue/ PriorityQueue/ RedBlackTree/ HashTable)
-ADT_TO_BE_TESTED = HashTable
+# ADT to be tested (Stack/ Queue/ PriorityQueue/ RedBlackTree/ HashTable/ DirectedGraph/ UndirectedGraph/ WeightedUndirectedGraph)
+ADT_TO_BE_TESTED = WeightedUndirectedGraph
 
 # compiler
 CC = gcc
