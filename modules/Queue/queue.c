@@ -109,7 +109,8 @@ void queue_sorted_insert(Queue Q, Pointer value, CompareFunc compare)
 
 Pointer queue_dequeue(Queue Q)
 {
-    assert(Q != NULL && !is_queue_empty(Q));
+    if (is_queue_empty(Q))
+        return NULL;
     
     QueueNode* tmp = Q->head;
     Pointer value = tmp->value;

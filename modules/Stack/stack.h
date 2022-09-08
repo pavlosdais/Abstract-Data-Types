@@ -16,7 +16,7 @@ void stack_init(Stack*, DestroyFunc destroy);
 // pushes value at the top of the stack
 void stack_push(Stack, Pointer value);
 
-// pops value from the top of the stack and returns it
+// pops value from the top of the stack and returns it, returns NULL if the stack is empty
 Pointer stack_pop(Stack);
 
 // returns the size of the stack

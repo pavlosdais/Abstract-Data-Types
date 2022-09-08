@@ -70,6 +70,18 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->destroy = destroy;
 }
 
+uint hash_size(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements;
+}
+
+bool is_ht_empty(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements == 0;
+}
+
 bool hash_insert(HashTable ht, Pointer value)
 {
     assert(ht != NULL);
@@ -197,8 +209,7 @@ static uint find_bucket(HashTable ht, Pointer value)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
-    if (is_ht_empty(ht) == true)  // empty hash table - nothing to remove
+    if (is_ht_empty(ht))  // empty hash table - nothing to remove
         return false;
     
     const uint pos = find_bucket(ht, value);
@@ -217,7 +228,6 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
 
@@ -227,18 +237,6 @@ bool hash_exists(HashTable ht, Pointer value)
 
     // value not found
     return false;
-}
-
-uint hash_size(HashTable ht)
-{
-    assert(ht != NULL);
-    return ht->elements;
-}
-
-bool is_ht_empty(HashTable ht)
-{
-    assert(ht != NULL);
-    return ht->elements == 0;
 }
 
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
@@ -255,7 +253,7 @@ void hash_destroy(HashTable ht)
     assert(ht != NULL);
 
     // if a destroy function exists, destroy the elements
-    if (ht->destroy != NULL)
+    if (ht->destroy != NULL && ht->elements != 0)
     {
         uint del_elements = 0;
         for (uint i = 0; i < ht->capacity; i++)

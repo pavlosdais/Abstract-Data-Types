@@ -99,8 +99,6 @@ static void bubble_up(PQueue PQ, uint node)
 
 Pointer pq_remove(PQueue PQ)
 {
-    assert(PQ != NULL);
-    
     if (is_pq_empty(PQ))  // empty priority queue - nothing to remove
         return NULL;
     

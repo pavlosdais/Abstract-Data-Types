@@ -135,7 +135,6 @@ bool hash_insert(HashTable ht, Pointer value)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
@@ -182,7 +181,6 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     

@@ -25,7 +25,7 @@ void queue_enqueue(Queue, Pointer value);
 // sorted insert of value, as indicated by the compare function
 void queue_sorted_insert(Queue, Pointer value, CompareFunc);
 
-// dequeues value from the start of the queue and returns it
+// dequeues value from the start of the queue and returns it, returns NULL if the queue is empty
 Pointer queue_dequeue(Queue);
 
 // returns the size of the queue

@@ -77,7 +77,8 @@ void stack_push(Stack S, Pointer value)
 
 Pointer stack_pop(Stack S)
 {
-    assert(S != NULL && !is_stack_empty(S));  // make sure there is an element to pop
+    if (is_stack_empty(S))
+        return NULL;
 
     StackNodePointer head = S->top;
 

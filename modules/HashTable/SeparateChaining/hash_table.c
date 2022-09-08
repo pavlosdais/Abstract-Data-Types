@@ -70,8 +70,6 @@ bool is_ht_empty(HashTable ht)
 
 bool hash_insert(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
-
     // check to see if value already exists in the hash table
     if (hash_exists(ht, value))  // value already exists
     {
@@ -158,7 +156,6 @@ static void rehash(HashTable ht)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
@@ -193,7 +190,6 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    assert(ht != NULL);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
