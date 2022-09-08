@@ -29,62 +29,72 @@ typedef struct hash_table* HashTable;  // hash table (HashTable)
 
 // Stack
 // -requires a destroy function
-void stack_init(Stack* S, DestroyFunc destroy);
-void stack_push(Stack S, Pointer value);
-Pointer stack_pop(Stack S);
-unsigned int stack_size(Stack S);
-Pointer stack_top_value(Stack S);
-DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func);
-void stack_destroy(Stack S);
+void stack_init(Stack*, DestroyFunc);
+void stack_push(Stack, Pointer value);
+Pointer stack_pop(Stack);
+unsigned int stack_size(Stack);
+bool is_stack_empty(Stack);
+Pointer stack_top_value(Stack);
+DestroyFunc stack_set_destroy(Stack, DestroyFunc);
+void stack_destroy(Stack);
 
 
 // Queue
 // -requires a destroy function
-void queue_init(Queue* Q, DestroyFunc destroy);
-void queue_enqueue(Queue Q, Pointer value);
-Pointer queue_dequeue(Queue Q);
-unsigned int queue_size(Queue Q);
-DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func);
-void queue_destroy(Queue Q);
+void queue_init(Queue*, DestroyFunc);
+void queue_enqueue(Queue, Pointer value);
+void queue_sorted_insert(Queue, Pointer value, CompareFunc);
+Pointer queue_dequeue(Queue);
+unsigned int queue_size(Queue);
+bool is_queue_empty(Queue);
+DestroyFunc queue_set_destroy(Queue, DestroyFunc);
+void queue_destroy(Queue);
 
 
 // Priority Queue
 // -requires a compare and destroy function
-void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy);
-void pq_insert(PQueue PQ, Pointer value);
-Pointer pq_remove(PQueue PQ);
-unsigned int pq_size(PQueue PQ);
-DestroyFunc pq_set_destroy(PQueue PQ, DestroyFunc new_destroy_func);
-void pq_destroy(PQueue PQ);
+void pq_init(PQueue*, CompareFunc, DestroyFunc);
+void pq_insert(PQueue, Pointer value);
+Pointer pq_remove(PQueue);
+unsigned int pq_size(PQueue);
+bool is_pq_empty(PQueue);
+DestroyFunc pq_set_destroy(PQueue, DestroyFunc);
+void pq_destroy(PQueue);
 
 
 // Red-Black Tree
 // -requires a compare and destroy function
 typedef struct tnode* RBTreeNode;  // node handle
-void rbt_init(RBTree* Tree, CompareFunc compare, DestroyFunc destroy);
-bool rbt_insert(RBTree Tree, Pointer value);
-bool rbt_remove(RBTree Tree, Pointer value);
-bool rbt_exists(RBTree Tree, Pointer value);
-unsigned int rbt_size(RBTree Tree);
-DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func);
-void rbt_destroy(RBTree Tree);
-Pointer rbt_node_value(RBTreeNode rbt_node);
-RBTreeNode rbt_find_node(RBTree Tree, Pointer value);
-RBTreeNode rbt_find_previous(RBTreeNode target);
-RBTreeNode rbt_find_next(RBTreeNode target);
-RBTreeNode rbt_first(RBTree Tree);
-RBTreeNode rbt_last(RBTree Tree);
+void rbt_init(RBTree*, CompareFunc, DestroyFunc);
+bool rbt_insert(RBTree, Pointer value);
+bool rbt_remove(RBTree, Pointer value);
+bool rbt_exists(RBTree, Pointer value);
+unsigned int rbt_size(RBTree);
+bool is_rbt_empty(RBTree);
+DestroyFunc rbt_set_destroy(RBTree, DestroyFunc);
+void rbt_destroy(RBTree);
+Pointer rbt_node_value(RBTreeNode);
+RBTreeNode rbt_find_node(RBTree, Pointer value);
+RBTreeNode rbt_find_previous(RBTreeNode);
+RBTreeNode rbt_find_next(RBTreeNode);
+RBTreeNode rbt_first(RBTree);
+RBTreeNode rbt_last(RBTree);
 
 
 // Hash Table
 // -requires a hash, compare and destroy function
-void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy);
-bool hash_insert(HashTable ht, Pointer value);
-bool hash_remove(HashTable ht, Pointer value);
-bool hash_exists(HashTable ht, Pointer value);
-unsigned int hash_size(HashTable ht);
-DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func);
-void hash_destroy(HashTable ht);
+void hash_init(HashTable*, HashFunc, CompareFunc, DestroyFunc);
+bool hash_insert(HashTable, Pointer value);
+bool hash_remove(HashTable, Pointer value);
+bool hash_exists(HashTable, Pointer value);
+bool is_ht_empty(HashTable);
+unsigned int hash_size(HashTable);
+DestroyFunc hash_set_destroy(HashTable, DestroyFunc);
+void hash_destroy(HashTable);
 
+// provided hash functions
 unsigned int hash_int(Pointer value);  // hashes an integer
-unsigned int hash_string(Pointer value);  // hashes a string
+
+unsigned int hash_string1(Pointer value);  // hashes a string
+unsigned int hash_string2(Pointer value);  // hashes a string
+unsigned int hash_string3(Pointer value);  // hashes a string

@@ -5,10 +5,12 @@ The 2 basic operations performed are:
 * Dequeue: Removes an item from the start of the queue.
  
 # Performance
+<img align="right" width=360 alt="queue picture" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Data_Queue.svg/1200px-Data_Queue.svg.png">
 If n is the number of elements in the queue:
 
-Algorithm  | Average case | Worst case
----------- | -------      | ----------
-Space	   | O(n)	      | O(n)
-Enqueue	   | O(1)	      | O(1)
-Dequeue	   | O(1)	      | O(1)
+Algorithm     | Average case  | Worst case
+----------    | -------       | ----------
+Space	      | Θ(n)	      | O(n)
+Enqueue	      | Θ(1)	      | O(1)
+Sorted Insert | Θ(n)          | O(n)
+Dequeue	      | Θ(1)	      | O(1)

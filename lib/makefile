@@ -1,8 +1,8 @@
 # path to the modules directory
 ADTs = ../modules
 
-# choose implementation of the hash table (LinearHashing/ SeparateChaining/ UsingRBT)
-HT_IMPLEMENTATION = SeparateChaining
+# implementation of the hash table (LinearHashing/ SeparateChaining/ DoubleHashing/ UsingRBT)
+HT_IMPLEMENTATION = DoubleHashing
 
 # object files
 OBJ = $(ADTs)/Stack/stack.o \

@@ -31,16 +31,26 @@ void stack_init(Stack* S, DestroyFunc destroy)
 
 uint stack_size(Stack S)
 {
+    assert(S != NULL);
     return S->size;
+}
+
+bool is_stack_empty(Stack S)
+{
+    assert(S != NULL);
+    return (S->top == NULL);
 }
 
 Pointer stack_top_value(Stack S)
 {
+    assert(S != NULL);
     return (S->top->value);
 }
 
 DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func)
 {
+    assert(S != NULL);
+    
     DestroyFunc old_destroy_func = S->destroy;
     S->destroy = new_destroy_func;
     return old_destroy_func;
@@ -48,6 +58,8 @@ DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func)
 
 void stack_push(Stack S, Pointer value)
 {
+    assert(S != NULL);
+
     StackNodePointer* head = &(S->top);
 
     // create a new node
@@ -65,8 +77,7 @@ void stack_push(Stack S, Pointer value)
 
 Pointer stack_pop(Stack S)
 {
-    if (S->size == 0)  // stack empty, there is nothing to pop
-        return NULL;
+    assert(S != NULL && !is_stack_empty(S));  // make sure there is an element to pop
 
     StackNodePointer head = S->top;
 
@@ -83,6 +94,8 @@ Pointer stack_pop(Stack S)
 
 void stack_destroy(Stack S)
 {
+    assert(S != NULL);
+    
     StackNodePointer head = S->top;
 
     while(head != NULL)

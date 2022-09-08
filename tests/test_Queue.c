@@ -6,6 +6,7 @@
 // Function Prototypes
 int* createData(int a);
 void printFunc(Pointer value);
+int compareFunction(Pointer v1, Pointer v2);
 
 int main(void)
 {
@@ -71,4 +72,10 @@ void printFunc(Pointer value)
 {
     int* val = (int*)(value);
     printf("%d ", *val);
+}
+
+// compare function (for sorted insert)
+int compareFunction(Pointer v1, Pointer v2)
+{
+    return *((int*)v1) - *((int*)v2);
 }

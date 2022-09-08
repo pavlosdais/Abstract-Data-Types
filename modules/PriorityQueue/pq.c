@@ -3,8 +3,6 @@
 #include <assert.h>
 #include "pq.h"
 
-#define ROOT 1
-
 typedef struct n
 {
     Pointer data;
@@ -23,13 +21,14 @@ typedef struct pq
 pq;
 
 // Function prototypes
-unsigned int pq_size(PQueue PQ);
-static uint find_parent(uint node);
-static uint find_left_child(uint node);
-static uint find_right_child(uint node);
 static void swap_nodes(node a, node b);
 static void bubble_up(PQueue PQ, uint node);
 static void bubble_down(PQueue PQ, uint node);
+
+#define ROOT 1
+#define find_parent(a) (a/2)
+#define find_left_child(a) (a*2)
+#define find_right_child(a) (a*2 + 1)
 
 void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy)
 {
@@ -43,30 +42,42 @@ void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy)
 
     assert((*PQ)->arr != NULL);  // allocation failure
 
+    (*PQ)->curr_size = 0;
     (*PQ)->capacity = MIN_SIZE;
     (*PQ)->compare = compare;
     (*PQ)->destroy = destroy;
-    (*PQ)->curr_size = 0;
 }
 
 unsigned int pq_size(PQueue PQ)
 {
+    assert(PQ != NULL);
     return PQ->curr_size;
+}
+
+bool is_pq_empty(PQueue PQ)
+{
+    assert(PQ != NULL);
+    return PQ->curr_size == 0;
 }
 
 void pq_insert(PQueue PQ, Pointer value)
 {
+    assert(PQ != NULL);
+
     PQ->curr_size++;
 
     // heap is full, double its size
     if (PQ->curr_size == PQ->capacity)
     {
         node new_arr = realloc(PQ->arr, 2*PQ->capacity * sizeof(*new_arr));
-        
         assert(new_arr != NULL);  // allocation failure
         
+        uint old_size = PQ->curr_size;
         PQ->capacity *= 2;
+        
         PQ->arr = new_arr;
+        for (uint i = old_size; i < PQ->capacity; i++)
+            PQ->arr[i].data = NULL;
     }
 
     PQ->arr[PQ->curr_size].data = value;
@@ -88,7 +99,9 @@ static void bubble_up(PQueue PQ, uint node)
 
 Pointer pq_remove(PQueue PQ)
 {
-    if (pq_size(PQ) == 0)  // empty priority queue - nothing to remove
+    assert(PQ != NULL);
+    
+    if (is_pq_empty(PQ))  // empty priority queue - nothing to remove
         return NULL;
     
     // save the element with the highest priority (which is at the root) and mark it as removed by making it NULL
@@ -129,6 +142,8 @@ static void bubble_down(PQueue PQ, uint node)
 
 DestroyFunc pq_set_destroy(PQueue PQ, DestroyFunc new_destroy_func)
 {
+    assert(PQ != NULL);
+
     DestroyFunc old_destroy_func = PQ->destroy;
     PQ->destroy = new_destroy_func;
     return old_destroy_func;
@@ -136,6 +151,8 @@ DestroyFunc pq_set_destroy(PQueue PQ, DestroyFunc new_destroy_func)
 
 void pq_destroy(PQueue PQ)
 {
+    assert(PQ != NULL);
+    
     // if a destroy function was given
     if (PQ->destroy != NULL)
     {
@@ -148,21 +165,6 @@ void pq_destroy(PQueue PQ)
     }
     free(PQ->arr);
     free(PQ);
-}
-
-static uint find_parent(uint node)
-{
-    return node / 2;
-}
-
-static uint find_left_child(uint node)
-{
-    return 2*node;
-}
-
-static uint find_right_child(uint node)
-{
-    return 2*node + 1;
 }
 
 static void swap_nodes(node a, node b)

@@ -1,7 +1,5 @@
 #pragma once  // include at most once
 
-// requires a hash, compare and destroy function
-
 #include <stdbool.h>
 
 typedef struct hash_table* HashTable;
@@ -14,12 +12,9 @@ typedef int (*CompareFunc)(Pointer a, Pointer b);
 // Pointer to function that destroys an element value
 typedef void (*DestroyFunc)(Pointer value);
 
-// Pointer to function that hashes a value to a positive integer
+// Pointer to function that hashes a value to a positive (unsigned) integer
 typedef uint (*HashFunc)(Pointer value);
 
-
-#define STARTING_HASH_CAPACITY 1543  // starting number of buckets
-#define MAX_BUCKET_ELEMENTS 4        // maximum number of elements in the bucket before split operation starts
 
 // initializes hash table
 void hash_init(HashTable*, HashFunc, CompareFunc, DestroyFunc);
@@ -29,7 +24,7 @@ void hash_init(HashTable*, HashFunc, CompareFunc, DestroyFunc);
 bool hash_insert(HashTable, Pointer value);
 
 // removes the value from the hash table and destroys its value if a destroy function was given
-// returns true if the value was deleted, false if it does not exist and thus it was not deleted
+// returns true if the value was deleted, false in any other case
 bool hash_remove(HashTable, Pointer value);
 
 // returns true if value exists in the hash table, false otherwise
@@ -42,7 +37,7 @@ uint hash_size(HashTable);
 bool is_ht_empty(HashTable);
 
 // changes the destroy function and returns the old one
-DestroyFunc hash_set_destroy(HashTable, DestroyFunc new_destroy_func);
+DestroyFunc hash_set_destroy(HashTable, DestroyFunc);
 
 // destroys the hash table and its values, if a destroy function is given
 void hash_destroy(HashTable);

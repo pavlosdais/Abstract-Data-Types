@@ -32,11 +32,11 @@ typedef struct hash_table
 hash_table;
 
 #define INCREASE_SIZE 1.8  // increase percentage of maximum number of buckets
+#define find_func(i) (1<<i)  // returns 2^i
 
 // Function Prototypes
 static void hash_resize(HashTable ht);
 static uint get_bucket(HashTable ht, uint hash_value);
-static uint find_func(uint i);
 static uint hash_search(HashTable ht, Pointer value);
 
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
@@ -65,13 +65,25 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->destroy = destroy;
 }
 
-uint hash_size(HashTable ht) { return ht->elements; }
+uint hash_size(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements;
+}
+
+bool is_ht_empty(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements == 0;
+}
 
 bool hash_insert(HashTable ht, Pointer value)
 {
-    // check to see if value already exists
-    uint bucket = hash_search(ht, value);
-    if (hash_search(ht, value) == UINT_MAX)  // value already exists
+    assert(ht != NULL);
+    
+    // check to see if value already exists in the hash table
+    const uint bucket = hash_search(ht, value);
+    if (hash_search(ht, value) == ht->max_capacity)  // value already exists
     {
         // if a destroy function exists, destroy the value
         if (ht->destroy != NULL)
@@ -141,8 +153,12 @@ bool hash_insert(HashTable ht, Pointer value)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
+    assert(ht != NULL);
+    if (is_ht_empty(ht))  // hash table is empty, nothing to search
+        return false;
+    
     // find the potential bucket the value belongs to
-    uint h = get_bucket(ht, ht->hash(value));
+    const uint h = get_bucket(ht, ht->hash(value));
     node* bkt = &(ht->buckets[h]);
     
     // search for the value at the bucket
@@ -173,19 +189,19 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    if (hash_search(ht, value) == UINT_MAX)  // value exists
-        return true;
+    assert(ht != NULL);
+    if (is_ht_empty(ht))  // hash table is empty, nothing to search
+        return false;
     
-    // value does not exist
-    return false;
+    return ((hash_search(ht, value) == ht->max_capacity) ? true:false);
 }
 
-// returns UINT_MAX if the value exists
+// returns ht->max_capacity if the value exists
 // if it does not exist, returns the bucket in which it should exist
 static uint hash_search(HashTable ht, Pointer value)
 {
     // find the potential bucket the value belongs to
-    uint h = get_bucket(ht, ht->hash(value));
+    const uint h = get_bucket(ht, ht->hash(value));
 
     // search for the value in the bucket
     node bkt = ht->buckets[h];
@@ -193,7 +209,7 @@ static uint hash_search(HashTable ht, Pointer value)
     {
         Pointer bkt_value = bkt->data;
         if (ht->compare(value, bkt_value) == 0)  // value found
-            return UINT_MAX;
+            return ht->max_capacity;
             
         bkt = bkt->next;
     }
@@ -203,19 +219,15 @@ static uint hash_search(HashTable ht, Pointer value)
 static uint get_bucket(HashTable ht, uint hash_value)
 {
     // use hash function i
-    uint pos = hash_value % find_func(ht->exponent);
+    const uint pos = hash_value % find_func(ht->exponent);
 
-    if (pos < ht->next_split)
-        // use hash function i+1
-        pos = hash_value % find_func(ht->exponent+1);   
-
-    return pos;
+    return (pos < ht->next_split? hash_value % find_func(ht->exponent+1):pos);
 }
 
 // resize by INCREASE_SIZE
 static void hash_resize(HashTable ht)
 {
-    uint old_cap = ht->max_capacity;  // old number of buckets
+    const uint old_cap = ht->max_capacity;  // old number of buckets
     ht->max_capacity *= INCREASE_SIZE;  // increase capacity
     
     ht->buckets = realloc(ht->buckets, sizeof(*(ht->buckets)) * ht->max_capacity);
@@ -232,14 +244,10 @@ static void hash_resize(HashTable ht)
     }
 }
 
-// returns 2^i
-static uint find_func(uint i)
-{
-    return 1 << i;
-}
-
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 {
+    assert(ht != NULL);
+    
     DestroyFunc old_destroy_func = ht->destroy;
     ht->destroy = new_destroy_func;
     return old_destroy_func;
@@ -247,6 +255,8 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 
 void hash_destroy(HashTable ht)
 {
+    assert(ht != NULL);
+
     // destroy buckets
     for (uint i = 0; i < ht->max_capacity; i++)
     {
@@ -256,7 +266,7 @@ void hash_destroy(HashTable ht)
             node tmp = bkt;
             bkt = bkt->next;
 
-            // if a destroy function is given, destroy the elements
+            // if a destroy function exists, destroy the elements
             if (ht->destroy != NULL) 
                 ht->destroy(tmp->data);
             free(tmp);

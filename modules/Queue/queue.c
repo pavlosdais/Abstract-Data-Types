@@ -32,16 +32,20 @@ void queue_init(Queue* Q, DestroyFunc destroy)
 
 uint queue_size(Queue Q)
 {
+    assert(Q != NULL);
     return Q->num_of_elements;
 }
 
 bool is_queue_empty(Queue Q)
 {
+    assert(Q != NULL);
     return (Q->head == NULL);
 }
 
 void queue_enqueue(Queue Q, Pointer value)
 {
+    assert(Q != NULL);
+
     // allocate memory for the new node
     QueueNode* new_node = malloc(sizeof(QueueNode));
     assert(new_node != NULL);  // allocation failure
@@ -63,9 +67,49 @@ void queue_enqueue(Queue Q, Pointer value)
     Q->num_of_elements++;
 }
 
+void queue_sorted_insert(Queue Q, Pointer value, CompareFunc compare)
+{
+    assert(Q != NULL);
+
+    QueueNode** Queue = &(Q->head);  // pointer to the head of the node
+
+    // create a new node
+    QueueNode* new_node = malloc(sizeof(QueueNode));
+    assert(new_node != NULL);  // allocation failure
+
+    new_node->value = value;
+
+    // empty queue - the new node becomes the head of the queue
+    if (is_queue_empty(Q))
+    {
+        new_node->next = NULL;
+        (*Queue) = new_node;
+        Q->num_of_elements = 1;
+        return;
+    }
+    
+    Q->num_of_elements++;
+
+    // the head of the node has less priority than the new node, meaning the new value should be first
+    if (compare(value, (*Queue)->value) < 0)
+    {
+        new_node->next = (*Queue);
+        (*Queue) = new_node;
+        return;
+    }
+
+    // in any other case, traverse the list and find the correct position to insert the new node
+    QueueNode* tmp = (*Queue);
+    while (tmp->next != NULL && compare(tmp->next->value, value) < 0) tmp = tmp->next;
+
+    // put the node at its place
+    new_node->next = tmp->next;
+    tmp->next = new_node;
+}
+
 Pointer queue_dequeue(Queue Q)
 {
-    assert(!is_queue_empty(Q));  // empty queue, can not dequeue
+    assert(Q != NULL && !is_queue_empty(Q));
     
     QueueNode* tmp = Q->head;
     Pointer value = tmp->value;
@@ -84,6 +128,8 @@ Pointer queue_dequeue(Queue Q)
 
 DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func)
 {
+    assert(Q != NULL);
+
     DestroyFunc old_destroy_func = Q->destroy;
     Q->destroy = new_destroy_func;
     return old_destroy_func;
@@ -91,6 +137,8 @@ DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func)
 
 void queue_destroy(Queue Q)
 {
+    assert(Q != NULL);
+
     while (Q->head != NULL)
     {
         // destroy the value of the node if a destroy function is given

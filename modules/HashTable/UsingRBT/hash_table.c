@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "hash_table.h"
-// red-black tree's include file (note that it might need to updated according to its path)
+// red-black tree's include file (note that it might need to be updated according to its path)
 #include "../../RedBlackTree/RedBlackTree.h"
 
-#define FIXED_SIZE 3  // minimum number of elements in the array before inserting them at a rbt
+#define FIXED_SIZE 3     // minimum number of elements in the array before inserting them at a rbt
 #define OVERFLOW_SIZE 4  // size at which elements are inserted at a rbt (FIXED_SIZE+1)
 
 typedef unsigned char small_int;
@@ -57,10 +57,22 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->hash = hash;
 }
 
-uint hash_size(HashTable ht) { return ht->elements; }
+uint hash_size(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements;
+}
+
+bool is_ht_empty(HashTable ht)
+{
+    assert(ht != NULL);
+    return ht->elements == 0;
+}
 
 bool hash_insert(HashTable ht, Pointer value)
 {
+    assert(ht != NULL);
+
     // find the potential bucket the value belongs to
     uint bucket = ht->hash(value) % ht->capacity;
     
@@ -123,6 +135,10 @@ bool hash_insert(HashTable ht, Pointer value)
 
 bool hash_remove(HashTable ht, Pointer value)
 {
+    assert(ht != NULL);
+    if (is_ht_empty(ht))  // hash table is empty, nothing to search
+        return false;
+    
     // find the potential bucket the value exists in
     uint bucket = ht->hash(value) % ht->capacity;
 
@@ -166,6 +182,10 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
+    assert(ht != NULL);
+    if (is_ht_empty(ht))  // hash table is empty, nothing to search
+        return false;
+    
     // find the potential bucket the value exists in
     uint bucket = ht->hash(value) % ht->capacity;
     
@@ -185,6 +205,8 @@ bool hash_exists(HashTable ht, Pointer value)
 
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 {
+    assert(ht != NULL);
+
     for (uint i = 0; i < ht->capacity; i++)
     {
         if (ht->buckets[i].arr_el == OVERFLOW_SIZE)  // elements are at a rbt in this bucket
@@ -198,6 +220,8 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
 
 void hash_destroy(HashTable ht)
 {
+    assert(ht != NULL);
+
     for (uint i = 0; i < ht->capacity; i++)
     {
         if (ht->buckets[i].arr_el != OVERFLOW_SIZE && ht->destroy != NULL)

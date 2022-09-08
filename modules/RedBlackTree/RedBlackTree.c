@@ -53,9 +53,19 @@ void rbt_init(RBTree* Tree, CompareFunc compare, DestroyFunc destroy)
     (*Tree)->destroy = destroy;
 }
 
-uint rbt_size(RBTree Tree) { return Tree->size; }
+uint rbt_size(RBTree Tree)
+{
+    assert(Tree != NULL);
+    return Tree->size;
+}
 
-// creates node
+bool is_rbt_empty(RBTree Tree)
+{
+    assert(Tree != NULL);
+    return Tree->root == NULL;
+}
+
+// creates and returns node
 static RBTreeNode CreateNode()
 {
     RBTreeNode new_node = malloc(sizeof(tnode));
@@ -71,6 +81,8 @@ static RBTreeNode CreateNode()
 // returns NULL if the value is not found
 RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
 {
+    assert(Tree != NULL);
+
     RBTreeNode node = Tree->root;
     
     while (node != &NULLNode)
@@ -88,10 +100,16 @@ RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
     return NULL;
 }
 
-Pointer rbt_node_value(RBTreeNode rbt_node) { return rbt_node->data; }
+Pointer rbt_node_value(RBTreeNode rbt_node)
+{
+    assert(rbt_node != NULL);
+    return rbt_node->data;
+}
 
 bool rbt_insert(RBTree Tree, Pointer value)
 {
+    assert(Tree != NULL);
+
     RBTreeNode* root = &(Tree->root);
 
     RBTreeNode new_node = CreateNode();
@@ -154,6 +172,8 @@ bool rbt_insert(RBTree Tree, Pointer value)
 
 bool rbt_remove(RBTree Tree, Pointer value)
 {
+    assert(Tree != NULL);
+
     RBTreeNode* root = &(Tree->root);
     
     RBTreeNode tmp = rbt_find_node(Tree, value);
@@ -390,6 +410,8 @@ static void destroy_nodes(RBTreeNode node, DestroyFunc destroy_data)
 
 void rbt_destroy(RBTree Tree)
 {
+    assert(Tree != NULL);
+
     if (Tree->root != NULL)
         destroy_nodes(Tree->root, Tree->destroy);  // destroy the nodes
     free(Tree);                                    // then the tree
@@ -397,6 +419,8 @@ void rbt_destroy(RBTree Tree)
 
 bool rbt_exists(RBTree Tree, Pointer value)
 {
+    assert(Tree != NULL);
+
     return rbt_find_node(Tree, value) != NULL;
 }
 
@@ -462,16 +486,22 @@ RBTreeNode rbt_find_next(RBTreeNode target)
 
 RBTreeNode rbt_first(RBTree Tree)
 {
+    assert(Tree != NULL);
+
     return node_min(Tree->root);
 }
 
 RBTreeNode rbt_last(RBTree Tree)
 {
+    assert(Tree != NULL);
+
     return node_max(Tree->root);
 }
 
 DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func)
 {
+    assert(Tree != NULL);
+
     DestroyFunc old_destroy_func = Tree->destroy;
     Tree->destroy = new_destroy_func;
     return old_destroy_func;

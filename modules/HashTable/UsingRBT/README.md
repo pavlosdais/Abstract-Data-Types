@@ -5,7 +5,7 @@ If n is the number of elements in the hash table:
 
 Algorithm  | Best case    | Worst case
 ---------- | -------      | ----------
-Space	   | O(n)	      | O(n)
-Insert	   | O(1)	      | O(log n)
-Remove	   | O(1)	      | O(log n)
-Search	   | O(1)	      | O(log n)
+Space	   | Ω(n)	      | O(n)
+Insert	   | Ω(1)	      | O(log n)
+Remove	   | Ω(1)	      | O(log n)
+Search	   | Ω(1)	      | O(log n)

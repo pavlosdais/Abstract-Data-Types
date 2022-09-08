@@ -11,15 +11,17 @@ When the tree is modified, the new tree is rearranged and repainted to restore t
 The properties are designed such that this rearranging and recoloring can be performed efficiently.
 
 # Performance
+<img align="right" width=420 alt="Red-Black Tree picture" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Red-black_tree_example_with_NIL.svg/1200px-Red-black_tree_example_with_NIL.svg.png">
+
 Although the balance of the tree is not perfect, it is good enough to reduce the searching time and maintain logarithmic complexity. <br/>
 So, if n is the number of values in the tree:
 
 Algorithm  | Average case | Worst case
 ---------- | -------      | ----------
-Space	   | O(n)	      | O(n)
-Insert	   | O(log n)	  | O(log n)
-Remove	   | O(log n)	  | O(log n)
-Search	   | O(log n)	  | O(log n)
+Space	   | Θ(n)	      | O(n)
+Insert	   | Θ(log n)	  | O(log n)
+Remove	   | Θ(log n)	  | O(log n)
+Search	   | Θ(log n)	  | O(log n)
 
 # Learn more
 For more information as well as examples click [here](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm).
