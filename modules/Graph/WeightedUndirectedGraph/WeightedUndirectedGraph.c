@@ -249,20 +249,20 @@ static PQueue createPQueue(uint n, int* E, uint* C)
 static n pq_remove(PQueue PQ)
 {
    // store root node
-	n root = PQ->arr[ROOT];
+   n root = PQ->arr[ROOT];
 
    // swap positions
    PQ->pos[root.v] = PQ->curr_size-1;
-	PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
+	   PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
 
-	PQ->arr[ROOT] = PQ->arr[PQ->curr_size-1];
+   PQ->arr[ROOT] = PQ->arr[PQ->curr_size-1];
 
-	PQ->curr_size--;  // node removed, decrement the number of elements in the queue
-    
-	bubble_down(PQ, ROOT);  // heapify
+   PQ->curr_size--;  // node removed, decrement the number of elements in the queue
+
+   bubble_down(PQ, ROOT);  // heapify
 
    // return root node - node with the highest priority
-	return root;
+   return root;
 }
 
 static void bubble_down(PQueue PQ, uint node)
@@ -276,38 +276,38 @@ static void bubble_down(PQueue PQ, uint node)
    uint max_child, right = find_right_child(node);
 
    // find max child
-	max_child = left;
-	if (right <= PQ->curr_size && PQ->arr[right].weight < PQ->arr[max_child].weight)
-		max_child = right;
+   max_child = left;
+   if (right <= PQ->curr_size && PQ->arr[right].weight < PQ->arr[max_child].weight)
+      max_child = right;
 
-	if (PQ->arr[max_child].weight < PQ->arr[node].weight)
-	{
-		// swap positions
-		PQ->pos[PQ->arr[max_child].v] = node;
-		PQ->pos[PQ->arr[node].v] = max_child;
+   if (PQ->arr[max_child].weight < PQ->arr[node].weight)
+   {
+      // swap positions
+      PQ->pos[PQ->arr[max_child].v] = node;
+      PQ->pos[PQ->arr[node].v] = max_child;
 
-		// swap values
+      // swap values
       n tmp = PQ->arr[node];
       PQ->arr[node] = PQ->arr[max_child];
       PQ->arr[max_child] = tmp;
 
-		bubble_down(PQ, max_child);
-	}
+      bubble_down(PQ, max_child);
+   }
 }
 
 static void updateWeights(PQueue PQ, int v, unsigned int new_weight)
 {
    // update weight for vertex v
-	uint curr_node = PQ->pos[v];
-	PQ->arr[curr_node].weight = new_weight;
+   uint curr_node = PQ->pos[v];
+   PQ->arr[curr_node].weight = new_weight;
 
    // heapify
    uint parent = find_parent(curr_node);
-	while (curr_node > 0 && PQ->arr[curr_node].weight < PQ->arr[parent].weight)
-	{
-		// swap positions
-		PQ->pos[PQ->arr[curr_node].v] = parent;
-		PQ->pos[PQ->arr[parent].v] = curr_node;
+   while (curr_node > 0 && PQ->arr[curr_node].weight < PQ->arr[parent].weight)
+   {
+      // swap positions
+      PQ->pos[PQ->arr[curr_node].v] = parent;
+      PQ->pos[PQ->arr[parent].v] = curr_node;
 
       // swap values
       n tmp = PQ->arr[curr_node];
@@ -315,9 +315,9 @@ static void updateWeights(PQueue PQ, int v, unsigned int new_weight)
       PQ->arr[parent] = tmp;
 
       // move up
-		curr_node = parent;
+      curr_node = parent;
       parent = find_parent(curr_node);
-	}
+   }
 }
 
 static bool pq_exists(PQueue PQ, int v)

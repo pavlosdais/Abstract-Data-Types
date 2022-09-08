@@ -6,6 +6,7 @@ Implemented ADTs:
 * [Red-Black Tree](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/RedBlackTree#readme)
 * [Hash Table](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable#readme)
 * [Graph](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Graph#readme)
+
 The source code of every ADT can be found over at the `modules` directory.
 
 # Usage
