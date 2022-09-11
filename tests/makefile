@@ -20,7 +20,7 @@ $(ADT_TO_BE_TESTED): $(OBJS)
 run: $(ADT_TO_BE_TESTED)
 	./$(ADT_TO_BE_TESTED)
 
-# run valgrind
+# run valgrind - check for memory errors
 help: $(ADT_TO_BE_TESTED)
 	valgrind --leak-check=full -v --show-leak-kinds=all --track-origins=yes ./$(ADT_TO_BE_TESTED)
 

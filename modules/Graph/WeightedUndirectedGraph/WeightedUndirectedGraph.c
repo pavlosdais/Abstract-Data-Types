@@ -23,10 +23,8 @@ _wu_graph;
 
 void wug_init(wu_graph* G, uint num_of_vertices)
 {
-   assert(num_of_vertices > 0);
-
    *G = malloc(sizeof(_wu_graph));
-   assert(*G != NULL);
+   assert(*G != NULL);  // allocation failure
 
    (*G)->firstedge = calloc(sizeof(Edge), num_of_vertices);
    assert((*G)->firstedge != NULL);  // allocation failure
@@ -67,18 +65,21 @@ typedef struct n
    unsigned int weight;  // weight of v
 }
 n;
+// priority queue
 static PQueue createPQueue(uint n, int* E, unsigned int* C);
 static n pq_remove(PQueue PQ);
 static bool is_pq_empty(PQueue PQ);
 static void updateWeights(PQueue PQ, int v, unsigned int new_weight);
 static bool pq_exists(PQueue PQ, int v);
 static void pq_destroy(PQueue PQ);
+
 static void print_min_span_tree(wu_graph G, int* arr, int n);
 
 // source: https://en.wikipedia.org/wiki/Prim%27s_algorithm#Description
+// adjacency list representation w/ binary heap priority queue - O(Elog V)
 void wug_minspantree(wu_graph G)
 {
-   assert(G!=NULL);
+   assert(G != NULL);
 
    int size_of_graph = G->n;
 
@@ -123,6 +124,7 @@ void wug_minspantree(wu_graph G)
    free(C);
 }
 
+// print the minimum spanning tree
 static void print_min_span_tree(wu_graph G, int* E, int n)
 {
    cost total_weight = 0;
@@ -152,7 +154,7 @@ static void print_min_span_tree(wu_graph G, int* E, int n)
 
 void wug_print(wu_graph G)
 {
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       printf("[%d]", i);
@@ -169,7 +171,7 @@ void wug_print(wu_graph G)
 
 void DestroyGraph(wu_graph G)
 {
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       while (a != NULL)
@@ -183,9 +185,11 @@ void DestroyGraph(wu_graph G)
    free(G);
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom priority queue
+//////////////////////////////////////  custom priority queue ///////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+
 typedef struct n* node;
 typedef struct pq
 {
@@ -195,11 +199,13 @@ typedef struct pq
    uint capacity;   // max capacity of the heap
 }
 pq;
+
 #define ROOT 0
 #define find_parent(i) ((i-1)/2)
 #define find_left_child(i) (2*i + 1)
 #define find_right_child(i) (2*i + 2)
 
+// function prototype
 static void bubble_down(PQueue PQ, uint node);
 
 static void pq_init(PQueue* PQ, unsigned int size)
@@ -253,8 +259,7 @@ static n pq_remove(PQueue PQ)
 
    // swap positions
    PQ->pos[root.v] = PQ->curr_size-1;
-	PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
-
+   PQ->pos[PQ->arr[PQ->curr_size-1].v] = ROOT;
    PQ->arr[ROOT] = PQ->arr[PQ->curr_size-1];
 
    PQ->curr_size--;  // node removed, decrement the number of elements in the queue

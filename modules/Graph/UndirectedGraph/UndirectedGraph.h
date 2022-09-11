@@ -3,6 +3,8 @@
 // needed typedefs
 typedef int Vertex;
 typedef struct _undir_graph* undir_graph;
+
+// Pointer to function that visits the vertices
 typedef void (*VisitFunc)(Vertex value);
 
 // initializes undirected graph

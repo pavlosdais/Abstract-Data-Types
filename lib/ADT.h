@@ -16,10 +16,14 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive integer - needed only by the hash table
 typedef unsigned int (*HashFunc)(Pointer value);
 
-// graph typedefs
+
+// Graph typedefs
 typedef int Vertex;
-typedef unsigned int cost;
+typedef unsigned int cost;  // weighted graph's edge cost
+
+// Pointer to function that visits the vertices
 typedef void (*VisitFunc)(Vertex V);
+
 
 // ADT handles
 typedef struct StackSet* Stack;  // stack (Stack)
@@ -32,8 +36,8 @@ typedef struct _undir_graph* undir_graph;  // undirected graph (undir_graph)
 typedef struct _wu_graph* wu_graph;  // weighted undirected (wu_graph)
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Stack
 // -requires a destroy function
@@ -101,15 +105,15 @@ DestroyFunc hash_set_destroy(HashTable, DestroyFunc);
 void hash_destroy(HashTable);
 
 // provided hash functions
-unsigned int hash_int(Pointer value);  // hashes an integer
+unsigned int hash_int(Pointer value);      // hashes an integer
 unsigned int hash_string1(Pointer value);  // hashes a string
 unsigned int hash_string2(Pointer value);  // hashes a string
 unsigned int hash_string3(Pointer value);  // hashes a string
 
 
 // Directed Graph
-// -no functions required
-void dg_init(dir_graph*, uint num_of_vertices, VisitFunc);
+// -visit function required
+void dg_init(dir_graph*, unsigned int num_of_vertices, VisitFunc);
 void dg_insert(dir_graph, Vertex A, Vertex B);
 void dg_print(dir_graph);
 void dg_dfs(dir_graph G);
@@ -119,15 +123,13 @@ void dg_scc(dir_graph);
 void dg_destroy(dir_graph);
 
 
-
 // Undirected Graph
-// -no functions required
+// -visit function required
 void ug_init(undir_graph*, unsigned int num_of_vertices, VisitFunc);
 void ug_insert(undir_graph, Vertex A, Vertex B);
 void ug_print(undir_graph);
 void ug_simplepathcheck(undir_graph, Vertex start, Vertex goal);
 void ug_destroy(undir_graph);
-
 
 
 // Weighted Undirected Graph

@@ -3,7 +3,7 @@
 // needed typedefs
 typedef int Vertex;
 typedef struct _wu_graph* wu_graph;
-typedef unsigned int cost;
+typedef unsigned int cost;  // the cost of the edge
 
 // initializes weighted undirected graph
 void wug_init(wu_graph*, unsigned int num_of_vertices);

@@ -5,14 +5,14 @@ This is an implementations of [directed graph](https://en.wikipedia.org/wiki/Dir
 
 If V is the number vertices and E is the number of edges in the graph:
 
-Algorithm                      | Average case | Worst case
------------------------------  | ---------    | ----------
-Space	                       | Θ(V+E)       | O(V+E)
-Insert edge                    | Θ(1)	      | O(V)
-Print	                       | Θ(V+E)       | O(V+E)
-DFS 	                       | Θ(V+E)	      | O(V+E)
-Reverse                        | Θ(V+E)	      | O(V+E)
-Topological Ordering           | Θ(V+E)	      | O(V+E)
-Strongly-Connected Components  | Θ(V+E)	      | O(V+E)
+Algorithm                     | Average case | Worst case
+----------------------------- | ---------    | ----------
+Space	                      | Θ(V+E)       | O(V+E)
+Insert edge                   | Θ(1)	     | O(V)
+Print	                      | Θ(V+E)       | O(V+E)
+Dfs 	                      | Θ(V+E)	     | O(V+E)
+Reverse                       | Θ(V+E)	     | O(V+E)
+Topological Ordering          | Θ(V+E)	     | O(V+E)
+Strongly-Connected Components | Θ(V+E)	     | O(V+E)
 
-The algorithm used to find the strongly-connected components of the graph is [Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm).
+[Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm) is used to find the strongly-connected components of the graph.

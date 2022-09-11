@@ -1,10 +1,12 @@
+# compile the library
+
 # path to the modules directory
 ADTs = ../modules
 
 # implementation of the hash table (LinearHashing/ SeparateChaining/ DoubleHashing/ UsingRBT)
 HT_IMPLEMENTATION = DoubleHashing
 
-# object files
+# object files - modules
 OBJ = $(ADTs)/Stack/stack.o \
 	  $(ADTs)/Queue/queue.o \
 	  $(ADTs)/PriorityQueue/pq.o \

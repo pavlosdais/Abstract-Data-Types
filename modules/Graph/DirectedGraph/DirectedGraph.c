@@ -29,7 +29,7 @@ static Vertex* createVertex(Vertex V);
 
 void dg_init(dir_graph* G, uint num_of_vertices, VisitFunc visit)
 {
-   assert(num_of_vertices > 0 && visit != NULL);
+   assert(visit != NULL);  // a visit function needs to be given
 
    *G = malloc(sizeof(_dir_graph));
    assert(*G != NULL);
@@ -37,13 +37,13 @@ void dg_init(dir_graph* G, uint num_of_vertices, VisitFunc visit)
    (*G)->firstedge = calloc(sizeof(Edge), num_of_vertices);
    assert((*G)->firstedge != NULL);  // allocation failure
 
-   (*G)->visit = visit;
    (*G)->n = num_of_vertices;
+   (*G)->visit = visit;
 }
 
 void dg_insert(dir_graph G, Vertex A, Vertex B)
 {
-   // sorted insert of vertex B at list A
+   // sorted insert of vertex B at list A - O(n)
    Edge* al = &(G->firstedge[A]);
 
    Edge new_edge = malloc(sizeof(edge));
@@ -79,7 +79,7 @@ void dg_print(dir_graph G)
 {
    assert(G != NULL);
 
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       
@@ -109,7 +109,6 @@ void dg_dfs(dir_graph G)
 
    Vertex v;
    bool* visited = calloc(sizeof(bool), G->n);
-
    assert(visited != NULL);  // allocation failure
 
    int* pre = calloc(sizeof(int), G->n);
@@ -220,13 +219,13 @@ static void TopSort(dir_graph G, Toporder T);
 void dg_bts(dir_graph G)
 {
    Toporder T = malloc(sizeof(*T) * G->n);
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
       T[i] = -1;
    
    TopSort(G, T);
 
    // print the order
-   for (int v = 0; v < G->n; v++)
+   for (uint v = 0; v < G->n; v++)
    {
       if (T[v] == -1)
          break;
@@ -243,7 +242,7 @@ static void TopSort(dir_graph G, Toporder T)
    assert(predecessorcount != NULL);  // allocation failure
 
    // increase the predecessor count for each vertex that is a successor of another one
-   for (Vertex v=0; v < G->n; v++)
+   for (uint v = 0; v < G->n; v++)
       for (Edge curedge=G->firstedge[v]; curedge != NULL; curedge=curedge->nextedge)
          ++predecessorcount[curedge->endpoint];
   
@@ -252,7 +251,7 @@ static void TopSort(dir_graph G, Toporder T)
    queue_init(&Q, free);
 
    // place all vertices with no predecessors into the queue
-   for (Vertex v=0; v < G->n; v++)
+   for (uint v = 0; v < G->n; v++)
       if (predecessorcount[v] == 0)
          queue_enqueue(Q, createVertex(v));
   
@@ -288,7 +287,7 @@ dir_graph dg_reverse(dir_graph G)
    dir_graph revG;
    dg_init(&revG, G->n, G->visit);
 
-   for (int v = 0; v < G->n; v++)
+   for (uint v = 0; v < G->n; v++)
    {
       Edge a = G->firstedge[v];
       while (a != NULL)
@@ -312,19 +311,19 @@ static void Visit(dir_graph G, int s, int* visited, Stack st);
 void dg_scc(dir_graph G)
 {
    int* visited = calloc(sizeof(int), G->n);
-   assert(visited != NULL);
+   assert(visited != NULL);  // allocation failure
 
    // create stack
    Stack L;
    stack_init(&L, free);
 
    // perform dfs on g and store the finish order of each vertex on a stack
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
       if (!visited[i])
          Visit(G, i, visited, L);
 
    // reset visited array
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
       visited[i] = false;
 
    // get reversed graph
@@ -354,7 +353,7 @@ void dg_scc(dir_graph G)
 
 void dg_destroy(dir_graph G)
 {
-   for (int i = 0; i < G->n; i++)
+   for (uint i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       while (a != NULL)
@@ -408,11 +407,11 @@ static void Assign(dir_graph G, Vertex s, int* visited)
    }
 }
 
-// create vertex
+// allocate memory for the vertex
 static Vertex* createVertex(Vertex V)
 {
    Vertex* new_v = malloc(sizeof(Vertex));
-   assert(new_v != NULL);
+   assert(new_v != NULL);  // allocation failure
 
    *new_v = V;
    return new_v;
