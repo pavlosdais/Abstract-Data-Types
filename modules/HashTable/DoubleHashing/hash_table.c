@@ -3,6 +3,8 @@
 #include <assert.h>
 #include "hash_table.h"
 
+typedef unsigned char sint;
+
 typedef enum
 {
     EMPTY, OCCUPIED, DELETED
@@ -30,15 +32,18 @@ typedef struct hash_table
 }
 hash_table;
 
+
 int PRIME_NUM;  // used for the second hash function, it has to be smaller than the hash table's capacity
+
 #define STARTING_HASH_CAPACITY hash_sizes[0]  // starting number of buckets
+
 #define MAX_LOAD_FACTOR 0.5                   // when max load factor is exceeded, rehashing operation occurs
 
-// second hash function
+
+// the second hash function
 // source: https://cgi.di.uoa.gr/~k08/manolis/2020-2021/lectures/Hashing.pdf , page 87 
 #define hash_func2(PRIME, h1) (PRIME - h1 % PRIME)
 
-typedef unsigned char sint;
 
 // available number of buckets, preferably prime numbers since it has been proven they have better behavior
 static uint hash_sizes[] =
@@ -188,17 +193,18 @@ static void rehash_insert(HashTable ht, Pointer value, const uint hash_value)
     ht->buckets[pos].hash_value = hash_value;
 }
 
-// find the potential bucket the value exists in
+// returns the hash table's capacity if the value exists
+// if it does not exist, returns the bucket at which it would exist
 static uint find_bucket(HashTable ht, Pointer value)
 {
-    uint count = 0;
     const uint h1 = ht->hash(value), interval = hash_func2(PRIME_NUM, h1);
+    uint buckets_checked = 0;
     
     for (uint pos = h1 % ht->capacity; ht->buckets[pos].state != EMPTY; pos = (pos + interval) % ht->capacity)
     {
         if (ht->buckets[pos].state == OCCUPIED && ht->compare(ht->buckets[pos].data, value) == 0)
             return pos;
-        if (++count == ht->capacity)  // searched all buckets containing data, value does not exist
+        else if (++buckets_checked == ht->capacity)  // searched all buckets containing data, value does not exist
             return ht->capacity;
     }
 

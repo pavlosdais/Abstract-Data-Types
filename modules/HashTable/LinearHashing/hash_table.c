@@ -194,8 +194,8 @@ bool hash_exists(HashTable ht, Pointer value)
     return ((hash_search(ht, value) == ht->max_capacity) ? true:false);
 }
 
-// returns ht->max_capacity if the value exists
-// if it does not exist, returns the bucket in which it should exist
+// returns hash table's max capacity if the value exists
+// if it does not exist, returns the bucket at which it would exist
 static uint hash_search(HashTable ht, Pointer value)
 {
     // find the potential bucket the value belongs to

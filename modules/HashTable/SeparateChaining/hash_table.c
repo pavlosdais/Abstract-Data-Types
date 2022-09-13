@@ -3,6 +3,8 @@
 #include <assert.h>
 #include "hash_table.h"
 
+typedef unsigned char sint;
+
 // bucket
 typedef struct n
 {
@@ -26,7 +28,6 @@ hash_table;
 
 #define STARTING_HASH_CAPACITY hash_sizes[0]  // starting number of buckets
 
-typedef unsigned char sint;
 
 // available number of buckets, preferably prime numbers since it has been proven they have better behavior
 static uint hash_sizes[] =
@@ -35,8 +36,9 @@ static uint hash_sizes[] =
       402653189, 805306457, 1610612741, 3221225479 };
 
 // function prototypes
-static void rehash(HashTable ht);
 static void insert(HashTable ht, const Pointer value, const uint hash_value);
+static void rehash(HashTable ht);
+static bool hash_search(HashTable ht, Pointer value, uint* hash_value);
 
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
 {
@@ -71,9 +73,9 @@ bool is_ht_empty(HashTable ht)
 bool hash_insert(HashTable ht, Pointer value)
 {
     // check to see if value already exists in the hash table
-    if (hash_exists(ht, value))  // value already exists
+    uint hash_value;
+    if (hash_search(ht, value, &hash_value))  // value already exists
     {
-        // if a destroy function exists, destroy the value
         if (ht->destroy != NULL)
             ht->destroy(value);
         return false;
@@ -86,7 +88,7 @@ bool hash_insert(HashTable ht, Pointer value)
     }
     
     // insert value
-    insert(ht, value, ht->hash(value));
+    insert(ht, value, hash_value);
 
     ht->elements++;  // value inserted, increment the number of elements in the hash table
     return true;
@@ -158,9 +160,9 @@ bool hash_remove(HashTable ht, Pointer value)
         return false;
     
     // hash to the find the potential bucket the value belongs to
-    uint h = ht->hash(value) % ht->capacity;
+    uint hash_value = ht->hash(value) % ht->capacity;
 
-    node* bkt = &(ht->buckets[h]);
+    node* bkt = &(ht->buckets[hash_value]);
     
     // search the bucket for the value
     while (*bkt != NULL)
@@ -188,12 +190,17 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
+    uint tmp;
+    return (ht, value, &tmp);
+}
+
+static bool hash_search(HashTable ht, Pointer value, uint* hash_value)
+{
+    *hash_value = ht->hash(value);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
-    // rehash to the find the potential bucket the value belongs to
-    uint h = ht->hash(value) % ht->capacity;
-    node bkt = ht->buckets[h];
+    node bkt = ht->buckets[*hash_value % ht->capacity];
     
     // search for the value in the bucket h
     while (bkt != NULL)
@@ -201,9 +208,10 @@ bool hash_exists(HashTable ht, Pointer value)
         Pointer bkt_value = bkt->data;
         if (ht->compare(value, bkt_value) == 0)  // value found
             return true;
-            
+        
         bkt = bkt->next;
     }
+
     return false;
 }
 

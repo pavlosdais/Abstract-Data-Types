@@ -20,10 +20,10 @@ int main(void)
     wug_insert(A, 1, 6, 14);
     wug_insert(A, 1, 3, 9);
 
-	// print the graph
+    // print the graph
     wug_print(A);
     
-	// print minimum spanning tree
+    // print minimum spanning tree
     printf("\nMinimum spanning tree edges:\n");
     wug_minspantree(A);
 
