@@ -81,8 +81,7 @@ bool hash_insert(HashTable ht, Pointer value)
 
     if (((float)ht->elements / ht->capacity) > MAX_LOAD_FACTOR)  // max load factor exceeded, try to rehash
     {
-        sint num_of_sizes = sizeof(hash_sizes) / sizeof(hash_sizes[0]);  // number of sizes
-        if (ht->capacity != hash_sizes[num_of_sizes-1])  // if a new, available, size exists
+        if (ht->capacity != hash_sizes[sizeof(hash_sizes) / sizeof(hash_sizes[0]) - 1])  // if a new, available, size exists
             rehash(ht);  // rehash
     }
     
@@ -111,12 +110,11 @@ static void insert(HashTable ht, const Pointer value, const uint hash_value)
 
 static void rehash(HashTable ht)
 {
-    static sint prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]);
-    sint low = 0, high = prime_numbers-1;
     uint old_capacity = ht->capacity;  // save old number of buckets
     node* old_buckets = ht->buckets;  // save previous buckets
 
-    // find the next, in order, number of buckets
+    // binary search in array hash_sizes to find the next number of buckets
+    sint low = 0, high = sizeof(hash_sizes) / sizeof(hash_sizes[0]) - 1;
     while (low <= high)
     {
         sint mid = low + (high-low)/2;
@@ -136,7 +134,7 @@ static void rehash(HashTable ht)
             low = mid+1;
     }
 
-    // destroy old buckets and insert their values at the new ones
+    // start rehash operation
     for (uint i = 0; i < old_capacity; i++)
     {
         node bkt = old_buckets[i];
@@ -223,20 +221,26 @@ void hash_destroy(HashTable ht)
     assert(ht != NULL);
 
     // destroy the buckets
-    for (uint i = 0; i < ht->capacity; i++)
+    if (ht->elements != 0)
     {
-        node bkt = ht->buckets[i];
-        while (bkt != NULL)
+        for (uint i = 0; i < ht->capacity; i++)
         {
-            node tmp = bkt;
-            bkt = bkt->next;
+            node bkt = ht->buckets[i];
+            while (bkt != NULL)
+            {
+                node tmp = bkt;
+                bkt = bkt->next;
 
-            // if a destroy function exists, destroy the elements
-            if (ht->destroy != NULL) 
-                ht->destroy(tmp->data);
-            free(tmp);
+                // if a destroy function exists, destroy the data
+                if (ht->destroy != NULL) 
+                    ht->destroy(tmp->data);
+                free(tmp);
+                --(ht->elements);
+            }
+            if (ht->elements == 0) break;  // all elements deleted
         }
     }
+    
     free(ht->buckets);
     free(ht);
 }

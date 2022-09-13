@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <limits.h>
 #include "hash_table.h"
 
 typedef enum
 {
-	EMPTY, OCCUPIED, DELETED
+    EMPTY, OCCUPIED, DELETED
 }
 bucket_state;
 
@@ -63,7 +62,7 @@ void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc de
     (*ht)->buckets = calloc(sizeof(n), (*ht)->capacity);  // allocate memory for the buckets
     assert((*ht)->buckets != NULL);  // allocation failure
 
-    PRIME_NUM = 27;
+    PRIME_NUM = 27;  // default starting prime
     (*ht)->elements = 0;
     (*ht)->hash = hash;
     (*ht)->compare = compare;
@@ -100,7 +99,7 @@ bool hash_insert(HashTable ht, Pointer value)
 
         if (ht->buckets[new_pos].state == EMPTY)  // empty spot found, insert
         {
-            pos = deleted_index != ht->capacity+1 ? deleted_index : new_pos;
+            pos = deleted_index == ht->capacity+1? new_pos : deleted_index;
             break;
         }
         // a deleted, possible, spot found. Altough we could just insert here, we mark it and keep searching
@@ -133,18 +132,18 @@ static void rehash_insert(HashTable ht, Pointer value, const uint hash_value);
 static void rehash(HashTable ht)
 {
     static sint prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]);
-    sint low = 0, high = prime_numbers-1;
     uint old_capacity = ht->capacity;  // save old number of buckets
     node old_buckets = ht->buckets;  // save previous buckets
 
-    // find the next number of buckets
+    // binary search in array hash_sizes to find the next number of buckets
+    sint low = 0, high = prime_numbers-1;
     while (low <= high)
     {
         sint mid = low + (high-low)/2;
         if (old_capacity == hash_sizes[mid])  // found
         {
             PRIME_NUM = old_capacity;
-            ht->capacity = (mid+1 == prime_numbers ? 2*ht->capacity: hash_sizes[mid+1]);
+            ht->capacity = (mid+1 == prime_numbers? 2*ht->capacity : hash_sizes[mid+1]);
             
             // create the new number of buckets
             ht->buckets = calloc(sizeof(n), ht->capacity);
@@ -158,12 +157,12 @@ static void rehash(HashTable ht)
             low = mid+1;
     }
 
+    // start rehash operation
     for (uint i = 0; i < old_capacity; i++)
     {
         if (old_buckets[i].state == OCCUPIED)
             rehash_insert(ht, old_buckets[i].data, old_buckets[i].hash_value);
     }
-
     free(old_buckets);
 }
 
@@ -195,7 +194,7 @@ static uint find_bucket(HashTable ht, Pointer value)
     uint count = 0;
     const uint h1 = ht->hash(value), interval = hash_func2(PRIME_NUM, h1);
     
-    for (uint pos = h1%ht->capacity; ht->buckets[pos].state != EMPTY; pos = (pos + interval) % ht->capacity)
+    for (uint pos = h1 % ht->capacity; ht->buckets[pos].state != EMPTY; pos = (pos + interval) % ht->capacity)
     {
         if (ht->buckets[pos].state == OCCUPIED && ht->compare(ht->buckets[pos].data, value) == 0)
             return pos;
@@ -252,16 +251,15 @@ void hash_destroy(HashTable ht)
 {
     assert(ht != NULL);
 
-    // if a destroy function exists, destroy the elements
+    // if a destroy function exists, destroy the data
     if (ht->destroy != NULL && ht->elements != 0)
     {
-        uint del_elements = 0;
         for (uint i = 0; i < ht->capacity; i++)
         {
             if (ht->buckets[i].data != NULL)
             {
                 ht->destroy(ht->buckets[i].data);
-                if (++del_elements == ht->elements) break;  // all elements deleted
+                if (--(ht->elements) == 0) break;  // all elements deleted
             }
         }
     }
