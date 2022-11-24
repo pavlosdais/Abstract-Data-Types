@@ -9,8 +9,8 @@ unsigned int hash_string1(Pointer value)
 {
     const char* str = (*((const char**)value));
     const int p = 111111, m = 1e9 + 7;
-    int hash = 0;
-    long p_pow = 1;
+    unsigned int hash = 0;
+    unsigned long p_pow = 1;
     for(int i = 0; str[i] != '\0'; i++)
     {
         hash = (hash + tolower(str[i]) * p_pow) % m;
@@ -46,7 +46,7 @@ unsigned int hash_string3(Pointer value)
 // source: https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
 unsigned int hash_int(Pointer value)
 {
-    int val = (*((int*)value));
+    unsigned int val = (*((int*)value));
     val = ((val >> 16) ^ val) * 0x45d9f3b;
     val = ((val >> 16) ^ val) * 0x45d9f3b;
     val = (val >> 16) ^ val;

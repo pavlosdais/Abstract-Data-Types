@@ -190,7 +190,8 @@ bool hash_remove(HashTable ht, Pointer value)
 
 bool hash_exists(HashTable ht, Pointer value)
 {
-    uint tmp;
+    uint tmp = ht->hash(value);  // hash the value
+
     return (ht, value, &tmp);
 }
 

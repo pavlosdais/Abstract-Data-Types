@@ -71,10 +71,8 @@ void pq_insert(PQueue PQ, Pointer value)
     {
         PQ->capacity *= 2;
 
-        node new_arr = realloc(PQ->arr, PQ->capacity * sizeof(*new_arr));
-        assert(new_arr != NULL);  // allocation failure
-        
-        PQ->arr = new_arr;
+        PQ->arr = realloc(PQ->arr, PQ->capacity * sizeof(*(PQ->arr)));
+        assert(PQ->arr != NULL);  // allocation failure
     }
 
     PQ->arr[PQ->curr_size].data = value;
@@ -153,7 +151,7 @@ void pq_destroy(PQueue PQ)
     // if a destroy function was given
     if (PQ->destroy != NULL)
     {
-        for (uint i = 0; i < PQ->capacity; i++)
+        for (uint i = 0, pq_size = PQ->capacity+1; i < pq_size; i++)
         {
             // if the element has not already been removed before, destroy it
             if (PQ->arr[i].data != NULL)
