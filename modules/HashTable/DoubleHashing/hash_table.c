@@ -193,8 +193,8 @@ static void rehash_insert(HashTable ht, Pointer value, const uint hash_value)
     ht->buckets[pos].hash_value = hash_value;
 }
 
-// returns the hash table's capacity if the value exists
-// if it does not exist, returns the bucket at which it would exist
+// returns the bucket in which the value exists
+// if it does not exist, returns the capacity of the hash table
 static uint find_bucket(HashTable ht, Pointer value)
 {
     const uint h1 = ht->hash(value), interval = hash_func2(PRIME_NUM, h1);
@@ -217,6 +217,7 @@ bool hash_remove(HashTable ht, Pointer value)
     if (is_ht_empty(ht))  // empty hash table - nothing to remove
         return false;
     
+    // find the potential bucket the value exists in
     const uint pos = find_bucket(ht, value);
     if (pos == ht->capacity)  // value does not exist
         return false;
@@ -236,12 +237,7 @@ bool hash_exists(HashTable ht, Pointer value)
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
 
-    // find the potential bucket the value exists in
-    if (find_bucket(ht, value) != ht->capacity)  // value found
-        return true;
-
-    // value not found
-    return false;
+    return find_bucket(ht, value) != ht->capacity;
 }
 
 DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
@@ -257,7 +253,7 @@ void hash_destroy(HashTable ht)
 {
     assert(ht != NULL);
 
-    // if a destroy function exists, destroy the data
+    // if a destroy function exists & there are elements, destroy the data
     if (ht->destroy != NULL && ht->elements != 0)
     {
         for (uint i = 0; i < ht->capacity; i++)

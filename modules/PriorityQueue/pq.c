@@ -69,15 +69,12 @@ void pq_insert(PQueue PQ, Pointer value)
     // heap is full, double its size
     if (PQ->curr_size == PQ->capacity)
     {
-        node new_arr = realloc(PQ->arr, 2*PQ->capacity * sizeof(*new_arr));
+        PQ->capacity *= 2;
+
+        node new_arr = realloc(PQ->arr, PQ->capacity * sizeof(*new_arr));
         assert(new_arr != NULL);  // allocation failure
         
-        uint old_size = PQ->curr_size;
-        PQ->capacity *= 2;
-        
         PQ->arr = new_arr;
-        for (uint i = old_size; i < PQ->capacity; i++)
-            PQ->arr[i].data = NULL;
     }
 
     PQ->arr[PQ->curr_size].data = value;
@@ -88,6 +85,8 @@ void pq_insert(PQueue PQ, Pointer value)
 static void bubble_up(PQueue PQ, uint node)
 {
     uint parent = find_parent(node);
+
+    // bubble up until you find a tree node
     while (node != ROOT && PQ->compare(PQ->arr[parent].data, PQ->arr[node].data) < 0)
     {
         swap_nodes(&(PQ->arr[parent]), &(PQ->arr[node]));
