@@ -35,9 +35,9 @@ hash_table;
 #define find_func(i) (1<<i)  // returns 2^i
 
 // Function Prototypes
-static void hash_resize(HashTable ht);
-static uint get_bucket(HashTable ht, uint hash_value);
-static uint hash_search(HashTable ht, Pointer value);
+static inline void hash_resize(HashTable ht);
+static inline uint get_bucket(HashTable ht, uint hash_value);
+static inline uint hash_search(HashTable ht, Pointer value);
 
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
 {
@@ -196,7 +196,7 @@ bool hash_exists(HashTable ht, Pointer value)
 
 // returns the bucket in which the value exists
 // if it does not exist, returns the capacity of the hash table
-static uint hash_search(HashTable ht, Pointer value)
+static inline uint hash_search(HashTable ht, Pointer value)
 {
     // find the potential bucket the value belongs to
     const uint h = get_bucket(ht, ht->hash(value));
@@ -214,7 +214,7 @@ static uint hash_search(HashTable ht, Pointer value)
     return h;
 }
 
-static uint get_bucket(HashTable ht, uint hash_value)
+static inline uint get_bucket(HashTable ht, uint hash_value)
 {
     // use hash function i
     const uint pos = hash_value % find_func(ht->exponent);
@@ -223,7 +223,7 @@ static uint get_bucket(HashTable ht, uint hash_value)
 }
 
 // resize by INCREASE_SIZE
-static void hash_resize(HashTable ht)
+static inline void hash_resize(HashTable ht)
 {
     const uint old_cap = ht->max_capacity;  // old number of buckets
     ht->max_capacity *= INCREASE_SIZE;  // increase capacity

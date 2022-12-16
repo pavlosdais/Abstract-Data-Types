@@ -36,9 +36,9 @@ static uint hash_sizes[] =
       402653189, 805306457, 1610612741, 3221225479 };
 
 // function prototypes
-static void insert(HashTable ht, const Pointer value, const uint hash_value);
-static void rehash(HashTable ht);
-static bool hash_search(HashTable ht, Pointer value, uint* hash_value);
+static inline void insert(HashTable ht, const Pointer value, const uint hash_value);
+static inline void rehash(HashTable ht);
+static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value);
 
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
 {
@@ -94,7 +94,7 @@ bool hash_insert(HashTable ht, Pointer value)
     return true;
 }
 
-static void insert(HashTable ht, const Pointer value, const uint hash_value)
+static inline void insert(HashTable ht, const Pointer value, const uint hash_value)
 {
     // create new bucket (list)
     node new_node = malloc(sizeof(n));
@@ -110,7 +110,7 @@ static void insert(HashTable ht, const Pointer value, const uint hash_value)
     ht->buckets[bucket] = new_node;
 }
 
-static void rehash(HashTable ht)
+static inline void rehash(HashTable ht)
 {
     uint old_capacity = ht->capacity;  // save old number of buckets
     node* old_buckets = ht->buckets;  // save previous buckets
@@ -195,7 +195,7 @@ bool hash_exists(HashTable ht, Pointer value)
     return (ht, value, &tmp);
 }
 
-static bool hash_search(HashTable ht, Pointer value, uint* hash_value)
+static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value)
 {
     *hash_value = ht->hash(value);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search

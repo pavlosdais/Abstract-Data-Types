@@ -53,7 +53,7 @@ static uint hash_sizes[] =
 
 
 // function prototype
-static void rehash(HashTable ht);
+static inline void rehash(HashTable ht);
 
 void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
 {
@@ -133,8 +133,8 @@ bool hash_insert(HashTable ht, Pointer value)
 }
 
 // helper function
-static void rehash_insert(HashTable ht, Pointer value, const uint hash_value);
-static void rehash(HashTable ht)
+static inline void rehash_insert(HashTable ht, Pointer value, const uint hash_value);
+static inline void rehash(HashTable ht)
 {
     static sint prime_numbers = sizeof(hash_sizes) / sizeof(hash_sizes[0]);
     uint old_capacity = ht->capacity;  // save old number of buckets
@@ -171,7 +171,7 @@ static void rehash(HashTable ht)
     free(old_buckets);
 }
 
-static void rehash_insert(HashTable ht, Pointer value, const uint hash_value)
+static inline void rehash_insert(HashTable ht, Pointer value, const uint hash_value)
 {
     uint pos = hash_value % ht->capacity, pos_adjustment = 0;
     const uint interval = hash_func2(PRIME_NUM, hash_value);
@@ -195,7 +195,7 @@ static void rehash_insert(HashTable ht, Pointer value, const uint hash_value)
 
 // returns the bucket in which the value exists
 // if it does not exist, returns the capacity of the hash table
-static uint find_bucket(HashTable ht, Pointer value)
+static inline uint find_bucket(HashTable ht, Pointer value)
 {
     const uint h1 = ht->hash(value), interval = hash_func2(PRIME_NUM, h1);
     uint buckets_checked = 0;

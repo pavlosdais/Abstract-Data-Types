@@ -4,7 +4,7 @@
 ADTs = ../modules
 
 # implementation of the hash table (LinearHashing/ SeparateChaining/ DoubleHashing/ UsingRBT)
-HT_IMPLEMENTATION = DoubleHashing
+HT_IMPLEMENTATION = LinearHashing
 
 # object files - modules
 OBJ = $(ADTs)/Stack/stack.o \

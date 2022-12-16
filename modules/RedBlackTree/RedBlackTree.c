@@ -30,13 +30,13 @@ struct Set
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
 };
 
-// Function Prototypes
-static void right_rotation(RBTreeNode* root, RBTreeNode* node);
-static void left_rotation(RBTreeNode* root, RBTreeNode* node);
-static RBTreeNode find_successor(RBTreeNode node);
-static void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b);
-static void fix_insert(RBTreeNode* root, RBTreeNode* node);
-static void fix_remove(RBTreeNode* root, RBTreeNode* node);
+// function prototypes
+static inline void right_rotation(RBTreeNode* root, RBTreeNode* node);
+static inline void left_rotation(RBTreeNode* root, RBTreeNode* node);
+static inline RBTreeNode find_successor(RBTreeNode node);
+static inline void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b);
+static inline void fix_insert(RBTreeNode* root, RBTreeNode* node);
+static inline void fix_remove(RBTreeNode* root, RBTreeNode* node);
 
 tnode NULLNode = {NULL, BLACK, NULL, NULL, NULL};  // dummy leaf node
 
@@ -77,8 +77,6 @@ static RBTreeNode CreateNode()
     return new_node;
 }
 
-// traverse the tree to find the node with the value
-// returns NULL if the value is not found
 RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
 {
     assert(Tree != NULL);
@@ -229,7 +227,7 @@ bool rbt_remove(RBTree Tree, Pointer value)
 }
 
 // fix possible violations at insertion
-static void fix_insert(RBTreeNode* root, RBTreeNode* node) 
+static inline void fix_insert(RBTreeNode* root, RBTreeNode* node) 
 {
     while(((*node) != *root) && ((*node)->col == RED) && ((*node)->parent->col == RED))
     {
@@ -290,7 +288,7 @@ static void fix_insert(RBTreeNode* root, RBTreeNode* node)
 }
 
 // fix possible violations at removal
-static void fix_remove(RBTreeNode* root, RBTreeNode* node)
+static inline void fix_remove(RBTreeNode* root, RBTreeNode* node)
 {
     while ((*node) != *root && (*node)->col == BLACK)
     {
@@ -402,6 +400,7 @@ static void destroy_nodes(RBTreeNode node, DestroyFunc destroy_data)
     destroy_nodes(node->left, destroy_data);
     destroy_nodes(node->right, destroy_data);
 
+    // if a destroy function was given, destroy the data
     if (destroy_data != NULL)
         destroy_data(node->data);
     
@@ -424,7 +423,7 @@ bool rbt_exists(RBTree Tree, Pointer value)
     return rbt_find_node(Tree, value) != NULL;
 }
 
-static RBTreeNode node_max(RBTreeNode node)
+static inline RBTreeNode node_max(RBTreeNode node)
 {
     RBTreeNode tmp = node;
     while (tmp->right != &NULLNode)
@@ -433,7 +432,7 @@ static RBTreeNode node_max(RBTreeNode node)
     return tmp;
 }
 
-static RBTreeNode node_min(RBTreeNode node)
+static inline RBTreeNode node_min(RBTreeNode node)
 {
     RBTreeNode tmp = node;
     while (tmp->left != &NULLNode)
@@ -447,7 +446,7 @@ static RBTreeNode find_predecessor(RBTreeNode node)
     return node_max(node->left);
 }
 
-static RBTreeNode find_successor(RBTreeNode node)
+static inline RBTreeNode find_successor(RBTreeNode node)
 {
     return node_min(node->right);
 }
@@ -508,7 +507,7 @@ DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func)
 }
 
 // node b takes a's place
-static void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b)
+static inline void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b)
 {
     if (a->parent == NULL)
         *root = b;
@@ -521,7 +520,7 @@ static void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b)
 }
 
 // right rotation at node
-static void right_rotation(RBTreeNode* root, RBTreeNode* node)
+static inline void right_rotation(RBTreeNode* root, RBTreeNode* node)
 {
     RBTreeNode left_child = (*node)->left;
     (*node)->left = left_child->right;
@@ -543,7 +542,7 @@ static void right_rotation(RBTreeNode* root, RBTreeNode* node)
 }
 
 // left rotation at node
-static void left_rotation(RBTreeNode* root, RBTreeNode* node)
+static inline void left_rotation(RBTreeNode* root, RBTreeNode* node)
 {
     RBTreeNode right_child = (*node)->right;
     (*node)->right = right_child->left;

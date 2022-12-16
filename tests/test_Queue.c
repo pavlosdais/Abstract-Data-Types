@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "../lib/ADT.h"
 
-// Function Prototypes
+// function prototypes
 int* createData(int a);
 void printFunc(Pointer value);
 int compareFunction(Pointer v1, Pointer v2);

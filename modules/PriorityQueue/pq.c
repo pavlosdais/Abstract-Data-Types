@@ -22,8 +22,8 @@ pq;
 
 // Function prototypes
 static void swap_nodes(node a, node b);
-static void bubble_up(PQueue PQ, uint node);
-static void bubble_down(PQueue PQ, uint node);
+static inline void bubble_up(PQueue PQ, uint node);
+static inline void bubble_down(PQueue PQ, uint node);
 
 #define ROOT 1
 #define find_parent(a) (a/2)
@@ -80,7 +80,7 @@ void pq_insert(PQueue PQ, Pointer value)
     bubble_up(PQ, PQ->curr_size);
 }
 
-static void bubble_up(PQueue PQ, uint node)
+static inline void bubble_up(PQueue PQ, uint node)
 {
     uint parent = find_parent(node);
 
@@ -113,7 +113,7 @@ Pointer pq_remove(PQueue PQ)
     return hp;
 }
 
-static void bubble_down(PQueue PQ, uint node)
+static inline void bubble_down(PQueue PQ, uint node)
 {
     uint left_child = find_left_child(node);
     if (left_child > PQ->curr_size)  // children do not exist
@@ -148,12 +148,11 @@ void pq_destroy(PQueue PQ)
 {
     assert(PQ != NULL);
     
-    // if a destroy function was given
+    // if a destroy function was given, destroy the data
     if (PQ->destroy != NULL)
     {
-        for (uint i = 0, pq_size = PQ->capacity+1; i < pq_size; i++)
+        for (uint i = 0; i < PQ->capacity; i++)
         {
-            // if the element has not already been removed before, destroy it
             if (PQ->arr[i].data != NULL)
                 PQ->destroy(PQ->arr[i].data);
         }
