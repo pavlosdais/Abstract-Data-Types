@@ -192,7 +192,7 @@ bool hash_exists(HashTable ht, Pointer value)
 {
     uint tmp = ht->hash(value);  // hash the value
 
-    return (ht, value, &tmp);
+    return hash_search(ht, value, &tmp);
 }
 
 static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value)
