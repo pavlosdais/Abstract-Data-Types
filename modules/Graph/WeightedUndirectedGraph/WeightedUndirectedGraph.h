@@ -7,17 +7,18 @@ typedef int Vertex;
 typedef struct _wu_graph* wu_graph;
 typedef uint32_t cost;  // the cost of the edge
 
-// initializes weighted undirected graph
-void wug_init(wu_graph*, uint32_t num_of_vertices);
+
+// creates weighted undirected graph
+wu_graph wug_create(const uint32_t);
 
 // inserts edge (A-B) with its weight at the graph
-void wug_insert(wu_graph, Vertex A, Vertex B, cost);
+void wug_insert(const wu_graph, const Vertex A, const Vertex B, const cost);
 
 // prints the graph
-void wug_print(wu_graph);
+void wug_print(const wu_graph);
 
 // prints minimum spanning tree, as well as its total weight using the prim-jarnik algorithm
-void wug_minspantree(wu_graph);
+void wug_minspantree(const wu_graph);
 
 // frees graph
-void DestroyGraph(wu_graph);
+void wug_destroy(const wu_graph);

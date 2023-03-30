@@ -1,5 +1,6 @@
 # Abstract Data Types in C
-Implemented ADTs:
+This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types. The library contains the following ADT's:
+
 * [Vector](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Vector#readme)
 * [Stack](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Stack#readme)
 * [Queue](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Queue#readme)
@@ -11,15 +12,56 @@ Implemented ADTs:
 The source code of every ADT can be found over at the `modules` directory.
 
 # Usage
-These ADTs are fully modular and designed to work with any kind of data. This is achieved by saving all the data (eg integers, strings, structs etc) in the heap by manually allocating memory and using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to refer to it. In order to use a module one must provide a number of the following functions (depending on the ADT) upon initialization:
-* `Destroy function` - destroys the data (or NULL if you do not want the data to be deleted).
-* `Compare function` - compares two Pointers a and b, and returns -1 if a < b, 0 if a = b or 1 if a > b.
-* `Hash function` - used by the hash table, takes a Pointer(our data) and returns a positive integer.
-* `Visit function` - used by the graph, visits a vertex.
+The library can be used using 3 (simple) steps.
 
-# Library containing all the ADTs
-All ADTs implemented are included in the `ADTlib.a` library, over at directory `lib`. In order to use the library:
-* Include the library's header file `ADT.h` *or* just the header of the module you want to use.
-* Use `ADTlib.a` on compilation.
+### * Step 1
+Include the header file of the ADT library.
+```c
+#include "ADT.h"
+```
+*or* just include the desired header files of the data structures you want to use in your C project.
+```c
+#include "vector.h"
+#include "RedBlackTree.h"
+#include "stack.h"
+#include "pq.h"
+#include "hash_table.h"
+```
 
-The library can be recompiled by running `make`. Check the `tests` directory for some examples on its usage.
+### * Step 2
+Depending on the ADT, provide a number of the following functions upon initialization:
+- **Destroy function** destroys the data (or NULL if you do not want the data to be deleted).
+```c
+void free(void *ptr);  // function provided by <stdio.h> that deallocates the memory previously allocated.
+```
+
+- **Compare function** compares two Pointers a and b, and returns -1 if a < b, 0 if a = b or 1 if a > b.
+```c
+int compareFunction(Pointer v1, Pointer v2)  { return *((int*)v1) - *((int*)v2); }
+```
+
+- **Hash function** used by the hash table, takes a Pointer(our data) and returns a positive integer.
+```c
+unsigned int hash_int(Pointer value)
+{
+    unsigned int val = (*((int*)value));
+    val = ((val >> 16) ^ val) * 0x45d9f3b;
+    val = ((val >> 16) ^ val) * 0x45d9f3b;
+    val = (val >> 16) ^ val;
+    return val;
+}
+```
+
+- **Visit function** used by the graph, visits a vertex.
+```c
+void visit(Vertex x)  { printf("%d ", x); }
+```
+
+### * Step 3
+Use `ADTlib.a` on compilation.
+```bash
+~$ gcc -o my_prog_exec my_prog.c -L. lib/ADTlib.a
+```
+
+# Examples
+The library can be recompiled by running `make`. Check the `tests` directory for some detailed examples on its usage.

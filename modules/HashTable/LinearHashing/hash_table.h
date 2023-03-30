@@ -22,7 +22,7 @@ typedef uint (*HashFunc)(Pointer value);
 #define STARTING_HASH_CAPACITY 1543  // starting number of buckets
 #define MAX_BUCKET_ELEMENTS 4        // maximum number of elements in the bucket before split operation starts
 
-// initializes hash table
+// creates hash table
 HashTable hash_create(const HashFunc hash, const CompareFunc compare, const DestroyFunc destroy);
 
 // inserts value at the hash table

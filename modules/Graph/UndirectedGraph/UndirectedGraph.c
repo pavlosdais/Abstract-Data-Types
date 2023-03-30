@@ -32,21 +32,23 @@ typedef struct p
 }
 p;
 
-void ug_init(undir_graph* G, uint32_t num_of_vertices, VisitFunc visit)
+undir_graph ug_create(const uint32_t num_of_vertices, const VisitFunc visit)
 {
    assert(visit != NULL);  // a visit function needs to be given
 
-   *G = malloc(sizeof(_undir_graph));
-   assert(*G != NULL);  // allocation failure
+   undir_graph G = malloc(sizeof(_undir_graph));
+   assert(G != NULL);  // allocation failure
 
-   (*G)->firstedge = calloc(sizeof(Edge), num_of_vertices);
-   assert((*G)->firstedge != NULL);  // allocation failure
+   G->firstedge = calloc(sizeof(Edge), num_of_vertices);
+   assert(G->firstedge != NULL);  // allocation failure
 
-   (*G)->n = num_of_vertices;
-   (*G)->visit = visit;
+   G->n = num_of_vertices;
+   G->visit = visit;
+
+   return G;
 }
 
-void ug_insert(undir_graph G, Vertex A, Vertex B)
+void ug_insert(const undir_graph G, const Vertex A, const Vertex B)
 {
    // Insert vertex B at the start of the list A - O(1)
    Edge* al = &(G->firstedge[A]);
@@ -69,7 +71,7 @@ void ug_insert(undir_graph G, Vertex A, Vertex B)
    *al = new_edge;
 }
 
-void ug_print(undir_graph G)
+void ug_print(const undir_graph G)
 {
    for (uint32_t i = 0; i < G->n; i++)
    {
@@ -90,9 +92,9 @@ void ug_print(undir_graph G)
 // source: https://en.wikipedia.org/wiki/Breadth-first_search
 
 // Helper function prototypes
-static point CreatePoint(Vertex v, point source);
-static void printPath(point a);
-void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal)
+static point CreatePoint(const Vertex, const point);
+static void printPath(const point);
+void ug_simplepathcheck(const undir_graph G, const Vertex start, const Vertex goal)
 {
    int* visited = calloc(sizeof(int), G->n);
    assert(visited != NULL);  // allocation failure
@@ -147,7 +149,29 @@ void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal)
    free(visited);
 }
 
-void ug_destroy(undir_graph G)
+// recursive function that prints the actual path
+static void printPath(const point a)
+{
+   if (a == NULL)
+      return;
+   printPath(a->parent);
+
+   printf("[%d] ", a->vertex);
+}
+
+// allocate memory for the point
+static point CreatePoint(const Vertex v, const point source)
+{
+   point new_point = malloc(sizeof(p));
+   assert(new_point != NULL);  // allocation failure
+
+   new_point->vertex = v;
+   new_point->parent = source;
+
+   return new_point;
+}
+
+void ug_destroy(const undir_graph G)
 {
    for (uint32_t i = 0; i < G->n; i++)
    {
@@ -159,28 +183,7 @@ void ug_destroy(undir_graph G)
          free(tmp);
       }
    }
+   
    free(G->firstedge);
    free(G);
-}
-
-// recursive function that prints the actual path
-static void printPath(point a)
-{
-   if (a == NULL)
-      return;
-   printPath(a->parent);
-
-   printf("[%d] ", a->vertex);
-}
-
-// allocate memory for the point
-static point CreatePoint(Vertex v, point source)
-{
-   point new_point = malloc(sizeof(p));
-   assert(new_point != NULL);  // allocation failure
-
-   new_point->vertex = v;
-   new_point->parent = source;
-
-   return new_point;
 }

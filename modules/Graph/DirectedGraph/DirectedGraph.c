@@ -27,21 +27,23 @@ _dir_graph;
 // function prototype
 static Vertex* createVertex(Vertex V);
 
-void dg_init(dir_graph* G, uint32_t num_of_vertices, VisitFunc visit)
+dir_graph dg_create(const uint32_t num_of_vertices, const VisitFunc visit)
 {
    assert(visit != NULL);  // a visit function needs to be given
 
-   *G = malloc(sizeof(_dir_graph));
-   assert(*G != NULL);
+   dir_graph G = malloc(sizeof(_dir_graph));
+   assert(G != NULL);
    
-   (*G)->firstedge = calloc(sizeof(Edge), num_of_vertices);
-   assert((*G)->firstedge != NULL);  // allocation failure
+   G->firstedge = calloc(sizeof(Edge), num_of_vertices);
+   assert(G->firstedge != NULL);  // allocation failure
 
-   (*G)->n = num_of_vertices;
-   (*G)->visit = visit;
+   G->n = num_of_vertices;
+   G->visit = visit;
+
+   return G;
 }
 
-void dg_insert(dir_graph G, Vertex A, Vertex B)
+void dg_insert(const dir_graph G, const Vertex A, const Vertex B)
 {
    // sorted insert of vertex B at list A - O(n)
    Edge* al = &(G->firstedge[A]);
@@ -75,7 +77,7 @@ void dg_insert(dir_graph G, Vertex A, Vertex B)
    tmp->nextedge = new_edge;
 }
 
-void dg_print(dir_graph G)
+void dg_print(const dir_graph G)
 {
    assert(G != NULL);
 
@@ -96,14 +98,14 @@ void dg_print(dir_graph G)
 }
 
 // Helper function prototypes
-static void Traverse(dir_graph G, Vertex v, bool* visited, int* pre, int* post);
-static void Explore(dir_graph G, Vertex v, bool* visited, int* pre, int* post, int* counter1, int* counter2);
+static void Traverse(const dir_graph, const Vertex, bool*, const int*, const int*);
+static void Explore(const dir_graph, const Vertex, bool*, int*, int*, int*, int*);
 static void print_green();
 static void print_black();
 static void print_red();
 static void reset_col();
 
-void dg_dfs(dir_graph G)
+void dg_dfs(const dir_graph G)
 {
    assert(G != NULL);
 
@@ -142,7 +144,7 @@ void dg_dfs(dir_graph G)
    free(visited);
 }
 
-static void Traverse(dir_graph G, Vertex v, bool* visited, int* pre, int* post)
+static void Traverse(const dir_graph G, const Vertex v, bool* visited, const int* pre, const int* post)
 {
    Vertex w;
    visited[v] = true;
@@ -194,7 +196,7 @@ static void print_red() { printf("\033[0;31m"); }
 static void reset_col() { printf("\033[0m"); }
 
 // explore is used to store the preorder and postorder numbering of the vertices
-static void Explore(dir_graph G, Vertex v, bool* visited, int* pre, int* post, int* counter1, int* counter2)
+static void Explore(const dir_graph G, const Vertex v, bool* visited, int* pre, int* post, int* counter1, int* counter2)
 {
    Vertex w;
    visited[v] = true;
@@ -215,8 +217,8 @@ static void Explore(dir_graph G, Vertex v, bool* visited, int* pre, int* post, i
    }
 }
 
-static void TopSort(dir_graph G, Toporder T);
-void dg_bts(dir_graph G)
+static void TopSort(const dir_graph, const Toporder);
+void dg_bts(const dir_graph G)
 {
    Toporder T = malloc(sizeof(*T) * G->n);
    for (uint32_t i = 0; i < G->n; i++)
@@ -236,7 +238,7 @@ void dg_bts(dir_graph G)
    free(T);
 }
 
-static void TopSort(dir_graph G, Toporder T)
+static void TopSort(const dir_graph G, const Toporder T)
 {
    int* predecessorcount = calloc(sizeof(int), G->n);    /* number of predecessors of each vertex */
    assert(predecessorcount != NULL);  // allocation failure
@@ -280,12 +282,11 @@ static void TopSort(dir_graph G, Toporder T)
    free(predecessorcount);
 }
 
-dir_graph dg_reverse(dir_graph G)
+dir_graph dg_reverse(const dir_graph G)
 {
    // create the new reversed graph
-   dir_graph revG;
-   dg_init(&revG, G->n, G->visit);
-
+   dir_graph revG = dg_create(G->n, G->visit);
+   
    for (uint32_t v = 0; v < G->n; v++)
    {
       Edge a = G->firstedge[v];
@@ -302,12 +303,12 @@ dir_graph dg_reverse(dir_graph G)
 }
 
 // Helper function prototypes
-static void Assign(dir_graph G, Vertex s, int* visited);
-static void Visit(dir_graph G, int s, int* visited, Stack st);
+static void Assign(const dir_graph, const Vertex, int*);
+static void Visit(const dir_graph, const int, int*, const Stack);
 
 // Kosaraju's algorithm for finding Strongly-Connected Components
 // source: https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm#The_algorithm , where the container L is a stack
-void dg_scc(dir_graph G)
+void dg_scc(const dir_graph G)
 {
    int* visited = calloc(sizeof(int), G->n);
    assert(visited != NULL);  // allocation failure
@@ -349,23 +350,7 @@ void dg_scc(dir_graph G)
    dg_destroy(rev_graph);
 }
 
-void dg_destroy(dir_graph G)
-{
-   for (uint32_t i = 0; i < G->n; i++)
-   {
-      Edge a = G->firstedge[i];
-      while (a != NULL)
-      {
-         Edge tmp = a;
-         a = a->nextedge;
-         free(tmp);
-      }
-   }
-   free(G->firstedge);
-   free(G);
-}
-
-static void Visit(dir_graph G, int s, int* visited, Stack L)
+static void Visit(const dir_graph G, const int s, int* visited, const Stack L)
 {
    if (visited[s])
       return;
@@ -384,7 +369,7 @@ static void Visit(dir_graph G, int s, int* visited, Stack L)
    stack_push(L, createVertex(s));
 }
 
-static void Assign(dir_graph G, Vertex s, int* visited)
+static void Assign(const dir_graph G, const Vertex s, int* visited)
 {
    if (visited[s])  // s has already been assigned to a component
       return;
@@ -406,11 +391,27 @@ static void Assign(dir_graph G, Vertex s, int* visited)
 }
 
 // allocate memory for the vertex
-static Vertex* createVertex(Vertex V)
+static Vertex* createVertex(const Vertex V)
 {
    Vertex* new_v = malloc(sizeof(Vertex));
    assert(new_v != NULL);  // allocation failure
 
    *new_v = V;
    return new_v;
+}
+
+void dg_destroy(const dir_graph G)
+{
+   for (uint32_t i = 0; i < G->n; i++)
+   {
+      Edge a = G->firstedge[i];
+      while (a != NULL)
+      {
+         Edge tmp = a;
+         a = a->nextedge;
+         free(tmp);
+      }
+   }
+   free(G->firstedge);
+   free(G);
 }

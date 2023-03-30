@@ -17,7 +17,7 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef int (*CompareFunc)(Pointer a, Pointer b);
 
 
-// creates a vector
+// creates vector
 Vector vector_create(const DestroyFunc);
 
 // returns the number of elements the vector currently stores

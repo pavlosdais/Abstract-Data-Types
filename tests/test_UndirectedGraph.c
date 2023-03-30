@@ -8,8 +8,7 @@ void visit(Vertex x);
 int main(void)
 {
     // create graph
-    undir_graph A;
-    ug_init(&A, 5, visit);
+    undir_graph A = ug_create(5, visit);
 
     // random graph
     ug_insert(A, 4, 0);

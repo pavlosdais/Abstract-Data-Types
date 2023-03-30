@@ -8,8 +8,7 @@ void visit(Vertex x);
 int main(void)
 {
     // create graph
-    dir_graph A;
-    dg_init(&A, 6, visit);
+    dir_graph A = dg_create(6, visit);
 
     // the directed graph:
     // https://cgi.di.uoa.gr/~k08/manolis/2021-2022/lectures/Graphs.pdf , page 139

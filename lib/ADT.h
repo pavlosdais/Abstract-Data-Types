@@ -59,13 +59,13 @@ void vector_destroy(const Vector);
 // Stack
 // -requires a destroy function
 Stack stack_create(const DestroyFunc);
-void stack_push(Stack, Pointer value);
-Pointer stack_pop(Stack);
-uint64_t stack_size(Stack);
-bool is_stack_empty(Stack);
-Pointer stack_top_value(Stack);
-DestroyFunc stack_set_destroy(Stack, DestroyFunc);
-void stack_destroy(Stack);
+void stack_push(const Stack, const Pointer value);
+Pointer stack_pop(const Stack);
+uint64_t stack_size(const Stack);
+bool is_stack_empty(const Stack);
+Pointer stack_top_value(const Stack);
+DestroyFunc stack_set_destroy(const Stack, const DestroyFunc);
+void stack_destroy(const Stack);
 
 
 // Queue
@@ -130,29 +130,29 @@ unsigned int hash_string3(Pointer value);  // hashes a string
 
 // Directed Graph
 // -visit function required
-void dg_init(dir_graph*, uint32_t num_of_vertices, VisitFunc visit);
-void dg_insert(dir_graph, Vertex A, Vertex B);
-void dg_print(dir_graph);
-void dg_dfs(dir_graph);
-dir_graph dg_reverse(dir_graph);
-void dg_bts(dir_graph);
-void dg_scc(dir_graph);
-void dg_destroy(dir_graph);
+dir_graph dg_create(const uint32_t, const VisitFunc);
+void dg_insert(const dir_graph, const Vertex A, const Vertex B);
+void dg_print(const dir_graph);
+void dg_dfs(const dir_graph);
+dir_graph dg_reverse(const dir_graph);
+void dg_bts(const dir_graph);
+void dg_scc(const dir_graph);
+void dg_destroy(const dir_graph);
 
 
 // Undirected Graph
 // -visit function required
-void ug_init(undir_graph* G, uint32_t num_of_vertices, VisitFunc visit);
-void ug_insert(undir_graph G, Vertex A, Vertex B);
-void ug_print(undir_graph A);
-void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal);
-void ug_destroy(undir_graph G);
+undir_graph ug_create(const uint32_t, const VisitFunc);
+void ug_insert(undir_graph, Vertex, Vertex);
+void ug_print(const undir_graph);
+void ug_simplepathcheck(const undir_graph, const Vertex, const Vertex);
+void ug_destroy(const undir_graph);
 
 
 // Weighted Undirected Graph
 // -no functions required
-void wug_init(wu_graph*, uint32_t num_of_vertices);
-void wug_insert(wu_graph, Vertex A, Vertex B, cost);
-void wug_print(wu_graph);
-void wug_minspantree(wu_graph);
-void DestroyGraph(wu_graph);
+wu_graph wug_create(const uint32_t);
+void wug_insert(const wu_graph, const Vertex A, const Vertex B, const cost);
+void wug_print(const wu_graph);
+void wug_minspantree(const wu_graph);
+void wug_destroy(const wu_graph);

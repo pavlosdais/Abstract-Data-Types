@@ -9,17 +9,18 @@ typedef struct _undir_graph* undir_graph;
 // Pointer to function that visits the vertices
 typedef void (*VisitFunc)(Vertex value);
 
-// initializes undirected graph
-void ug_init(undir_graph* G, uint32_t num_of_vertices, VisitFunc visit);
+
+// creates undirected graph
+undir_graph ug_create(const uint32_t, const VisitFunc);
 
 // inserts edge (A-B) at the graph
-void ug_insert(undir_graph G, Vertex A, Vertex B);
+void ug_insert(undir_graph, Vertex, Vertex);
 
 // prints the graph
-void ug_print(undir_graph A);
+void ug_print(const undir_graph);
 
 // prints a simple path, meaning a path where each vertex is visited at most once, between vertices start and goal, if such path exists
-void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal);
+void ug_simplepathcheck(const undir_graph, const Vertex start, const Vertex goal);
 
 // frees graph
-void ug_destroy(undir_graph G);
+void ug_destroy(const undir_graph);

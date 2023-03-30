@@ -19,11 +19,11 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive (unsigned) integer
 typedef uint (*HashFunc)(Pointer value);
 
-
 // number of buckets used
 #define NUM_OF_BUCKETS 1543
 
-// initializes hash table
+
+// creates hash table
 HashTable hash_create(const HashFunc hash, const CompareFunc compare, const DestroyFunc destroy);
 
 // inserts value at the hash table

@@ -21,18 +21,20 @@ typedef struct _wu_graph
 }
 _wu_graph;
 
-void wug_init(wu_graph* G, uint32_t num_of_vertices)
+wu_graph wug_create(const uint32_t num_of_vertices)
 {
-   *G = malloc(sizeof(_wu_graph));
-   assert(*G != NULL);  // allocation failure
+   wu_graph G = malloc(sizeof(_wu_graph));
+   assert(G != NULL);  // allocation failure
 
-   (*G)->firstedge = calloc(sizeof(Edge), num_of_vertices);
-   assert((*G)->firstedge != NULL);  // allocation failure
+   G->firstedge = calloc(sizeof(Edge), num_of_vertices);
+   assert(G->firstedge != NULL);  // allocation failure
 
-   (*G)->n = num_of_vertices;
+   G->n = num_of_vertices;
+
+   return G;
 }
 
-void wug_insert(wu_graph G, Vertex A, Vertex B, cost weight)
+void wug_insert(const wu_graph G, const Vertex A, const Vertex B, const cost weight)
 {
    // insert vertex B at the start of the list A - O(1)
    Edge* al = &(G->firstedge[A]);
@@ -73,11 +75,11 @@ static void updateWeights(PQueue PQ, int v, uint32_t new_weight);
 static bool pq_exists(PQueue PQ, int v);
 static void pq_destroy(PQueue PQ);
 
-static void print_min_span_tree(wu_graph G, int* arr, int n);
+static inline void print_min_span_tree(const wu_graph G, int* arr, const int n);
 
 // source: https://en.wikipedia.org/wiki/Prim%27s_algorithm#Description
 // adjacency list representation w/ binary heap priority queue - O(Elog V)
-void wug_minspantree(wu_graph G)
+void wug_minspantree(const wu_graph G)
 {
    assert(G != NULL);
 
@@ -125,7 +127,7 @@ void wug_minspantree(wu_graph G)
 }
 
 // print the minimum spanning tree
-static void print_min_span_tree(wu_graph G, int* E, int n)
+static inline void print_min_span_tree(const wu_graph G, int* E, const int n)
 {
    cost total_weight = 0;
    for (int i = 1; i < n; i++)
@@ -152,7 +154,7 @@ static void print_min_span_tree(wu_graph G, int* E, int n)
    printf("Total weight = %d\n", total_weight);
 }
 
-void wug_print(wu_graph G)
+void wug_print(const wu_graph G)
 {
    for (uint32_t i = 0; i < G->n; i++)
    {
@@ -169,7 +171,7 @@ void wug_print(wu_graph G)
    }
 }
 
-void DestroyGraph(wu_graph G)
+void wug_destroy(const wu_graph G)
 {
    for (uint32_t i = 0; i < G->n; i++)
    {

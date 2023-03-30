@@ -16,11 +16,11 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive (unsigned) integer
 typedef uint (*HashFunc)(Pointer value);
 
-
 // when max load factor is exceeded, rehashing operation occurs
 #define MAX_LOAD_FACTOR 1.2
 
-// initializes hash table
+
+// creates hash table
 HashTable hash_create(const HashFunc, const CompareFunc, const DestroyFunc);
 
 // inserts value at the hash table
