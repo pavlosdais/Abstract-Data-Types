@@ -90,7 +90,7 @@ void vector_push_back(const Vector vector, const Pointer data)
     if (vector->size == vector->capacity) 
     {
         vector->capacity *= 2;
-	    vector->arr = realloc(vector->arr,  vector->capacity * sizeof(*(vector->arr)));
+        vector->arr = realloc(vector->arr,  vector->capacity * sizeof(*(vector->arr)));
     }
 
     // insert data
