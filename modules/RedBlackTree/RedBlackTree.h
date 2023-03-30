@@ -1,6 +1,7 @@
 #pragma once  // include at most once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef void* Pointer;
 
@@ -16,29 +17,29 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef struct Set* RBTree;
 
 
-// initializes red-black tree
-void rbt_init(RBTree*, CompareFunc, DestroyFunc);
+// creates red-black tree
+RBTree rbt_create(const CompareFunc, const DestroyFunc);
 
 // returns true if the item is inserted, in any other case false
-bool rbt_insert(RBTree, Pointer value);
+bool rbt_insert(const RBTree, const Pointer value);
 
 // returns true if the item is deleted, in any other case false
-bool rbt_remove(RBTree, Pointer value);
+bool rbt_remove(const RBTree, const Pointer value);
 
 // returns true if the value exists, false otherwise
-bool rbt_exists(RBTree, Pointer value);
+bool rbt_exists(const RBTree, const Pointer value);
 
 // returns the number of elements in the tree
-uint rbt_size(RBTree);
+uint64_t rbt_size(const RBTree);
 
 // returns true if the tree is empty, false otherwise
-bool is_rbt_empty(RBTree);
+bool is_rbt_empty(const RBTree);
 
 // changes the destroy function and returns the old one
-DestroyFunc rbt_set_destroy(RBTree, DestroyFunc);
+DestroyFunc rbt_set_destroy(const RBTree, const DestroyFunc);
 
 // destroys the tree and its values if a destroy function was given
-void rbt_destroy(RBTree);
+void rbt_destroy(const RBTree);
 
 //////////////////////////////
 // tree traversal functions //
@@ -46,19 +47,19 @@ void rbt_destroy(RBTree);
 typedef struct tnode* RBTreeNode;  // node handle
 
 // returns the value of the node
-Pointer rbt_node_value(RBTreeNode);
+Pointer rbt_node_value(const RBTreeNode);
 
 // returns the node with that value, if it exists, otherwise NULL
-RBTreeNode rbt_find_node(RBTree, Pointer value);
+RBTreeNode rbt_find_node(const RBTree, const Pointer value);
 
 // returns the previous, in order, node of target or NULL if there is no previous value
-RBTreeNode rbt_find_previous(RBTreeNode);
+RBTreeNode rbt_find_previous(const RBTreeNode);
 
 // returns the next, in order, node of target or NULL if there is no next value
-RBTreeNode rbt_find_next(RBTreeNode);
+RBTreeNode rbt_find_next(const RBTreeNode);
 
 // returns the node with the lowest value
-RBTreeNode rbt_first(RBTree);
+RBTreeNode rbt_first(const RBTree);
 
 // returns the node with the highest value
-RBTreeNode rbt_last(RBTree);
+RBTreeNode rbt_last(const RBTree);

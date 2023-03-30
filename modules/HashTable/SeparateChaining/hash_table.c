@@ -8,9 +8,9 @@ typedef unsigned char sint;
 // bucket
 typedef struct n
 {
-    Pointer data;     // pointer to the data we are storing
-    uint hash_value;  // hash value of the data
-    struct n* next;   // next element in the bucket (NULL if it's the last)
+    Pointer data;         // pointer to the data we are storing
+    uint32_t hash_value;  // hash value of the data
+    struct n* next;       // next element in the bucket (NULL if it's the last)
 }
 n;
 typedef struct n* node;
@@ -18,8 +18,8 @@ typedef struct n* node;
 typedef struct hash_table
 {
     node* buckets;        // buckets (lists) storing the data
-    uint capacity;        // number of buckets
-    uint elements;        // number of elements in the hash table
+    uint64_t capacity;    // number of buckets
+    uint64_t elements;    // number of elements in the hash table
     HashFunc hash;        // function that hashes an element into a positive integer
     CompareFunc compare;  // function that compares the elements
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
@@ -30,50 +30,52 @@ hash_table;
 
 
 // available number of buckets, preferably prime numbers since it has been proven they have better behavior
-static uint hash_sizes[] =
+static uint64_t hash_sizes[] =
     { 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241,
       786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611,
       402653189, 805306457, 1610612741, 3221225479 };
 
 // function prototypes
-static inline void insert(HashTable ht, const Pointer value, const uint hash_value);
-static inline void rehash(HashTable ht);
-static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value);
+static inline void insert(const HashTable ht, const Pointer value, const uint32_t hash_value);
+static inline void rehash(const HashTable ht);
+static inline bool hash_search(const HashTable ht, const Pointer value, uint32_t* hash_value);
 
-void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
+HashTable hash_create(const HashFunc hash, const CompareFunc compare, const DestroyFunc destroy)
 {
     assert(hash != NULL && compare != NULL);  // a hash and compare function needs to be given
     
-    *ht = malloc(sizeof(hash_table));
-    assert(*ht != NULL);  // allocation failure
+    HashTable ht = malloc(sizeof(hash_table));
+    assert(ht != NULL);  // allocation failure
 
-    (*ht)->capacity = STARTING_HASH_CAPACITY;
+    ht->capacity = STARTING_HASH_CAPACITY;
 
-    (*ht)->buckets = calloc(sizeof(n), (*ht)->capacity);  // allocate memory for the buckets
-    assert((*ht)->buckets != NULL);  // allocation failure
+    ht->buckets = calloc(sizeof(n), ht->capacity);  // allocate memory for the buckets
+    assert(ht->buckets != NULL);  // allocation failure
 
-    (*ht)->elements = 0;
-    (*ht)->hash = hash;
-    (*ht)->compare = compare;
-    (*ht)->destroy = destroy;
+    ht->elements = 0;
+    ht->hash = hash;
+    ht->compare = compare;
+    ht->destroy = destroy;
+
+    return ht;
 }
 
-uint hash_size(HashTable ht)
+uint64_t hash_size(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements;
 }
 
-bool is_ht_empty(HashTable ht)
+bool is_ht_empty(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements == 0;
 }
 
-bool hash_insert(HashTable ht, Pointer value)
+bool hash_insert(const HashTable ht, const Pointer value)
 {
     // check to see if value already exists in the hash table
-    uint hash_value;
+    uint32_t hash_value;
     if (hash_search(ht, value, &hash_value))  // value already exists
     {
         if (ht->destroy != NULL)
@@ -94,7 +96,7 @@ bool hash_insert(HashTable ht, Pointer value)
     return true;
 }
 
-static inline void insert(HashTable ht, const Pointer value, const uint hash_value)
+static inline void insert(const HashTable ht, const Pointer value, const uint32_t hash_value)
 {
     // create new bucket (list)
     node new_node = malloc(sizeof(n));
@@ -105,14 +107,14 @@ static inline void insert(HashTable ht, const Pointer value, const uint hash_val
     new_node->hash_value = hash_value;
 
     // insert value at the start of the bucket
-    uint bucket = hash_value % ht->capacity;
+    uint32_t bucket = hash_value % ht->capacity;
     new_node->next = ht->buckets[bucket];
     ht->buckets[bucket] = new_node;
 }
 
 static inline void rehash(HashTable ht)
 {
-    uint old_capacity = ht->capacity;  // save old number of buckets
+    uint64_t old_capacity = ht->capacity;  // save old number of buckets
     node* old_buckets = ht->buckets;  // save previous buckets
 
     // binary search in array hash_sizes to find the next number of buckets
@@ -137,7 +139,7 @@ static inline void rehash(HashTable ht)
     }
 
     // start rehash operation
-    for (uint i = 0; i < old_capacity; i++)
+    for (uint64_t i = 0; i < old_capacity; i++)
     {
         node bkt = old_buckets[i];
     
@@ -154,13 +156,13 @@ static inline void rehash(HashTable ht)
     free(old_buckets);
 }
 
-bool hash_remove(HashTable ht, Pointer value)
+bool hash_remove(const HashTable ht, const Pointer value)
 {
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
     // hash to the find the potential bucket the value belongs to
-    uint hash_value = ht->hash(value) % ht->capacity;
+    uint32_t hash_value = ht->hash(value) % ht->capacity;
 
     node* bkt = &(ht->buckets[hash_value]);
     
@@ -188,14 +190,14 @@ bool hash_remove(HashTable ht, Pointer value)
     return false;
 }
 
-bool hash_exists(HashTable ht, Pointer value)
+bool hash_exists(const HashTable ht, const Pointer value)
 {
-    uint tmp = ht->hash(value);  // hash the value
+    uint32_t tmp = ht->hash(value);  // hash the value
 
     return hash_search(ht, value, &tmp);
 }
 
-static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value)
+static inline bool hash_search(const HashTable ht, const Pointer value, uint32_t* hash_value)
 {
     *hash_value = ht->hash(value);
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
@@ -216,7 +218,7 @@ static inline bool hash_search(HashTable ht, Pointer value, uint* hash_value)
     return false;
 }
 
-DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
+DestroyFunc hash_set_destroy(const HashTable ht, const DestroyFunc new_destroy_func)
 {
     assert(ht != NULL);
 
@@ -225,14 +227,14 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void hash_destroy(HashTable ht)
+void hash_destroy(const HashTable ht)
 {
     assert(ht != NULL);
 
     // destroy the buckets
     if (ht->elements != 0)
     {
-        for (uint i = 0; i < ht->capacity; i++)
+        for (uint64_t i = 0; i < ht->capacity; i++)
         {
             node bkt = ht->buckets[i];
             while (bkt != NULL)

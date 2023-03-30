@@ -10,8 +10,7 @@ void printFunc(Pointer value);
 int main(void)
 {
     // create stack
-    Stack st;
-    stack_init(&st, free);
+    Stack st = stack_create(free);
 
     // test push
     int a = 1000;
@@ -25,7 +24,7 @@ int main(void)
     a = 7000;
     stack_push(st, createData(a));
 
-    printf("Total number of elements after insertion: %d\n", stack_size(st));
+    printf("Total number of elements after insertion: %ld\n", stack_size(st));
 
     /*
     Stack, by now, looks like this:
@@ -49,7 +48,7 @@ int main(void)
     printFunc(b); printf("\n");
     free(b);
 
-    printf("Total number of elements after deletion: %d\n", stack_size(st));
+    printf("Total number of elements after deletion: %ld\n", stack_size(st));
 
     // free stack
     stack_destroy(st);

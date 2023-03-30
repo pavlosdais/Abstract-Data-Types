@@ -13,8 +13,7 @@ int* createData(int a);
 int main(void)
 {
     // create hash table
-    HashTable ht;
-    hash_init(&ht, hash_int, compareFunction, free);
+    HashTable ht = hash_create(hash_int, compareFunction, free);
 
     // create random input
     int* arr = malloc(sizeof(int) * NUM_OF_ELEMENTS);
@@ -26,7 +25,6 @@ int main(void)
     for (i = 0; i < NUM_OF_ELEMENTS; i++)
         arr[i] = rand() % RAND_MAX;
 
-    
     clock_t cur_time;
     double time_insert, time_search, time_delete;
 
@@ -62,7 +60,7 @@ int main(void)
     time_delete = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate remove time
 
     printf("Deleted %d items\n", a);
-    printf("Total number of elements after deletion: %d\n", hash_size(ht));
+    printf("Total number of elements after deletion: %ld\n", hash_size(ht));
     if (hash_size(ht) + a != i)
         printf("ERROR IN DELETION");
     else

@@ -1,12 +1,14 @@
 #pragma once  // include at most once
 
+#include <stdint.h>
+
 // needed typedefs
 typedef int Vertex;
 typedef struct _wu_graph* wu_graph;
-typedef unsigned int cost;  // the cost of the edge
+typedef uint32_t cost;  // the cost of the edge
 
 // initializes weighted undirected graph
-void wug_init(wu_graph*, unsigned int num_of_vertices);
+void wug_init(wu_graph*, uint32_t num_of_vertices);
 
 // inserts edge (A-B) with its weight at the graph
 void wug_insert(wu_graph, Vertex A, Vertex B, cost);

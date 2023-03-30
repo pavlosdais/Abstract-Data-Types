@@ -1,5 +1,7 @@
 #pragma once  // include at most once
 
+#include <stdint.h>
+
 // needed typedefs
 typedef int Vertex;
 typedef struct _undir_graph* undir_graph;
@@ -8,7 +10,7 @@ typedef struct _undir_graph* undir_graph;
 typedef void (*VisitFunc)(Vertex value);
 
 // initializes undirected graph
-void ug_init(undir_graph* G, unsigned int num_of_vertices, VisitFunc visit);
+void ug_init(undir_graph* G, uint32_t num_of_vertices, VisitFunc visit);
 
 // inserts edge (A-B) at the graph
 void ug_insert(undir_graph G, Vertex A, Vertex B);

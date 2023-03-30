@@ -14,40 +14,42 @@ typedef struct StackNode* StackNodePointer;
 typedef struct StackSet
 {
     StackNodePointer top;  // node at the top of the stack, NULL if the stack is empty
-    uint size;             // number of elements in the stack
+    uint64_t size;         // number of elements in the stack
     DestroyFunc destroy;   // function that destroys the elements, NULL if not
 }
 StackSet;
 
-void stack_init(Stack* S, DestroyFunc destroy)
+Stack stack_create(const DestroyFunc destroy)
 {
-    *S = malloc(sizeof(StackSet));
-    assert(*S != NULL);  // allocation failure
+    Stack S = malloc(sizeof(StackSet));
+    assert(S != NULL);  // allocation failure
     
-    (*S)->top = NULL;
-    (*S)->destroy = destroy;
-    (*S)->size = 0;
+    S->top = NULL;
+    S->destroy = destroy;
+    S->size = 0;
+
+    return S;
 }
 
-uint stack_size(Stack S)
+uint64_t stack_size(const Stack S)
 {
     assert(S != NULL);
     return S->size;
 }
 
-bool is_stack_empty(Stack S)
+bool is_stack_empty(const Stack S)
 {
     assert(S != NULL);
     return (S->top == NULL);
 }
 
-Pointer stack_top_value(Stack S)
+Pointer stack_top_value(const Stack S)
 {
     assert(S != NULL);
     return (S->top->value);
 }
 
-DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func)
+DestroyFunc stack_set_destroy(const Stack S, const DestroyFunc new_destroy_func)
 {
     assert(S != NULL);
     
@@ -56,7 +58,7 @@ DestroyFunc stack_set_destroy(Stack S, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void stack_push(Stack S, Pointer value)
+void stack_push(const Stack S, const Pointer value)
 {
     assert(S != NULL);
 
@@ -75,7 +77,7 @@ void stack_push(Stack S, Pointer value)
     S->size++;  // value pushed, increment the number of elements in the stack
 }
 
-Pointer stack_pop(Stack S)
+Pointer stack_pop(const Stack S)
 {
     if (is_stack_empty(S))
         return NULL;
@@ -93,7 +95,7 @@ Pointer stack_pop(Stack S)
     return data;
 }
 
-void stack_destroy(Stack S)
+void stack_destroy(const Stack S)
 {
     assert(S != NULL);
     

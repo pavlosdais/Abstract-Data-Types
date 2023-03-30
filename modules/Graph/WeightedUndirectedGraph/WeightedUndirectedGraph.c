@@ -16,12 +16,12 @@ typedef struct edge* Edge;
 
 typedef struct _wu_graph
 {
-   uint n;           // number of vertices in the graph
+   uint32_t n;       // number of vertices in the graph
    Edge* firstedge;  // adjacency list representation
 }
 _wu_graph;
 
-void wug_init(wu_graph* G, uint num_of_vertices)
+void wug_init(wu_graph* G, uint32_t num_of_vertices)
 {
    *G = malloc(sizeof(_wu_graph));
    assert(*G != NULL);  // allocation failure
@@ -61,15 +61,15 @@ void wug_insert(wu_graph G, Vertex A, Vertex B, cost weight)
 typedef struct pq* PQueue;
 typedef struct n
 {
-   int v;                // vertex v
-   unsigned int weight;  // weight of v
+   int v;            // vertex v
+   uint32_t weight;  // weight of vertex
 }
 n;
 // priority queue
-static PQueue createPQueue(uint n, int* E, unsigned int* C);
+static PQueue createPQueue(uint32_t n, int* E, uint32_t* C);
 static n pq_remove(PQueue PQ);
 static bool is_pq_empty(PQueue PQ);
-static void updateWeights(PQueue PQ, int v, unsigned int new_weight);
+static void updateWeights(PQueue PQ, int v, uint32_t new_weight);
 static bool pq_exists(PQueue PQ, int v);
 static void pq_destroy(PQueue PQ);
 
@@ -154,7 +154,7 @@ static void print_min_span_tree(wu_graph G, int* E, int n)
 
 void wug_print(wu_graph G)
 {
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       printf("[%d]", i);
@@ -171,7 +171,7 @@ void wug_print(wu_graph G)
 
 void DestroyGraph(wu_graph G)
 {
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       while (a != NULL)
@@ -195,8 +195,8 @@ typedef struct pq
 {
    node arr;        // array of nodes containing the data
    int* pos;        // position of vertices in the queue
-   uint curr_size;  // current size of the heap
-   uint capacity;   // max capacity of the heap
+   uint32_t curr_size;  // current size of the heap
+   uint32_t capacity;   // max capacity of the heap
 }
 pq;
 
@@ -206,9 +206,9 @@ pq;
 #define find_right_child(i) (2*i + 2)
 
 // function prototype
-static void bubble_down(PQueue PQ, uint node);
+static void bubble_down(PQueue PQ, uint32_t node);
 
-static void pq_init(PQueue* PQ, unsigned int size)
+static void pq_init(PQueue* PQ, uint32_t size)
 {
    *PQ = malloc(sizeof(pq));
    assert(*PQ != NULL);  // allocation failure
@@ -229,14 +229,14 @@ static bool is_pq_empty(PQueue PQ)
    return PQ->curr_size == 0;
 }
 
-static PQueue createPQueue(uint n, int* E, uint* C)
+static PQueue createPQueue(uint32_t n, int* E, uint32_t* C)
 {
    // create priority queue
    PQueue pq;
    pq_init(&pq, n);
 
    // initialize pq
-   for (uint i = 0; i < n; i++)
+   for (uint32_t i = 0; i < n; i++)
    {
       C[i] = INT_MAX;
       E[i] = INT_MIN;
@@ -270,15 +270,15 @@ static n pq_remove(PQueue PQ)
    return root;
 }
 
-static void bubble_down(PQueue PQ, uint node)
+static void bubble_down(PQueue PQ, uint32_t node)
 {
    // get left child
-   uint left = find_left_child(node);
+   uint32_t left = find_left_child(node);
    if (left > PQ->curr_size)  // children do not exist
       return;
 
    // get right child
-   uint max_child, right = find_right_child(node);
+   uint32_t max_child, right = find_right_child(node);
 
    // find max child
    max_child = left;
@@ -300,14 +300,14 @@ static void bubble_down(PQueue PQ, uint node)
    }
 }
 
-static void updateWeights(PQueue PQ, int v, unsigned int new_weight)
+static void updateWeights(PQueue PQ, int v, uint32_t new_weight)
 {
    // update weight for vertex v
-   uint curr_node = PQ->pos[v];
+   uint32_t curr_node = PQ->pos[v];
    PQ->arr[curr_node].weight = new_weight;
 
    // heapify
-   uint parent = find_parent(curr_node);
+   uint32_t parent = find_parent(curr_node);
    while (curr_node > 0 && PQ->arr[curr_node].weight < PQ->arr[parent].weight)
    {
       // swap positions

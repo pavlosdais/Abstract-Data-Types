@@ -12,37 +12,39 @@ QueueNode;
 
 typedef struct queue
 {
-    QueueNode* head;       // head node
-    QueueNode* tail;       // tail node
-    uint num_of_elements;  // number of elements in the queue
-    DestroyFunc destroy;   // function that destroys the elements, NULL if not
+    QueueNode* head;           // head node
+    QueueNode* tail;           // tail node
+    uint64_t num_of_elements;  // number of elements in the queue
+    DestroyFunc destroy;       // function that destroys the elements, NULL if not
 }
 queue;
 
-void queue_init(Queue* Q, DestroyFunc destroy)
+Queue queue_create(const DestroyFunc destroy)
 {
-    *Q = malloc(sizeof(queue));
-    assert(*Q != NULL);  // allocation failure
+    Queue Q = malloc(sizeof(queue));
+    assert(Q != NULL);  // allocation failure
 
-    (*Q)->head = NULL;
-    (*Q)->tail = NULL;
-    (*Q)->destroy= destroy;
-    (*Q)->num_of_elements = 0;
+    Q->head = NULL;
+    Q->tail = NULL;
+    Q->destroy= destroy;
+    Q->num_of_elements = 0;
+
+    return Q;
 }
 
-uint queue_size(Queue Q)
+uint64_t queue_size(const Queue Q)
 {
     assert(Q != NULL);
     return Q->num_of_elements;
 }
 
-bool is_queue_empty(Queue Q)
+bool is_queue_empty(const Queue Q)
 {
     assert(Q != NULL);
     return (Q->head == NULL);
 }
 
-void queue_enqueue(Queue Q, Pointer value)
+void queue_enqueue(const Queue Q, const Pointer value)
 {
     assert(Q != NULL);
 
@@ -67,7 +69,7 @@ void queue_enqueue(Queue Q, Pointer value)
     Q->num_of_elements++;
 }
 
-void queue_sorted_insert(Queue Q, Pointer value, CompareFunc compare)
+void queue_sorted_insert(const Queue Q, const Pointer value, const CompareFunc compare)
 {
     assert(Q != NULL);
 
@@ -107,7 +109,7 @@ void queue_sorted_insert(Queue Q, Pointer value, CompareFunc compare)
     tmp->next = new_node;
 }
 
-Pointer queue_dequeue(Queue Q)
+Pointer queue_dequeue(const Queue Q)
 {
     if (is_queue_empty(Q))
         return NULL;
@@ -127,7 +129,7 @@ Pointer queue_dequeue(Queue Q)
     return value;
 }
 
-DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func)
+DestroyFunc queue_set_destroy(const Queue Q, const DestroyFunc new_destroy_func)
 {
     assert(Q != NULL);
 
@@ -136,7 +138,7 @@ DestroyFunc queue_set_destroy(Queue Q, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void queue_destroy(Queue Q)
+void queue_destroy(const Queue Q)
 {
     assert(Q != NULL);
 

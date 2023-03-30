@@ -18,7 +18,7 @@ typedef struct edge* Edge;
 
 typedef struct _dir_graph
 {
-   uint n;           // number of vertices in the graph
+   uint32_t n;       // number of vertices in the graph
    Edge* firstedge;  // adjacency list representation
    VisitFunc visit;  // function that visits the vertices
 }
@@ -27,7 +27,7 @@ _dir_graph;
 // function prototype
 static Vertex* createVertex(Vertex V);
 
-void dg_init(dir_graph* G, uint num_of_vertices, VisitFunc visit)
+void dg_init(dir_graph* G, uint32_t num_of_vertices, VisitFunc visit)
 {
    assert(visit != NULL);  // a visit function needs to be given
 
@@ -79,7 +79,7 @@ void dg_print(dir_graph G)
 {
    assert(G != NULL);
 
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       
@@ -219,13 +219,13 @@ static void TopSort(dir_graph G, Toporder T);
 void dg_bts(dir_graph G)
 {
    Toporder T = malloc(sizeof(*T) * G->n);
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
       T[i] = -1;
    
    TopSort(G, T);
 
    // print the order
-   for (uint v = 0; v < G->n; v++)
+   for (uint32_t v = 0; v < G->n; v++)
    {
       if (T[v] == -1)
          break;
@@ -242,16 +242,15 @@ static void TopSort(dir_graph G, Toporder T)
    assert(predecessorcount != NULL);  // allocation failure
 
    // increase the predecessor count for each vertex that is a successor of another one
-   for (uint v = 0; v < G->n; v++)
+   for (uint32_t v = 0; v < G->n; v++)
       for (Edge curedge=G->firstedge[v]; curedge != NULL; curedge=curedge->nextedge)
          ++predecessorcount[curedge->endpoint];
   
    // initialize a queue
-   Queue Q;
-   queue_init(&Q, free);
+   Queue Q = queue_create(free);
 
    // place all vertices with no predecessors into the queue
-   for (uint v = 0; v < G->n; v++)
+   for (uint32_t v = 0; v < G->n; v++)
       if (predecessorcount[v] == 0)
          queue_enqueue(Q, createVertex(v));
   
@@ -287,7 +286,7 @@ dir_graph dg_reverse(dir_graph G)
    dir_graph revG;
    dg_init(&revG, G->n, G->visit);
 
-   for (uint v = 0; v < G->n; v++)
+   for (uint32_t v = 0; v < G->n; v++)
    {
       Edge a = G->firstedge[v];
       while (a != NULL)
@@ -314,16 +313,15 @@ void dg_scc(dir_graph G)
    assert(visited != NULL);  // allocation failure
 
    // create stack
-   Stack L;
-   stack_init(&L, free);
+   Stack L = stack_create(free);
 
    // perform dfs on g and store the finish order of each vertex on a stack
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
       if (!visited[i])
          Visit(G, i, visited, L);
 
    // reset visited array
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
       visited[i] = false;
 
    // get reversed graph
@@ -353,7 +351,7 @@ void dg_scc(dir_graph G)
 
 void dg_destroy(dir_graph G)
 {
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       while (a != NULL)

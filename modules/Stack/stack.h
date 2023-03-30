@@ -1,6 +1,7 @@
 #pragma once  // include at most once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef void* Pointer;
 
@@ -10,8 +11,8 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef struct StackSet* Stack;
 
 
-// initializes stack
-void stack_init(Stack*, DestroyFunc destroy);
+// creates returns stack
+Stack stack_create(const DestroyFunc);
 
 // pushes value at the top of the stack
 void stack_push(Stack, Pointer value);
@@ -20,7 +21,7 @@ void stack_push(Stack, Pointer value);
 Pointer stack_pop(Stack);
 
 // returns the size of the stack
-uint stack_size(Stack);
+uint64_t stack_size(Stack);
 
 // returns true if the stack is empty, false otherwise
 bool is_stack_empty(Stack);

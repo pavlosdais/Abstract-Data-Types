@@ -18,7 +18,7 @@ typedef struct edge* Edge;
 
 typedef struct _undir_graph
 {
-   uint n;           // number of vertices in the graph
+   uint32_t n;       // number of vertices in the graph
    Edge* firstedge;  // adjacency list representation
    VisitFunc visit;  // function that visits the vertices
 }
@@ -32,7 +32,7 @@ typedef struct p
 }
 p;
 
-void ug_init(undir_graph* G, uint num_of_vertices, VisitFunc visit)
+void ug_init(undir_graph* G, uint32_t num_of_vertices, VisitFunc visit)
 {
    assert(visit != NULL);  // a visit function needs to be given
 
@@ -71,7 +71,7 @@ void ug_insert(undir_graph G, Vertex A, Vertex B)
 
 void ug_print(undir_graph G)
 {
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       printf("[%d]", i);
@@ -101,12 +101,10 @@ void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal)
    Edge curedge;
 
    // create queue - necessary for the bfs algorithm
-   Queue Q;
-   queue_init(&Q, free);
+   Queue Q = queue_create(free);
 
    // create stack that stores vertices that are not the goal vertex
-   Stack S;
-   stack_init(&S, free);
+   Stack S = stack_create(free);
 
    point a = CreatePoint(start, NULL);
    queue_enqueue(Q, a);
@@ -151,7 +149,7 @@ void ug_simplepathcheck(undir_graph G, Vertex start, Vertex goal)
 
 void ug_destroy(undir_graph G)
 {
-   for (uint i = 0; i < G->n; i++)
+   for (uint32_t i = 0; i < G->n; i++)
    {
       Edge a = G->firstedge[i];
       while (a != NULL)

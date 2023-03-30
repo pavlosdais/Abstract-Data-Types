@@ -25,48 +25,50 @@ typedef struct tnode* RBTreeNode;
 struct Set
 {
     RBTreeNode root;      // root node, NULL if the the tree is empty
-    uint size;            // number of elements in the tree
+    uint64_t size;        // number of elements in the tree
     CompareFunc compare;  // function that compares the elements - dictates the order of the elements
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
 };
 
 // function prototypes
-static inline void right_rotation(RBTreeNode* root, RBTreeNode* node);
-static inline void left_rotation(RBTreeNode* root, RBTreeNode* node);
-static inline RBTreeNode find_successor(RBTreeNode node);
-static inline void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b);
-static inline void fix_insert(RBTreeNode* root, RBTreeNode* node);
-static inline void fix_remove(RBTreeNode* root, RBTreeNode* node);
+static inline void right_rotation(RBTreeNode*, RBTreeNode*);
+static inline void left_rotation(RBTreeNode*, RBTreeNode*);
+static inline RBTreeNode find_successor(const RBTreeNode);
+static inline void shift_node(RBTreeNode*, const RBTreeNode, const RBTreeNode);
+static inline void fix_insert(RBTreeNode*, RBTreeNode*);
+static inline void fix_remove(RBTreeNode*, RBTreeNode*);
 
 tnode NULLNode = {NULL, BLACK, NULL, NULL, NULL};  // dummy leaf node
 
-void rbt_init(RBTree* Tree, CompareFunc compare, DestroyFunc destroy)
+RBTree rbt_create(const CompareFunc compare, const DestroyFunc destroy)
 {
     assert(compare != NULL);  // a compare function needs to be given
 
-    *Tree = malloc(sizeof(struct Set));
-    assert(*Tree != NULL);  // allocation failure
+    RBTree Tree = malloc(sizeof(struct Set));
+    assert(Tree != NULL);  // allocation failure
     
-    (*Tree)->size = 0;
-    (*Tree)->root = NULL;
-    (*Tree)->compare = compare;
-    (*Tree)->destroy = destroy;
+    Tree->size = 0;
+    Tree->root = NULL;
+    Tree->compare = compare;
+    Tree->destroy = destroy;
+
+    return Tree;
 }
 
-uint rbt_size(RBTree Tree)
+uint64_t rbt_size(const RBTree Tree)
 {
     assert(Tree != NULL);
     return Tree->size;
 }
 
-bool is_rbt_empty(RBTree Tree)
+bool is_rbt_empty(const RBTree Tree)
 {
     assert(Tree != NULL);
     return Tree->root == NULL;
 }
 
 // creates and returns node
-static RBTreeNode CreateNode()
+static inline RBTreeNode CreateNode()
 {
     RBTreeNode new_node = malloc(sizeof(tnode));
     assert(new_node != NULL);  // allocation failure
@@ -77,7 +79,7 @@ static RBTreeNode CreateNode()
     return new_node;
 }
 
-RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
+RBTreeNode rbt_find_node(const RBTree Tree, const Pointer value)
 {
     assert(Tree != NULL);
 
@@ -98,13 +100,13 @@ RBTreeNode rbt_find_node(RBTree Tree, Pointer value)
     return NULL;
 }
 
-Pointer rbt_node_value(RBTreeNode rbt_node)
+Pointer rbt_node_value(const RBTreeNode rbt_node)
 {
     assert(rbt_node != NULL);
     return rbt_node->data;
 }
 
-bool rbt_insert(RBTree Tree, Pointer value)
+bool rbt_insert(const RBTree Tree, const Pointer value)
 {
     assert(Tree != NULL);
 
@@ -391,7 +393,7 @@ static inline void fix_remove(RBTreeNode* root, RBTreeNode* node)
 }
 
 // destroys the nodes of the tree and their data, if a destroy function is given
-static void destroy_nodes(RBTreeNode node, DestroyFunc destroy_data)
+static void destroy_nodes(const RBTreeNode node, const DestroyFunc destroy_data)
 {
     if (node == &NULLNode)  // base case
         return;
@@ -407,7 +409,7 @@ static void destroy_nodes(RBTreeNode node, DestroyFunc destroy_data)
     free(node);
 }
 
-void rbt_destroy(RBTree Tree)
+void rbt_destroy(const RBTree Tree)
 {
     assert(Tree != NULL);
 
@@ -416,14 +418,14 @@ void rbt_destroy(RBTree Tree)
     free(Tree);                                    // then the tree
 }
 
-bool rbt_exists(RBTree Tree, Pointer value)
+bool rbt_exists(const RBTree Tree, const Pointer value)
 {
     assert(Tree != NULL);
 
     return rbt_find_node(Tree, value) != NULL;
 }
 
-static inline RBTreeNode node_max(RBTreeNode node)
+static inline RBTreeNode node_max(const RBTreeNode node)
 {
     RBTreeNode tmp = node;
     while (tmp->right != &NULLNode)
@@ -432,7 +434,7 @@ static inline RBTreeNode node_max(RBTreeNode node)
     return tmp;
 }
 
-static inline RBTreeNode node_min(RBTreeNode node)
+static inline RBTreeNode node_min(const RBTreeNode node)
 {
     RBTreeNode tmp = node;
     while (tmp->left != &NULLNode)
@@ -441,12 +443,12 @@ static inline RBTreeNode node_min(RBTreeNode node)
     return tmp;
 }
 
-static RBTreeNode find_predecessor(RBTreeNode node)
+static RBTreeNode find_predecessor(const RBTreeNode node)
 {
     return node_max(node->left);
 }
 
-static inline RBTreeNode find_successor(RBTreeNode node)
+static inline RBTreeNode find_successor(const RBTreeNode node)
 {
     return node_min(node->right);
 }
@@ -483,21 +485,21 @@ RBTreeNode rbt_find_next(RBTreeNode target)
     return parent;
 }
 
-RBTreeNode rbt_first(RBTree Tree)
+RBTreeNode rbt_first(const RBTree Tree)
 {
     assert(Tree != NULL);
 
     return node_min(Tree->root);
 }
 
-RBTreeNode rbt_last(RBTree Tree)
+RBTreeNode rbt_last(const RBTree Tree)
 {
     assert(Tree != NULL);
 
     return node_max(Tree->root);
 }
 
-DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func)
+DestroyFunc rbt_set_destroy(const RBTree Tree, const DestroyFunc new_destroy_func)
 {
     assert(Tree != NULL);
 
@@ -507,7 +509,7 @@ DestroyFunc rbt_set_destroy(RBTree Tree, DestroyFunc new_destroy_func)
 }
 
 // node b takes a's place
-static inline void shift_node(RBTreeNode* root, RBTreeNode a, RBTreeNode b)
+static inline void shift_node(RBTreeNode* root, const RBTreeNode a, const RBTreeNode b)
 {
     if (a->parent == NULL)
         *root = b;

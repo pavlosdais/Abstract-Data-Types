@@ -13,54 +13,56 @@ typedef struct n* node;
 typedef struct pq
 {
     node arr;             // array of nodes containing the data
-    uint curr_size;       // current size of the heap
-    uint capacity;        // max capacity of the heap
+    uint64_t curr_size;   // current size of the heap
+    uint64_t capacity;    // max capacity of the heap
     CompareFunc compare;  // function that compares the data - dictates the order of the elements
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
 }
 pq;
 
 // Function prototypes
-static void swap_nodes(node a, node b);
-static inline void bubble_up(PQueue PQ, uint node);
-static inline void bubble_down(PQueue PQ, uint node);
+static inline void swap_nodes(node, node);
+static inline void bubble_up(const PQueue, uint64_t);
+static inline void bubble_down(const PQueue, const uint64_t);
 
 #define ROOT 1
 #define find_parent(a) (a/2)
 #define find_left_child(a) (a*2)
 #define find_right_child(a) (a*2 + 1)
 
-void pq_init(PQueue* PQ, CompareFunc compare, DestroyFunc destroy)
+PQueue pq_create(const CompareFunc compare, const DestroyFunc destroy)
 {
     assert(compare != NULL);
 
-    *PQ = malloc(sizeof(pq));
-    assert(*PQ != NULL);  // allocation failure
+    PQueue PQ = malloc(sizeof(pq));
+    assert(PQ != NULL);  // allocation failure
     
     // allocate memory for the array of nodes
-    (*PQ)->arr = calloc(MIN_SIZE, sizeof( *((*PQ)->arr)) );
+    PQ->arr = calloc(MIN_SIZE, sizeof( *(PQ->arr)) );
 
-    assert((*PQ)->arr != NULL);  // allocation failure
+    assert(PQ->arr != NULL);  // allocation failure
 
-    (*PQ)->curr_size = 0;
-    (*PQ)->capacity = MIN_SIZE;
-    (*PQ)->compare = compare;
-    (*PQ)->destroy = destroy;
+    PQ->curr_size = 0;
+    PQ->capacity = MIN_SIZE;
+    PQ->compare = compare;
+    PQ->destroy = destroy;
+
+    return PQ;
 }
 
-unsigned int pq_size(PQueue PQ)
+uint64_t pq_size(const PQueue PQ)
 {
     assert(PQ != NULL);
     return PQ->curr_size;
 }
 
-bool is_pq_empty(PQueue PQ)
+bool is_pq_empty(const PQueue PQ)
 {
     assert(PQ != NULL);
     return PQ->curr_size == 0;
 }
 
-void pq_insert(PQueue PQ, Pointer value)
+void pq_insert(const PQueue PQ, const Pointer value)
 {
     assert(PQ != NULL);
 
@@ -80,9 +82,9 @@ void pq_insert(PQueue PQ, Pointer value)
     bubble_up(PQ, PQ->curr_size);
 }
 
-static inline void bubble_up(PQueue PQ, uint node)
+static inline void bubble_up(const PQueue PQ, uint64_t node)
 {
-    uint parent = find_parent(node);
+    uint64_t parent = find_parent(node);
 
     // bubble up until you find a tree node
     while (node != ROOT && PQ->compare(PQ->arr[parent].data, PQ->arr[node].data) < 0)
@@ -94,13 +96,13 @@ static inline void bubble_up(PQueue PQ, uint node)
     }
 }
 
-Pointer pq_remove(PQueue PQ)
+Pointer pq_remove(const PQueue PQ)
 {
     if (is_pq_empty(PQ))  // empty priority queue - nothing to remove
         return NULL;
     
     // save the element with the highest priority (which is at the root) and mark it as removed by making it NULL
-    Pointer hp = PQ->arr[ROOT].data;
+    const Pointer hp = PQ->arr[ROOT].data;
     PQ->arr[ROOT].data = NULL;
     
     // root and far right leaf swap
@@ -113,15 +115,15 @@ Pointer pq_remove(PQueue PQ)
     return hp;
 }
 
-static inline void bubble_down(PQueue PQ, uint node)
+static inline void bubble_down(const PQueue PQ, const uint64_t node)
 {
-    uint left_child = find_left_child(node);
+    uint64_t left_child = find_left_child(node);
     if (left_child > PQ->curr_size)  // children do not exist
         return;
     
     // find the child with the highest priority
-    uint right_child = find_right_child(node);
-    uint max_child = left_child;
+    uint64_t right_child = find_right_child(node);
+    uint64_t max_child = left_child;
 
     if (right_child <= PQ->curr_size && PQ->compare(PQ->arr[left_child].data, PQ->arr[right_child].data) < 0)
         max_child = right_child;
@@ -135,7 +137,7 @@ static inline void bubble_down(PQueue PQ, uint node)
     }
 }
 
-DestroyFunc pq_set_destroy(PQueue PQ, DestroyFunc new_destroy_func)
+DestroyFunc pq_set_destroy(const PQueue PQ, const DestroyFunc new_destroy_func)
 {
     assert(PQ != NULL);
 
@@ -144,14 +146,14 @@ DestroyFunc pq_set_destroy(PQueue PQ, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void pq_destroy(PQueue PQ)
+void pq_destroy(const PQueue PQ)
 {
     assert(PQ != NULL);
     
     // if a destroy function was given, destroy the data
     if (PQ->destroy != NULL)
     {
-        for (uint i = 0; i < PQ->capacity; i++)
+        for (uint64_t i = 0; i < PQ->capacity; i++)
         {
             if (PQ->arr[i].data != NULL)
                 PQ->destroy(PQ->arr[i].data);
@@ -161,7 +163,7 @@ void pq_destroy(PQueue PQ)
     free(PQ);
 }
 
-static void swap_nodes(node a, node b)
+static inline void swap_nodes(const node a, const node b)
 {
     node tmp = a->data;
     a->data = b->data;

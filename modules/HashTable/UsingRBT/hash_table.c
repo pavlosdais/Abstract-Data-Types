@@ -8,73 +8,72 @@
 #define FIXED_SIZE 3     // minimum number of elements in the array before inserting them at a rbt
 #define OVERFLOW_SIZE 4  // size at which elements are inserted at a rbt (FIXED_SIZE+1)
 
-typedef unsigned char small_int;
-
 // bucket
 typedef struct n
 {
     RBTree rbt;        // red-black tree
     Pointer* data;     // array
-    small_int arr_el;  // number of elements in the array (if it is equal to FIXED_SIZE, the elements are in the rbt)
+    uint8_t arr_el;    // number of elements in the array (if it is equal to FIXED_SIZE, the elements are in the rbt)
 }
 n;
 
 typedef struct hash_table
 {
     n* buckets;           // buckets (red-black trees) storing the data
-    uint capacity;        // number of buckets
-    uint elements;        // number of elements in the hash table
+    uint64_t capacity;    // number of buckets
+    uint64_t elements;    // number of elements in the hash table
     HashFunc hash;        // function that hashes an element into a positive integer
     CompareFunc compare;  // function that compares the elements
     DestroyFunc destroy;  // function that destroys the elements, NULL if not
 }
 hash_table;
 
-void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
+HashTable hash_create(const HashFunc hash, const CompareFunc compare, const DestroyFunc destroy)
 {
     assert(hash != NULL && compare != NULL);  // a hash and compare function needs to be given
     
-    *ht = malloc(sizeof(hash_table));
-    assert(*ht != NULL);  // allocation failure
+    HashTable ht = malloc(sizeof(hash_table));
+    assert(ht != NULL);  // allocation failure
 
-    (*ht)->capacity = NUM_OF_BUCKETS;
+    ht->capacity = NUM_OF_BUCKETS;
 
-    (*ht)->buckets = calloc(sizeof(n), (*ht)->capacity);  // allocate memory for the buckets
-    assert((*ht)->buckets != NULL);  // allocation failure
+    ht->buckets = calloc(sizeof(n), NUM_OF_BUCKETS);  // allocate memory for the buckets
+    assert(ht->buckets != NULL);  // allocation failure
 
     // allocate memory for the buckets
-    for(uint i = 0; i < (*ht)->capacity; i++)
+    for(uint64_t i = 0; i < NUM_OF_BUCKETS; i++)
     {
-        (*ht)->buckets[i].data = calloc(sizeof(Pointer), FIXED_SIZE);
-        assert((*ht)->buckets[i].data != NULL);  // allocation failure
+        ht->buckets[i].data = calloc(sizeof(Pointer), FIXED_SIZE);
+        assert(ht->buckets[i].data != NULL);  // allocation failure
     }
 
-    (*ht)->elements = 0;
+    ht->capacity = NUM_OF_BUCKETS;
+    ht->elements = 0;
     
     // initialize functions
-    (*ht)->compare = compare;
-    (*ht)->destroy = destroy;
-    (*ht)->hash = hash;
+    ht->compare = compare;
+    ht->destroy = destroy;
+    ht->hash = hash;
 }
 
-uint hash_size(HashTable ht)
+uint64_t hash_size(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements;
 }
 
-bool is_ht_empty(HashTable ht)
+bool is_ht_empty(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements == 0;
 }
 
-bool hash_insert(HashTable ht, Pointer value)
+bool hash_insert(const HashTable ht, const Pointer value)
 {
     assert(ht != NULL);
 
     // find the potential bucket the value belongs to
-    uint bucket = ht->hash(value) % ht->capacity;
+    uint64_t bucket = ht->hash(value) % ht->capacity;
     
     // insert at the rbt
     if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)
@@ -89,7 +88,7 @@ bool hash_insert(HashTable ht, Pointer value)
     {
         // search to see if value already exists
         int empty_space = -1;
-        for (small_int i = 0; i < FIXED_SIZE; i++)
+        for (uint8_t i = 0; i < FIXED_SIZE; i++)
         {
             if (ht->buckets[bucket].data[i] == NULL)
             {
@@ -111,8 +110,8 @@ bool hash_insert(HashTable ht, Pointer value)
         if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)  // overflow
         {
             // move all the elemenets to a rbt
-            rbt_init(&(ht->buckets[bucket].rbt), ht->compare, ht->destroy);
-            for (small_int i = 0; i < FIXED_SIZE; i++)
+            ht->buckets[bucket].rbt = rbt_create(ht->compare, ht->destroy);
+            for (uint8_t i = 0; i < FIXED_SIZE; i++)
             {
                 if (ht->buckets[bucket].data[i] != NULL)
                     rbt_insert(ht->buckets[bucket].rbt, ht->buckets[bucket].data[i]);
@@ -133,13 +132,13 @@ bool hash_insert(HashTable ht, Pointer value)
     return false;
 }
 
-bool hash_remove(HashTable ht, Pointer value)
+bool hash_remove(const HashTable ht, const Pointer value)
 {
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
     // find the potential bucket the value exists in
-    uint bucket = ht->hash(value) % ht->capacity;
+    uint64_t bucket = ht->hash(value) % ht->capacity;
 
     if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)
     {
@@ -153,7 +152,7 @@ bool hash_remove(HashTable ht, Pointer value)
     {
         // search for the value
         bool found = false;
-        small_int i = 0;
+        uint8_t i = 0;
         for (i = 0; i < FIXED_SIZE; i++)
         {
             if (ht->buckets[bucket].data[i] != NULL && ht->compare(ht->buckets[bucket].data[i], value) == 0)
@@ -179,20 +178,20 @@ bool hash_remove(HashTable ht, Pointer value)
     return false;
 }
 
-bool hash_exists(HashTable ht, Pointer value)
+bool hash_exists(const HashTable ht, const Pointer value)
 {
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
     // find the potential bucket the value exists in
-    uint bucket = ht->hash(value) % ht->capacity;
+    uint64_t bucket = ht->hash(value) % ht->capacity;
     
     // search the rbt
     if (ht->buckets[bucket].arr_el == OVERFLOW_SIZE)
         return rbt_exists(ht->buckets[bucket].rbt, value);
     else  // search the array
     {
-        for (small_int i = 0; i < FIXED_SIZE; i++)
+        for (uint8_t i = 0; i < FIXED_SIZE; i++)
         {
             if (ht->buckets[bucket].data[i] != NULL && ht->compare(ht->buckets[bucket].data[i], value) == 0)
                 return true;  // value found
@@ -201,11 +200,11 @@ bool hash_exists(HashTable ht, Pointer value)
     return false;  // value not found
 }
 
-DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
+DestroyFunc hash_set_destroy(const HashTable ht, const DestroyFunc new_destroy_func)
 {
     assert(ht != NULL);
 
-    for (uint i = 0; i < ht->capacity; i++)
+    for (uint64_t i = 0; i < ht->capacity; i++)
     {
         if (ht->buckets[i].arr_el == OVERFLOW_SIZE)  // elements are at a rbt in this bucket
             rbt_set_destroy(ht->buckets[i].rbt, new_destroy_func);
@@ -216,15 +215,15 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void hash_destroy(HashTable ht)
+void hash_destroy(const HashTable ht)
 {
     assert(ht != NULL);
 
-    for (uint i = 0; i < ht->capacity; i++)
+    for (uint64_t i = 0; i < ht->capacity; i++)
     {
         if (ht->buckets[i].arr_el != OVERFLOW_SIZE && ht->destroy != NULL)
         {
-            for (small_int j = 0; j < FIXED_SIZE; j++)
+            for (uint8_t j = 0; j < FIXED_SIZE; j++)
             {
                 if (ht->buckets[i].data[j] != NULL)
                     ht->destroy(ht->buckets[i].data[j]);

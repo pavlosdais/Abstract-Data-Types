@@ -11,8 +11,7 @@ void printFunc(Pointer value);
 int main(void)
 {
     // create priority queue
-    PQueue pq;
-    pq_init(&pq, compareFunction, free);
+    PQueue pq = pq_create(compareFunction, free);
 
     // test insert
     int a = 1000;
@@ -26,7 +25,7 @@ int main(void)
     a = 7000;
     pq_insert(pq, createData(a));
 
-    printf("Total number of elements after insertion: %d\n", pq_size(pq));
+    printf("Total number of elements after insertion: %ld\n", pq_size(pq));
 
     // test remove
     int *b = pq_remove(pq);
@@ -41,7 +40,7 @@ int main(void)
     printFunc(b); printf("\n");
     free(b);
 
-    printf("Total number of elements after deletion: %d\n", pq_size(pq));
+    printf("Total number of elements after deletion: %ld\n", pq_size(pq));
 
     // free priority queue
     pq_destroy(pq);

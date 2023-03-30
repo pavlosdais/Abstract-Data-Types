@@ -1,5 +1,6 @@
 # Abstract Data Types in C
 Implemented ADTs:
+* [Vector](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Vector#readme)
 * [Stack](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Stack#readme)
 * [Queue](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Queue#readme)
 * [Priority Queue](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/PriorityQueue#readme)

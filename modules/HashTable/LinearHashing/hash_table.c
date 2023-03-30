@@ -4,26 +4,26 @@
 #include <limits.h>
 #include "hash_table.h"
 
-typedef unsigned char small_int;
+typedef unsigned char uint8_t;
 
 // bucket
 typedef struct n
 {
-    Pointer data;     // pointer to the data we are storing
-    uint hash_value;  // hash value of the data
-    struct n* next;   // next element in the bucket (NULL if it's the last)
+    Pointer data;         // pointer to the data we are storing
+    uint32_t hash_value;  // hash value of the data
+    struct n* next;       // next element in the bucket (NULL if it's the last)
 }
 n;
 typedef struct n* node;
 
 typedef struct hash_table
 {
-    uint curr_size;                   // used number of buckets
-    uint max_capacity;                // max number of buckets
-    uint elements;                    // number of elements in the hash table
-    uint exponent;                    // current explonent (in collaboration with find_func, it is used to find the hash value)
-    uint next_split;                  // next bucket to be splited
-    small_int* curr_num_of_elements;  // number of elements in each bucket
+    uint64_t curr_size;               // used number of buckets
+    uint64_t max_capacity;            // max number of buckets
+    uint64_t elements;                // number of elements in the hash table
+    uint64_t exponent;                // current explonent (in collaboration with find_func, it is used to find the hash value)
+    uint64_t next_split;              // next bucket to be splited
+    uint8_t* curr_num_of_elements;    // number of elements in each bucket
     node* buckets;                    // buckets (lists) storing the data
     HashFunc hash;                    // function that hashes an element into a positive integer
     CompareFunc compare;              // function that compares the elements
@@ -35,54 +35,54 @@ hash_table;
 #define find_func(i) (1<<i)  // returns 2^i
 
 // Function Prototypes
-static inline void hash_resize(HashTable ht);
-static inline uint get_bucket(HashTable ht, uint hash_value);
-static inline uint hash_search(HashTable ht, Pointer value);
+static inline void hash_resize(const HashTable ht);
+static inline uint32_t get_bucket(const HashTable ht, const uint32_t hash_value);
+static inline uint64_t hash_search(const HashTable ht, const Pointer value);
 
-void hash_init(HashTable* ht, HashFunc hash, CompareFunc compare, DestroyFunc destroy)
+HashTable hash_create(const HashFunc hash, const CompareFunc compare, const DestroyFunc destroy)
 {
     assert(hash != NULL && compare != NULL);  // a hash and compare function needs to be given
     
-    *ht = malloc(sizeof(hash_table));
-    assert(*ht != NULL);  // allocation failure
+    HashTable ht = malloc(sizeof(hash_table));
+    assert(ht != NULL);  // allocation failure
 
-    (*ht)->buckets = calloc(sizeof(n), STARTING_HASH_CAPACITY);  // allocate memory for the buckets
-    assert((*ht)->buckets != NULL);  // allocation failure
+    ht->buckets = calloc(sizeof(n), STARTING_HASH_CAPACITY);  // allocate memory for the buckets
+    assert(ht->buckets != NULL);  // allocation failure
 
-    (*ht)->curr_num_of_elements = calloc(sizeof(small_int), STARTING_HASH_CAPACITY);
-    assert((*ht)->curr_num_of_elements != NULL);  // allocation failure
+    ht->curr_num_of_elements = calloc(sizeof(uint8_t), STARTING_HASH_CAPACITY);
+    assert(ht->curr_num_of_elements != NULL);  // allocation failure
 
-    (*ht)->max_capacity = STARTING_HASH_CAPACITY;
-    (*ht)->elements = 0;
-    (*ht)->exponent = 0;
+    ht->max_capacity = STARTING_HASH_CAPACITY;
+    ht->elements = 0;
+    ht->exponent = 0;
     
-    (*ht)->curr_size = 1;
-    (*ht)->next_split = 0;
+    ht->curr_size = 1;
+    ht->next_split = 0;
 
     // initialize functions
-    (*ht)->hash = hash;
-    (*ht)->compare = compare;
-    (*ht)->destroy = destroy;
+    ht->hash = hash;
+    ht->compare = compare;
+    ht->destroy = destroy;
 }
 
-uint hash_size(HashTable ht)
+uint64_t hash_size(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements;
 }
 
-bool is_ht_empty(HashTable ht)
+bool is_ht_empty(const HashTable ht)
 {
     assert(ht != NULL);
     return ht->elements == 0;
 }
 
-bool hash_insert(HashTable ht, Pointer value)
+bool hash_insert(const HashTable ht, const Pointer value)
 {
     assert(ht != NULL);
     
     // check to see if value already exists in the hash table
-    const uint bucket = hash_search(ht, value);
+    const uint64_t bucket = hash_search(ht, value);
     if (hash_search(ht, value) == ht->max_capacity)  // value already exists
     {
         // if a destroy function exists, destroy the value
@@ -151,13 +151,13 @@ bool hash_insert(HashTable ht, Pointer value)
     return true;
 }
 
-bool hash_remove(HashTable ht, Pointer value)
+bool hash_remove(const HashTable ht, const Pointer value)
 {
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
     
     // find the potential bucket the value belongs to
-    const uint h = get_bucket(ht, ht->hash(value));
+    const uint64_t h = get_bucket(ht, ht->hash(value));
     node* bkt = &(ht->buckets[h]);
     
     // search for the value at the bucket
@@ -186,7 +186,7 @@ bool hash_remove(HashTable ht, Pointer value)
     return false;
 }
 
-bool hash_exists(HashTable ht, Pointer value)
+bool hash_exists(const HashTable ht, const Pointer value)
 {
     if (is_ht_empty(ht))  // hash table is empty, nothing to search
         return false;
@@ -196,10 +196,10 @@ bool hash_exists(HashTable ht, Pointer value)
 
 // returns the bucket in which the value exists
 // if it does not exist, returns the capacity of the hash table
-static inline uint hash_search(HashTable ht, Pointer value)
+static inline uint64_t hash_search(const HashTable ht, const Pointer value)
 {
     // find the potential bucket the value belongs to
-    const uint h = get_bucket(ht, ht->hash(value));
+    const uint64_t h = get_bucket(ht, ht->hash(value));
 
     // search for the value in the bucket
     node bkt = ht->buckets[h];
@@ -214,35 +214,35 @@ static inline uint hash_search(HashTable ht, Pointer value)
     return h;
 }
 
-static inline uint get_bucket(HashTable ht, uint hash_value)
+static inline uint32_t get_bucket(const HashTable ht, const uint32_t hash_value)
 {
     // use hash function i
-    const uint pos = hash_value % find_func(ht->exponent);
+    const uint32_t pos = hash_value % find_func(ht->exponent);
 
     return (pos < ht->next_split? hash_value % find_func(ht->exponent+1):pos);
 }
 
 // resize by INCREASE_SIZE
-static inline void hash_resize(HashTable ht)
+static inline void hash_resize(const HashTable ht)
 {
-    const uint old_cap = ht->max_capacity;  // old number of buckets
+    const uint64_t old_cap = ht->max_capacity;  // old number of buckets
     ht->max_capacity *= INCREASE_SIZE;  // increase capacity
     
     ht->buckets = realloc(ht->buckets, sizeof(*(ht->buckets)) * ht->max_capacity);
     assert(ht->buckets != NULL);  // allocation failure
 
-    ht->curr_num_of_elements = realloc(ht->curr_num_of_elements, sizeof(small_int) * ht->max_capacity);
+    ht->curr_num_of_elements = realloc(ht->curr_num_of_elements, sizeof(uint8_t) * ht->max_capacity);
     assert(ht->curr_num_of_elements != NULL);  // allocation failure
 
     // initialize arrays to avoid errors
-    for (uint i = old_cap; i < ht->max_capacity; i++)
+    for (uint64_t i = old_cap; i < ht->max_capacity; i++)
     {
         ht->buckets[i] = NULL;
         ht->curr_num_of_elements[i] = 0;
     }
 }
 
-DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
+DestroyFunc hash_set_destroy(const HashTable ht, const DestroyFunc new_destroy_func)
 {
     assert(ht != NULL);
     
@@ -251,12 +251,12 @@ DestroyFunc hash_set_destroy(HashTable ht, DestroyFunc new_destroy_func)
     return old_destroy_func;
 }
 
-void hash_destroy(HashTable ht)
+void hash_destroy(const HashTable ht)
 {
     assert(ht != NULL);
 
     // destroy buckets
-    for (uint i = 0; i < ht->max_capacity; i++)
+    for (uint64_t i = 0; i < ht->max_capacity; i++)
     {
         node bkt = ht->buckets[i];
         while (bkt != NULL)

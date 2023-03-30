@@ -11,8 +11,7 @@ int compareFunction(Pointer v1, Pointer v2);
 int main(void)
 {
     // create queue
-    Queue Q;
-    queue_init(&Q, free);
+    Queue Q = queue_create(free);
 
     // test enqueue
     int a = 1000;
@@ -26,7 +25,7 @@ int main(void)
     a = 7000;
     queue_enqueue(Q, createData(a));
 
-    printf("Total number of elements after insertion: %d\n", queue_size(Q));
+    printf("Total number of elements after insertion: %ld\n", queue_size(Q));
 
     /*
     Queue, by now, looks like this:
@@ -50,7 +49,7 @@ int main(void)
     printFunc(b); printf("\n");
     free(b);
 
-    printf("Total number of elements after deletion: %d\n", queue_size(Q));
+    printf("Total number of elements after deletion: %ld\n", queue_size(Q));
 
     // free queue
     queue_destroy(Q);

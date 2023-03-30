@@ -1,5 +1,7 @@
 #pragma once  // include at most once
 
+#include <stdint.h>
+
 // needed typedefs
 typedef int Vertex;
 typedef struct _dir_graph* dir_graph;
@@ -8,7 +10,7 @@ typedef struct _dir_graph* dir_graph;
 typedef void (*VisitFunc)(Vertex value);
 
 // initializes directed graph
-void dg_init(dir_graph*, unsigned int num_of_vertices, VisitFunc visit);
+void dg_init(dir_graph*, uint32_t num_of_vertices, VisitFunc visit);
 
 // inserts edge (A-B) at the graph
 void dg_insert(dir_graph, Vertex A, Vertex B);

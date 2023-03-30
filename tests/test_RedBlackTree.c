@@ -13,14 +13,13 @@ int* createData(int a);
 int main(void)
 {
     // create rbt table
-    RBTree rbt;
-    rbt_init(&rbt, compareFunction, free);
+    RBTree rbt = rbt_create(compareFunction, free);
 
     // create random input
     int* arr = malloc(sizeof(int) * NUM_OF_ELEMENTS);
     assert(arr != NULL);  // allocation failure
 
-    unsigned int i;
+    uint64_t i;
     time_t t;
     srand((unsigned) time(&t));
     for (i = 0; i < NUM_OF_ELEMENTS; i++)
@@ -47,7 +46,7 @@ int main(void)
     time_search = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate search time
     
     i = rbt_size(rbt);
-    printf("Total number of elements after insertion: %d\n", i);
+    printf("Total number of elements after insertion: %ld\n", i);
     if (out_of_place != 0)
         printf("ERROR IN INSERTING");
     else
@@ -62,7 +61,7 @@ int main(void)
     time_delete = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate remove time
 
     printf("Deleted %d items\n", a);
-    printf("Total number of elements after deletion: %d\n", rbt_size(rbt));
+    printf("Total number of elements after deletion: %ld\n", rbt_size(rbt));
     if (rbt_size(rbt) + a != i)
         printf("ERROR IN DELETION");
     else
