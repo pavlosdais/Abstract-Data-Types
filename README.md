@@ -1,5 +1,5 @@
 # Abstract Data Types in C
-This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs etc). The library contains the following ADT's:
+This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications whilst also being educational, having an easy to understand code. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs etc). The library contains the following ADT's:
 
 * [Vector](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Vector#readme)
 * [Stack](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Stack#readme)
@@ -12,14 +12,14 @@ This is a modern C library containing implementations designed to provide fast a
 The source code of every ADT can be found over at the `modules` directory.
 
 # Usage
-The library can be used using 3 (simple) steps.
+The library can be used in your C project by following 3 (simple) steps.
 
-### * Step 1
-Include the header file of the ADT library.
+### Step 1
+Include the header file of the ADT library
 ```c
 #include "ADT.h"
 ```
-*or* just include the desired header files of the data structures you want to use in your C project.
+*or* just include the desired header files of the data structures you want to use.
 ```c
 #include "vector.h"
 #include "RedBlackTree.h"
@@ -28,11 +28,11 @@ Include the header file of the ADT library.
 #include "hash_table.h"
 ```
 
-### * Step 2
+### Step 2
 Depending on the ADT, provide a number of the following functions upon initialization:
 - **Destroy function** destroys the data (or NULL if you do not want the data to be deleted).
 ```c
-void free(void *ptr);  // function provided by <stdio.h> that deallocates the memory previously allocated.
+void free(void* ptr);  // function provided by <stdio.h> that deallocates memory previously allocated by ptr.
 ```
 
 - **Compare function** compares two Pointers a and b, and returns -1 if a < b, 0 if a = b or 1 if a > b.
@@ -57,7 +57,7 @@ unsigned int hash_int(Pointer value)
 void visit(Vertex x)  { printf("%d ", x); }
 ```
 
-### * Step 3
+### Step 3
 Use `ADTlib.a` on compilation.
 ```bash
 ~$ gcc -o my_prog_exec my_prog.c -L. lib/ADTlib.a
@@ -65,3 +65,6 @@ Use `ADTlib.a` on compilation.
 
 # Examples
 The library can be recompiled by running `make`. Check the `tests` directory for some detailed examples on its usage.
+
+---
+© Pavlos Dais
