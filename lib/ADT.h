@@ -3,6 +3,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+
+/**********************************\
+ ==================================
+            DATA STRUCTURE
+            TYPEDEFS
+\**********************************/
+
+// generic pointer
 typedef void* Pointer;
 
 // Pointer to function that compares 2 elements a and b and returns:
@@ -26,133 +34,146 @@ typedef uint32_t cost;  // weighted graph's edge cost
 typedef void (*VisitFunc)(Vertex V);
 
 
-// ADT handles
-typedef struct vector_struct* Vector;  // vector (Vector)
-typedef struct StackSet* Stack;  // stack (Stack)
-typedef struct queue* Queue;  // queue (Queue)
-typedef struct pq* PQueue; // priority queue (PQueue)
-typedef struct Set* RBTree;  // red-black tree (RBTree)
-typedef struct hash_table* HashTable;  // hash table (HashTable)
-typedef struct _dir_graph* dir_graph;  // directed graph (dir_graph)
+
+
+/**********************************\
+ ==================================
+            DATA STRUCTURE
+            HANDLES
+\**********************************/
+
+typedef struct vector_struct* Vector;      // vector (Vector)
+typedef struct StackSet* Stack;            // stack (Stack)
+typedef struct queue* Queue;               // queue (Queue)
+typedef struct pq* PQueue;                 // priority queue (PQueue)
+typedef struct Set* RBTree;                // red-black tree (RBTree)
+typedef struct hash_table* HashTable;      // hash table (HashTable)
+typedef struct _dir_graph* dir_graph;      // directed graph (dir_graph)
 typedef struct _undir_graph* undir_graph;  // undirected graph (undir_graph)
-typedef struct _wu_graph* wu_graph;  // weighted undirected (wu_graph)
+typedef struct _wu_graph* wu_graph;        // weighted undirected (wu_graph)
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Vector
+/**********************************\
+ ==================================
+            DATA STRUCTURE
+            UTILITIES
+\**********************************/
+
+// VECTOR
 // -requires a destroy function
-Vector vector_create(const DestroyFunc);
-uint64_t vector_size(const Vector);
-Pointer vector_at(const Vector, const uint64_t);
-void vector_set_at(const Vector, const uint64_t, const Pointer);
-void vector_push_back(const Vector, const Pointer);
-bool vector_clear_at(const Vector, const uint64_t);
-void vector_sort(const Vector, const CompareFunc);
-bool vector_binary_search(const Vector vector, const Pointer, const CompareFunc);
-bool vector_search(const Vector, const Pointer, const CompareFunc);
-void vector_destroy(const Vector);
+Vector vector_create(const DestroyFunc);                                           // creates vector
+void vector_push_back(const Vector, const Pointer);                                // inserts the element at the back of the vector
+Pointer vector_at(const Vector, const uint64_t);                                   // returns the element at the given index
+DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);                   // changes the destroy function and returns the old one
+void vector_set_at(const Vector, const uint64_t, const Pointer);                   // returns the element at the given index
+bool vector_clear_at(const Vector, const uint64_t);                                // clear item at given vertex
+uint64_t vector_size(const Vector);                                                // returns vector's size
+bool is_vector_empty(const Vector);                                                // returns true if the priority queue is empty, false otherwise
+void vector_sort(const Vector, const CompareFunc);                                 // sorts the vector using the compare function given
+bool vector_binary_search(const Vector vector, const Pointer, const CompareFunc);  // searches the vector using binary search
+bool vector_search(const Vector, const Pointer, const CompareFunc);                // searches the vector using linear search
+void vector_destroy(const Vector);                                                 // destroys the memory used by the vector
 
 
-// Stack
+// STACK
 // -requires a destroy function
-Stack stack_create(const DestroyFunc);
-void stack_push(const Stack, const Pointer value);
-Pointer stack_pop(const Stack);
-uint64_t stack_size(const Stack);
-bool is_stack_empty(const Stack);
-Pointer stack_top_value(const Stack);
-DestroyFunc stack_set_destroy(const Stack, const DestroyFunc);
-void stack_destroy(const Stack);
+Stack stack_create(const DestroyFunc);                          // creates stack
+void stack_push(const Stack, const Pointer value);              // pushes value at the top of the stack
+Pointer stack_pop(const Stack);                                 // pops value from the top of the stack
+uint64_t stack_size(const Stack);                               // returns the size of the stack
+bool is_stack_empty(const Stack);                               // returns true if the stack is empty, false otherwise
+Pointer stack_top_value(const Stack);                           // returns the value at the top of the stack
+DestroyFunc stack_set_destroy(const Stack, const DestroyFunc);  // changes the destroy function and returns the old one
+void stack_destroy(const Stack);                                // destroys the memory used by the stack
 
 
-// Queue
+// QUEUE
 // -requires a destroy function
-Queue queue_create(const DestroyFunc);
-void queue_enqueue(const Queue, const Pointer);
-void queue_sorted_insert(const Queue, const Pointer, CompareFunc);
-Pointer queue_dequeue(Queue);
-uint64_t queue_size(const Queue);
-bool is_queue_empty(const Queue);
-DestroyFunc queue_set_destroy(const Queue, DestroyFunc);
-void queue_destroy(const Queue);
+Queue queue_create(const DestroyFunc);                                    // creates queue
+void queue_enqueue(const Queue, const Pointer);                           // enqueues value at the end of the queue
+void queue_sorted_insert(const Queue, const Pointer, const CompareFunc);  // sorted insert of value
+Pointer queue_dequeue(const Queue);                                       // dequeues value from the start of the queue
+uint64_t queue_size(const Queue);                                         // returns the size of the queue
+bool is_queue_empty(const Queue);                                         // returns true if the queue is empty, false otherwise
+DestroyFunc queue_set_destroy(const Queue, const DestroyFunc);            // changes the destroy function and returns the old one
+void queue_destroy(const Queue);                                          // destroys the memory used by the queue
 
 
-// Priority Queue
+// PRIORITY QUEUE
 // -requires a compare and destroy function
-PQueue pq_create(const CompareFunc, const DestroyFunc);
-void pq_insert(const PQueue, const Pointer value);
-Pointer pq_remove(const PQueue);
-uint64_t pq_size(const PQueue);
-bool is_pq_empty(const PQueue);
-DestroyFunc pq_set_destroy(const PQueue, const DestroyFunc);
-void pq_destroy(const PQueue);
+PQueue pq_create(const CompareFunc, const DestroyFunc);       // creates priority queue
+void pq_insert(const PQueue, const Pointer value);            // inserts value at the priority queue
+Pointer pq_remove(const PQueue);                              // returns the element with the highest priority
+uint64_t pq_size(const PQueue);                               // returns the size of the priority queue
+bool is_pq_empty(const PQueue);                               // returns true if the priority queue is empty, false otherwise
+DestroyFunc pq_set_destroy(const PQueue, const DestroyFunc);  // changes the destroy function and returns the old one
+void pq_destroy(const PQueue);                                // destroys memory used by the priority queue
 
 
-// Red-Black Tree
+// RED-BLACK TREE
 // -requires a compare and destroy function
-typedef struct tnode* RBTreeNode;  // node handle
-RBTree rbt_create(const CompareFunc, const DestroyFunc);
-bool rbt_insert(const RBTree, const Pointer value);
-bool rbt_remove(const RBTree, const Pointer value);
-bool rbt_exists(const RBTree, const Pointer value);
-uint64_t rbt_size(const RBTree);
-bool is_rbt_empty(const RBTree);
-DestroyFunc rbt_set_destroy(const RBTree, const DestroyFunc);
-void rbt_destroy(const RBTree);
-Pointer rbt_node_value(const RBTreeNode);
-RBTreeNode rbt_find_node(const RBTree, const Pointer value);
-RBTreeNode rbt_find_previous(const RBTreeNode);
-RBTreeNode rbt_find_next(const RBTreeNode);
-RBTreeNode rbt_first(const RBTree);
-RBTreeNode rbt_last(const RBTree);
+typedef struct tnode* RBTreeNode;  // rbt node handle
+RBTree rbt_create(const CompareFunc, const DestroyFunc);       // creates red-black tree
+bool rbt_insert(const RBTree, const Pointer);                  // insert the item
+bool rbt_remove(const RBTree, const Pointer);                  // remove the item
+bool rbt_exists(const RBTree, const Pointer);                  // returns true if the value exists, false otherwise
+uint64_t rbt_size(const RBTree);                               // returns the size of the tree
+bool is_rbt_empty(const RBTree);                               // returns true if the tree is empty, false otherwise
+DestroyFunc rbt_set_destroy(const RBTree, const DestroyFunc);  // changes the destroy function and returns the old one
+void rbt_destroy(const RBTree);                                // destroys the memory used by the tree
+Pointer rbt_node_value(const RBTreeNode);                      // returns the value of the node
+RBTreeNode rbt_find_node(const RBTree, const Pointer);         // returns the node with that value, if it exists, otherwise NULL
+RBTreeNode rbt_find_previous(const RBTreeNode);                // returns the previous, in order, node of target
+RBTreeNode rbt_find_next(const RBTreeNode);                    // returns the next, in order, node of target
+RBTreeNode rbt_first(const RBTree);                            // returns the node with the lowest value
+RBTreeNode rbt_last(const RBTree);                             // returns the node with the highest value
 
 
-// Hash Table
+// HASH TABLE
 // -requires a hash, compare and destroy function
-HashTable hash_create(const HashFunc, const CompareFunc, const DestroyFunc);
-bool hash_insert(const HashTable, const Pointer value);
-bool hash_remove(const HashTable, const Pointer value);
-bool hash_exists(const HashTable, const Pointer value);
-uint64_t hash_size(const HashTable);
-bool is_ht_empty(const HashTable);
-DestroyFunc hash_set_destroy(const HashTable, const DestroyFunc);
-void hash_destroy(const HashTable);
+HashTable hash_create(const HashFunc, const CompareFunc, const DestroyFunc);  // creates hash table
+bool hash_insert(const HashTable, const Pointer);                             // inserts value at the hash table
+bool hash_remove(const HashTable, const Pointer);                             // removes the value from the hash table
+bool hash_exists(const HashTable, const Pointer);                             // returns true if value exists in the hash table
+uint64_t hash_size(const HashTable);                                          // returns the number of elements in the hash table
+bool is_ht_empty(const HashTable);                                            // returns true if the hash table is empty, false otherwise
+DestroyFunc hash_set_destroy(const HashTable, const DestroyFunc);             // changes the destroy function and returns the old one
+void hash_destroy(const HashTable);                                           // destroys the memory used by the hash table
 
 // provided hash functions
-unsigned int hash_int(Pointer value);      // hashes an integer
-unsigned int hash_string1(Pointer value);  // hashes a string
-unsigned int hash_string2(Pointer value);  // hashes a string
-unsigned int hash_string3(Pointer value);  // hashes a string
+unsigned int hash_int(Pointer);      // hashes an integer
+unsigned int hash_string1(Pointer);  // hashes a string
+unsigned int hash_string2(Pointer);  // hashes a string
+unsigned int hash_string3(Pointer);  // hashes a string
 
 
-// Directed Graph
+// DIRECTED GRAPH
 // -visit function required
-dir_graph dg_create(const uint32_t, const VisitFunc);
-void dg_insert(const dir_graph, const Vertex A, const Vertex B);
-void dg_print(const dir_graph);
-void dg_dfs(const dir_graph);
-dir_graph dg_reverse(const dir_graph);
-void dg_bts(const dir_graph);
-void dg_scc(const dir_graph);
-void dg_destroy(const dir_graph);
+dir_graph dg_create(const uint32_t, const VisitFunc);             // creates directed graph
+void dg_insert(const dir_graph, const Vertex A, const Vertex B);  // inserts edge (A-B) at the graph
+void dg_print(const dir_graph);                                   // prints the graph
+void dg_dfs(const dir_graph);                                     // depth first traversal of the graph
+dir_graph dg_reverse(const dir_graph);                            // returns reversed graph
+void dg_bts(const dir_graph);                                     // prints a topological ordering of the graph
+void dg_scc(const dir_graph);                                     // prints strongly-connected components
+void dg_destroy(const dir_graph);                                 // destroys the memory used by the directed graph
 
 
-// Undirected Graph
+// UNDIRECTED GRAPH
 // -visit function required
-undir_graph ug_create(const uint32_t, const VisitFunc);
-void ug_insert(undir_graph, Vertex, Vertex);
-void ug_print(const undir_graph);
-void ug_simplepathcheck(const undir_graph, const Vertex, const Vertex);
-void ug_destroy(const undir_graph);
+undir_graph ug_create(const uint32_t, const VisitFunc);                      // creates undirected graph
+void ug_insert(undir_graph, Vertex A, Vertex B);                             // inserts edge (A-B) at the graph
+void ug_print(const undir_graph);                                            // prints the graph
+void ug_simplepathcheck(const undir_graph, const Vertex S, const Vertex G);  // prints a "simple" path between vertices S and G, if such path exists
+void ug_destroy(const undir_graph);                                          // destroys the memory used by the undirected graph
 
 
-// Weighted Undirected Graph
+// WEIGHTED UNDIRECTED GRAPH
 // -no functions required
-wu_graph wug_create(const uint32_t);
-void wug_insert(const wu_graph, const Vertex A, const Vertex B, const cost);
-void wug_print(const wu_graph);
-void wug_minspantree(const wu_graph);
-void wug_destroy(const wu_graph);
+wu_graph wug_create(const uint32_t);                                          // creates weighted undirected graph
+void wug_insert(const wu_graph, const Vertex A, const Vertex B, const cost);  // inserts edge (A-B) with its weight at the graph
+void wug_print(const wu_graph);                                               // prints the graph
+void wug_minspantree(const wu_graph);                                         // prints minimum spanning tree, as well as its total weight
+void wug_destroy(const wu_graph);                                             // destroys the memory used by the weighted undirected graph

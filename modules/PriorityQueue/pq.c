@@ -23,7 +23,7 @@ pq;
 // Function prototypes
 static inline void swap_nodes(node, node);
 static inline void bubble_up(const PQueue, uint64_t);
-static inline void bubble_down(const PQueue, const uint64_t);
+static void bubble_down(const PQueue, const uint64_t);
 
 #define ROOT 1
 #define find_parent(a) (a/2)
@@ -115,7 +115,7 @@ Pointer pq_remove(const PQueue PQ)
     return hp;
 }
 
-static inline void bubble_down(const PQueue PQ, const uint64_t node)
+static void bubble_down(const PQueue PQ, const uint64_t node)
 {
     uint64_t left_child = find_left_child(node);
     if (left_child > PQ->curr_size)  // children do not exist

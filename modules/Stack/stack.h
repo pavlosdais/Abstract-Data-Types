@@ -12,6 +12,7 @@ typedef struct StackSet* Stack;
 
 
 // creates stack
+// -requires a destroy function (or NULL if you want to preserve the data)
 Stack stack_create(const DestroyFunc);
 
 // pushes value at the top of the stack
@@ -32,5 +33,5 @@ Pointer stack_top_value(const Stack);
 // changes the destroy function and returns the old one
 DestroyFunc stack_set_destroy(const Stack, const DestroyFunc);
 
-// frees stack and its values if a destroy function is given
+// destroys the memory used by the stack
 void stack_destroy(const Stack);

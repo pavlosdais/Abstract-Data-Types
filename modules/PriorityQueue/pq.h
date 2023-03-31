@@ -3,12 +3,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// heap's minimum starting size
-#define MIN_SIZE 64
 
 typedef void* Pointer;
-
-typedef struct pq* PQueue;
 
 // Pointer to function that compares 2 elements a and b and returns:
 // < 0  if a < b
@@ -19,8 +15,15 @@ typedef int (*CompareFunc)(Pointer a, Pointer b);
 // Pointer to function that destroys an element value
 typedef void (*DestroyFunc)(Pointer value);
 
+// heap's minimum starting size
+#define MIN_SIZE 16
+
+typedef struct pq* PQueue;
+
 
 // creates priority queue
+// -requires a compare function
+//           a destroy function (or NULL if you want to preserve the data)
 PQueue pq_create(const CompareFunc, const DestroyFunc);
 
 // inserts value at the priority queue

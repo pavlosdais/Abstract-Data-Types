@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+
 typedef void* Pointer;
 
 // Pointer to function that compares 2 elements a and b and returns:
@@ -18,18 +19,20 @@ typedef struct Set* RBTree;
 
 
 // creates red-black tree
+// -requires a compare function
+//           a destroy function (or NULL if you want to preserve the data)
 RBTree rbt_create(const CompareFunc, const DestroyFunc);
 
 // returns true if the item is inserted, in any other case false
-bool rbt_insert(const RBTree, const Pointer value);
+bool rbt_insert(const RBTree, const Pointer);
 
 // returns true if the item is deleted, in any other case false
-bool rbt_remove(const RBTree, const Pointer value);
+bool rbt_remove(const RBTree, const Pointer);
 
 // returns true if the value exists, false otherwise
-bool rbt_exists(const RBTree, const Pointer value);
+bool rbt_exists(const RBTree, const Pointer);
 
-// returns the number of elements in the tree
+// returns the size of the tree
 uint64_t rbt_size(const RBTree);
 
 // returns true if the tree is empty, false otherwise
@@ -38,7 +41,7 @@ bool is_rbt_empty(const RBTree);
 // changes the destroy function and returns the old one
 DestroyFunc rbt_set_destroy(const RBTree, const DestroyFunc);
 
-// destroys the tree and its values if a destroy function was given
+// destroys the memory used by the tree
 void rbt_destroy(const RBTree);
 
 //////////////////////////////
@@ -50,7 +53,7 @@ typedef struct tnode* RBTreeNode;  // node handle
 Pointer rbt_node_value(const RBTreeNode);
 
 // returns the node with that value, if it exists, otherwise NULL
-RBTreeNode rbt_find_node(const RBTree, const Pointer value);
+RBTreeNode rbt_find_node(const RBTree, const Pointer);
 
 // returns the previous, in order, node of target or NULL if there is no previous value
 RBTreeNode rbt_find_previous(const RBTreeNode);

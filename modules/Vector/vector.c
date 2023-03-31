@@ -84,6 +84,15 @@ bool vector_clear_at(const Vector vector, const uint64_t index)
     return false;
 }
 
+DestroyFunc vector_set_destroy(const Vector vector, const DestroyFunc new_destroy)
+{
+    DestroyFunc old_destroy = vector->destroy;
+    vector->destroy = new_destroy;
+    return old_destroy;
+}
+
+bool is_vector_empty(const Vector vector)  { return vector->elements == 0; }
+
 void vector_push_back(const Vector vector, const Pointer data)
 {
     // array is full, double its size
@@ -158,6 +167,7 @@ bool vector_binary_search(const Vector vector, const Pointer data, const Compare
 
 bool vector_search(const Vector vector, const Pointer data, const CompareFunc compare)
 {
+    // linear search
     uint64_t num_of_elements = vector->elements;
     for (uint64_t element_ind = 0 ;; element_ind++)
     {

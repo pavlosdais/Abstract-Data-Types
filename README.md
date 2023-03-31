@@ -9,7 +9,7 @@ This is a modern C library containing implementations designed to provide fast a
 * [Hash Table](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable#readme)
 * [Graph](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Graph#readme)
 
-The source code of every ADT can be found over at the `modules` directory.
+The source code of every ADT can be found over at the [modules](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules) directory.
 
 # Usage
 The library can be used in your C project by following 3 (simple) steps.
@@ -64,7 +64,7 @@ Use `ADTlib.a` on compilation.
 ```
 
 # Examples
-The library can be recompiled by running `make`. Check the `tests` directory for some detailed examples on its usage.
+The library can be recompiled by running `make`. Check the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory for some detailed examples on its usage.
 
 ---
 © Pavlos Dais

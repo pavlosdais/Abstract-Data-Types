@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+
 // needed typedefs
 typedef int Vertex;
 typedef struct _wu_graph* wu_graph;
@@ -20,5 +21,5 @@ void wug_print(const wu_graph);
 // prints minimum spanning tree, as well as its total weight using the prim-jarnik algorithm
 void wug_minspantree(const wu_graph);
 
-// frees graph
+// destroys the memory used by the weighted undirected graph
 void wug_destroy(const wu_graph);
