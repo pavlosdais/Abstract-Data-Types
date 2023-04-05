@@ -63,24 +63,24 @@ typedef struct _wu_graph* wu_graph;        // weighted undirected (wu_graph)
 
 // VECTOR
 // -requires a destroy function
-Vector vector_create(const DestroyFunc);                                           // creates vector
-void vector_push_back(const Vector, const Pointer);                                // inserts the element at the back of the vector
-Pointer vector_at(const Vector, const uint64_t);                                   // returns the element at the given index
-DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);                   // changes the destroy function and returns the old one
-void vector_set_at(const Vector, const uint64_t, const Pointer);                   // returns the element at the given index
-bool vector_clear_at(const Vector, const uint64_t);                                // clear item at given vertex
-uint64_t vector_size(const Vector);                                                // returns vector's size
-bool is_vector_empty(const Vector);                                                // returns true if the priority queue is empty, false otherwise
-void vector_sort(const Vector, const CompareFunc);                                 // sorts the vector using the compare function given
-bool vector_binary_search(const Vector vector, const Pointer, const CompareFunc);  // searches the vector using binary search
-bool vector_search(const Vector, const Pointer, const CompareFunc);                // searches the vector using linear search
-void vector_destroy(const Vector);                                                 // destroys the memory used by the vector
+Vector vector_create(const DestroyFunc);                                    // creates vector
+void vector_push_back(const Vector, const Pointer);                         // inserts the element at the back of the vector
+Pointer vector_at(const Vector, const uint64_t);                            // returns the element at the given index
+DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);            // changes the destroy function and returns the old one
+void vector_set_at(const Vector, const uint64_t, const Pointer);            // returns the element at the given index
+bool vector_clear_at(const Vector, const uint64_t);                         // clear item at given vertex
+uint64_t vector_size(const Vector);                                         // returns vector's size
+bool is_vector_empty(const Vector);                                         // returns true if the priority queue is empty, false otherwise
+void vector_sort(const Vector, const CompareFunc);                          // sorts the vector using the compare function given
+bool vector_binary_search(const Vector, const Pointer, const CompareFunc);  // searches the vector using binary search
+bool vector_search(const Vector, const Pointer, const CompareFunc);         // searches the vector using linear search
+void vector_destroy(const Vector);                                          // destroys the memory used by the vector
 
 
 // STACK
 // -requires a destroy function
 Stack stack_create(const DestroyFunc);                          // creates stack
-void stack_push(const Stack, const Pointer value);              // pushes value at the top of the stack
+void stack_push(const Stack, const Pointer);                    // pushes value at the top of the stack
 Pointer stack_pop(const Stack);                                 // pops value from the top of the stack
 uint64_t stack_size(const Stack);                               // returns the size of the stack
 bool is_stack_empty(const Stack);                               // returns true if the stack is empty, false otherwise
@@ -104,7 +104,7 @@ void queue_destroy(const Queue);                                          // des
 // PRIORITY QUEUE
 // -requires a compare and destroy function
 PQueue pq_create(const CompareFunc, const DestroyFunc);       // creates priority queue
-void pq_insert(const PQueue, const Pointer value);            // inserts value at the priority queue
+void pq_insert(const PQueue, const Pointer);                  // inserts value at the priority queue
 Pointer pq_remove(const PQueue);                              // returns the element with the highest priority
 uint64_t pq_size(const PQueue);                               // returns the size of the priority queue
 bool is_pq_empty(const PQueue);                               // returns true if the priority queue is empty, false otherwise
@@ -144,9 +144,9 @@ void hash_destroy(const HashTable);                                           //
 
 // provided hash functions
 unsigned int hash_int(Pointer);      // hashes an integer
-unsigned int hash_string1(Pointer);  // hashes a string
-unsigned int hash_string2(Pointer);  // hashes a string
-unsigned int hash_string3(Pointer);  // hashes a string
+unsigned int hash_string1(Pointer);  // hashes a string (1)
+unsigned int hash_string2(Pointer);  // hashes a string (2)
+unsigned int hash_string3(Pointer);  // hashes a string (3)
 
 
 // DIRECTED GRAPH

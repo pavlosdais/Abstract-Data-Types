@@ -1,5 +1,5 @@
 # Abstract Data Types in C
-This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications whilst also being educational, having an easy to understand code. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs etc). The library contains the following ADT's:
+This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications whilst also being educational, having an relatively non-challenging code to follow. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs etc). The library contains the following ADT's:
 
 * [Vector](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Vector#readme)
 * [Stack](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Stack#readme)
@@ -17,9 +17,9 @@ The library can be used in your C project by following 3 (simple) steps.
 ### Step 1
 Include the header file of the ADT library
 ```c
-#include "ADT.h"
+#include "lib/ADT.h"
 ```
-*or* just include the desired header files of the data structures you want to use.
+*or* just include the desired header file(s) of the data structure(s) you want to use.
 ```c
 #include "vector.h"
 #include "RedBlackTree.h"
@@ -30,17 +30,20 @@ Include the header file of the ADT library
 
 ### Step 2
 Depending on the ADT, provide a number of the following functions upon initialization:
-- **Destroy function** destroys the data (or NULL if you do not want the data to be deleted).
+- **Destroy function** <br/>
+    Destroys the data allocated for the elements.
 ```c
 void free(void* ptr);  // function provided by <stdio.h> that deallocates memory previously allocated by ptr.
 ```
 
-- **Compare function** compares two Pointers a and b, and returns -1 if a < b, 0 if a = b or 1 if a > b.
+- **Compare function** <br/>
+    Compares two Pointers a and b, and returns < 0 if a < b, 0 if a = b or > 0 if a > b.
 ```c
 int compareFunction(Pointer v1, Pointer v2)  { return *((int*)v1) - *((int*)v2); }
 ```
 
-- **Hash function** used by the hash table, takes a Pointer(our data) and returns a positive integer.
+- **Hash function** <br/>
+    Takes a Pointer and returns a unsigned integer (Used by the hash table).
 ```c
 unsigned int hash_int(Pointer value)
 {
@@ -52,7 +55,8 @@ unsigned int hash_int(Pointer value)
 }
 ```
 
-- **Visit function** used by the graph, visits a vertex.
+- **Visit function** <br/>
+    Visits a vertex (Used by the graph).
 ```c
 void visit(Vertex x)  { printf("%d ", x); }
 ```

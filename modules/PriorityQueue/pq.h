@@ -27,7 +27,7 @@ typedef struct pq* PQueue;
 PQueue pq_create(const CompareFunc, const DestroyFunc);
 
 // inserts value at the priority queue
-void pq_insert(const PQueue, const Pointer value);
+void pq_insert(const PQueue, const Pointer);
 
 // returns the element with the highest priority as given by the compare function
 // or NULL if it's empty

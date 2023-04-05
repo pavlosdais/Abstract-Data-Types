@@ -16,7 +16,7 @@ typedef struct StackSet* Stack;
 Stack stack_create(const DestroyFunc);
 
 // pushes value at the top of the stack
-void stack_push(const Stack, const Pointer value);
+void stack_push(const Stack, const Pointer);
 
 // pops value from the top of the stack and returns it, returns NULL if the stack is empty
 Pointer stack_pop(const Stack);
