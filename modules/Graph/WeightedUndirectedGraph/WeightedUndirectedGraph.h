@@ -4,7 +4,7 @@
 
 
 // needed typedefs
-typedef int Vertex;
+typedef uint32_t Vertex;
 typedef struct _wu_graph* wu_graph;
 typedef uint32_t cost;  // the cost of the edge
 

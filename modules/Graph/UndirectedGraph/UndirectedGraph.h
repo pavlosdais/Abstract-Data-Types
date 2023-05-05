@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 
-typedef int Vertex;
+typedef uint32_t Vertex;
 typedef struct _undir_graph* undir_graph;
 
 // Pointer to function that visits the vertices

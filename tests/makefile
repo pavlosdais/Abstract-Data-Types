@@ -1,6 +1,8 @@
 # ADT to be tested (Vector/ Stack/ Queue/ PriorityQueue/ RedBlackTree/ HashTable/ DirectedGraph/ UndirectedGraph/ WeightedUndirectedGraph)
 ADT_TO_BE_TESTED = HashTable
 
+CFLAGS = -Wall -Wextra -Werror -g
+
 # compiler
 CC = gcc
 
@@ -14,7 +16,7 @@ OBJS = test_$(ADT_TO_BE_TESTED).o
 LIB = ../lib
 
 $(ADT_TO_BE_TESTED): $(OBJS)
-	$(CC) -o $(ADT_TO_BE_TESTED) $(OBJS) -L. $(LIB)/ADTlib.a
+	$(CC) $(CFLAGS) -o $(ADT_TO_BE_TESTED) $(OBJS) -L. $(LIB)/ADTlib.a
 
 # run test
 run: $(ADT_TO_BE_TESTED)

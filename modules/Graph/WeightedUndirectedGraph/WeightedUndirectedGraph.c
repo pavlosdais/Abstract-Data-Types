@@ -68,14 +68,14 @@ typedef struct n
 }
 n;
 // priority queue
-static PQueue createPQueue(uint32_t n, int* E, uint32_t* C);
+static PQueue createPQueue(uint32_t n, uint32_t* E, uint32_t* C);
 static n pq_remove(PQueue PQ);
 static bool is_pq_empty(PQueue PQ);
 static void updateWeights(PQueue PQ, int v, uint32_t new_weight);
-static bool pq_exists(PQueue PQ, int v);
+static bool pq_exists(PQueue PQ, uint32_t v);
 static void pq_destroy(PQueue PQ);
 
-static inline void print_min_span_tree(const wu_graph G, int* arr, const int n);
+static inline void print_min_span_tree(const wu_graph G, uint32_t* arr, const int n);
 
 // source: https://en.wikipedia.org/wiki/Prim%27s_algorithm#Description
 // adjacency list representation w/ binary heap priority queue - O(Elog V)
@@ -86,7 +86,7 @@ void wug_minspantree(const wu_graph G)
    int size_of_graph = G->n;
 
    // create helper arrays
-   int* E = calloc(sizeof(int), size_of_graph);
+   uint32_t* E = calloc(sizeof(uint32_t), size_of_graph);
    assert(E != NULL);  // allocation failure
 
    cost* C = calloc(sizeof(cost), size_of_graph);
@@ -127,7 +127,7 @@ void wug_minspantree(const wu_graph G)
 }
 
 // print the minimum spanning tree
-static inline void print_min_span_tree(const wu_graph G, int* E, const int n)
+static inline void print_min_span_tree(const wu_graph G, uint32_t* E, const int n)
 {
    cost total_weight = 0;
    for (int i = 1; i < n; i++)
@@ -195,8 +195,8 @@ void wug_destroy(const wu_graph G)
 typedef struct n* node;
 typedef struct pq
 {
-   node arr;        // array of nodes containing the data
-   int* pos;        // position of vertices in the queue
+   node arr;            // array of nodes containing the data
+   uint32_t* pos;       // position of vertices in the queue
    uint32_t curr_size;  // current size of the heap
    uint32_t capacity;   // max capacity of the heap
 }
@@ -231,7 +231,7 @@ static bool is_pq_empty(PQueue PQ)
    return PQ->curr_size == 0;
 }
 
-static PQueue createPQueue(uint32_t n, int* E, uint32_t* C)
+static PQueue createPQueue(uint32_t n, uint32_t* E, uint32_t* C)
 {
    // create priority queue
    PQueue pq;
@@ -327,7 +327,7 @@ static void updateWeights(PQueue PQ, int v, uint32_t new_weight)
    }
 }
 
-static bool pq_exists(PQueue PQ, int v)
+static bool pq_exists(PQueue PQ, uint32_t v)
 {
    return (PQ->pos[v] < PQ->curr_size ? true: false);
 }

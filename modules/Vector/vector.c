@@ -4,7 +4,7 @@
 #include <assert.h>
 
 // the starting capacity of the vector
-#define STARTING_CAPACITY 8
+#define STARTING_CAPACITY 64
 
 typedef struct n
 {
@@ -24,7 +24,7 @@ struct vector_struct
 };
 
 // make sure the index is within the bounds of the vector's array
-#define SAFE_INDEX(vector, index) (assert(index >= 0 && index < vector->size))
+#define SAFE_INDEX(vector, index) (assert(index < vector->size))
 
 Vector vector_create(DestroyFunc destroy)
 {
@@ -50,17 +50,22 @@ uint64_t vector_size(const Vector vector)
 
 Pointer vector_at(const Vector vector, const uint64_t index)
 {
+    assert(vector != NULL);
     SAFE_INDEX(vector, index);  // make sure a valid index was given
+
     return vector->arr[index].data;
 }
 
 void vector_set_at(const Vector vector, const uint64_t index, const Pointer data)
 {
+    assert(vector != NULL);
     SAFE_INDEX(vector, index);  // make sure a valid index was given
 
     if (vector->arr[index].data != NULL)  // an element already exists there
+    {
         if (vector->destroy != NULL)
             vector->destroy(vector->arr[index].data);
+    }
     else  // free spot
         vector->elements++;
 
@@ -69,6 +74,7 @@ void vector_set_at(const Vector vector, const uint64_t index, const Pointer data
 
 bool vector_clear_at(const Vector vector, const uint64_t index)
 {
+    assert(vector != NULL);
     SAFE_INDEX(vector, index);  // make sure a valid index was given
 
     // make sure an element exists in the index
@@ -86,15 +92,23 @@ bool vector_clear_at(const Vector vector, const uint64_t index)
 
 DestroyFunc vector_set_destroy(const Vector vector, const DestroyFunc new_destroy)
 {
+    assert(vector != NULL);
+
     DestroyFunc old_destroy = vector->destroy;
     vector->destroy = new_destroy;
     return old_destroy;
 }
 
-bool is_vector_empty(const Vector vector)  { return vector->elements == 0; }
+bool is_vector_empty(const Vector vector) 
+{
+    assert(vector != NULL);
+    return vector->elements == 0;
+}
 
 void vector_push_back(const Vector vector, const Pointer data)
 {
+    assert(vector != NULL);
+
     // array is full, double its size
     if (vector->size == vector->capacity) 
     {
@@ -105,6 +119,33 @@ void vector_push_back(const Vector vector, const Pointer data)
     // insert data
     vector->arr[(vector->size)++].data = data;
     vector->elements++;
+}
+
+bool vector_delete(const Vector vector, const Pointer data, const CompareFunc compare)
+{
+    assert(vector != NULL);
+
+    if (vector->elements == 0) return false;
+
+    // linear search for the element
+    uint64_t num_of_elements = vector->elements;
+    for (uint64_t element_ind = 0 ;; element_ind++)
+    {
+        if (vector->arr[element_ind].data != NULL)
+        {
+            if (compare(vector->arr[element_ind].data, data) == 0)  // data found
+            {
+                // if a destroy function was given, destroy the element
+                if (vector->destroy != NULL)
+                    vector->destroy(vector->arr[element_ind].data);
+                
+                vector->arr[element_ind].data = NULL;
+                return true;
+            }
+            if ((--num_of_elements) == 0) break;
+        }
+    }
+    return false;
 }
 
 // swaps the value of node a & b
@@ -143,12 +184,18 @@ static void quicksort(const Vector vector, const int left, const int right)
 
 void vector_sort(const Vector vector, const CompareFunc compare)
 {
+    assert(vector != NULL);
+
     vector->compare = compare;
+
+    // sort the vector using quick sort
     quicksort(vector, 0, vector->size-1);
 }
 
 bool vector_binary_search(const Vector vector, const Pointer data, const CompareFunc compare)
 {
+    assert(vector != NULL);
+
     uint64_t low = 0, high = vector->size-1;
     while (low <= high)
     {
@@ -167,6 +214,10 @@ bool vector_binary_search(const Vector vector, const Pointer data, const Compare
 
 bool vector_search(const Vector vector, const Pointer data, const CompareFunc compare)
 {
+    assert(vector != NULL);
+
+    if (vector->elements == 0) return false;
+
     // linear search
     uint64_t num_of_elements = vector->elements;
     for (uint64_t element_ind = 0 ;; element_ind++)
@@ -174,13 +225,16 @@ bool vector_search(const Vector vector, const Pointer data, const CompareFunc co
         if (vector->arr[element_ind].data != NULL)
         {
             if (compare(vector->arr[element_ind].data, data) == 0) return true;  // data found
-            if ((--num_of_elements) == 0) return false;
+            if ((--num_of_elements) == 0) break;
         }
     }
+    return false;
 }
 
 void vector_destroy(const Vector vector)
 {
+    assert(vector != NULL);
+
     // first destroy the data, if a destroy function was given
     if (vector->destroy != NULL)
         for (uint64_t element_ind = 0 ;; element_ind++)

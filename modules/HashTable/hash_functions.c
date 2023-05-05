@@ -8,6 +8,7 @@
 unsigned int hash_string1(Pointer value)
 {
     const char* str = (*((const char**)value));
+    
     const int p = 111111, m = 1e9 + 7;
     unsigned int hash = 0;
     unsigned long p_pow = 1;
@@ -24,10 +25,10 @@ unsigned int hash_string1(Pointer value)
 unsigned int hash_string2(Pointer value)
 {
     const char* str = (*((const char**)value));
+
     unsigned int hash = 5381;
-    int c;
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c;  // hash*33 + c
+    for(unsigned int i = 0; str[i] != '\0'; i++)
+        hash = ((hash << 5) + hash) + str[i];  // hash*33 + c
 
     return hash;
 }

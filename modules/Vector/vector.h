@@ -37,14 +37,15 @@ bool vector_clear_at(const Vector, const uint64_t);
 // returns the number of elements the vector currently stores
 uint64_t vector_size(const Vector);
 
-// returns true if the priority queue is empty, false otherwise
+// returns true if the vector is empty, false otherwise
 bool is_vector_empty(const Vector);
 
-// changes the destroy function and returns the old one
-DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);
+// searches for the element and removes it
+// returns true if the element is deleted, false if not
+bool vector_delete(const Vector, const Pointer, const CompareFunc);
 
 // searches the vector using linear search
-// returns true if found, false if not
+// returns true if the element is found, false if not
 bool vector_search(const Vector, const Pointer, const CompareFunc);
 
 // sorts the vector using the compare function given
@@ -53,6 +54,9 @@ void vector_sort(const Vector, const CompareFunc);
 // searches the vector using binary search (requires the vector to be sorted, unidentified behaviour if not)
 // returns true if found, false if not
 bool vector_binary_search(const Vector, const Pointer, const CompareFunc);
+
+// changes the destroy function and returns the old one
+DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);
 
 // destroys memory used by the vector
 void vector_destroy(const Vector);

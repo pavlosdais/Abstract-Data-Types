@@ -6,8 +6,6 @@
 #include "../../Queue/queue.h"
 #include "../../Stack/stack.h"
 
-typedef int Vertex;
-
 typedef struct edge
 {
    Vertex endpoint;
@@ -99,7 +97,7 @@ void ug_simplepathcheck(const undir_graph G, const Vertex start, const Vertex go
    int* visited = calloc(sizeof(int), G->n);
    assert(visited != NULL);  // allocation failure
 
-   Vertex v, w;
+   Vertex w;
    Edge curedge;
 
    // create queue - necessary for the bfs algorithm

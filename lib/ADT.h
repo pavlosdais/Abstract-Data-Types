@@ -27,7 +27,7 @@ typedef unsigned int (*HashFunc)(Pointer value);
 
 
 // Graph typedefs
-typedef int Vertex;
+typedef uint32_t Vertex;
 typedef uint32_t cost;  // weighted graph's edge cost
 
 // Pointer to function that visits the vertices
@@ -66,14 +66,15 @@ typedef struct _wu_graph* wu_graph;        // weighted undirected (wu_graph)
 Vector vector_create(const DestroyFunc);                                    // creates vector
 void vector_push_back(const Vector, const Pointer);                         // inserts the element at the back of the vector
 Pointer vector_at(const Vector, const uint64_t);                            // returns the element at the given index
-DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);            // changes the destroy function and returns the old one
-void vector_set_at(const Vector, const uint64_t, const Pointer);            // returns the element at the given index
+void vector_set_at(const Vector, const uint64_t, const Pointer);            // sets the value at the given index
 bool vector_clear_at(const Vector, const uint64_t);                         // clear item at given vertex
 uint64_t vector_size(const Vector);                                         // returns vector's size
-bool is_vector_empty(const Vector);                                         // returns true if the priority queue is empty, false otherwise
+bool is_vector_empty(const Vector);                                         // returns true if the vector is empty, false otherwise
+bool vector_delete(const Vector, const Pointer, const CompareFunc);         // searches for the element and removes it
 void vector_sort(const Vector, const CompareFunc);                          // sorts the vector using the compare function given
 bool vector_binary_search(const Vector, const Pointer, const CompareFunc);  // searches the vector using binary search
 bool vector_search(const Vector, const Pointer, const CompareFunc);         // searches the vector using linear search
+DestroyFunc vector_set_destroy(const Vector, const DestroyFunc);            // changes the destroy function and returns the old one
 void vector_destroy(const Vector);                                          // destroys the memory used by the vector
 
 
