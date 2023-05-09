@@ -1,77 +1,157 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <time.h>
 #include "../lib/ADT.h"
+#include "./include/common.h"
 
-// function prototypes
-int* createData(int a);
-void printFunc(Pointer value);
-int compareFunction(Pointer v1, Pointer v2);
+#define NUM_OF_ELEMENTS 20000
 
-#define NUM_OF_ELEMENTS 1000
-
-int main(void)
+void test_create(void)
 {
     Vector vec = vector_create(free);
-
-    int* arr = malloc(sizeof(int) * NUM_OF_ELEMENTS);
-    assert(arr != NULL);  // allocation failure
-
-    time_t t;
-    srand((unsigned) time(&t));
-    for (int i = 0; i < NUM_OF_ELEMENTS; i++)
-        arr[i] = rand() % RAND_MAX;
-
-    for (int i = 0; i < NUM_OF_ELEMENTS; i++)
-        vector_push_back(vec, createData(arr[i]));
-
-    if (vector_size(vec) != NUM_OF_ELEMENTS)
-        printf("Error in size/push_back\n");
-    
-    // test linear search
-    int num_of_elements = 0;
-    for (int i = 0; i < NUM_OF_ELEMENTS; i++)
-        if (vector_search(vec, arr + i, compareFunction))
-            num_of_elements++;
-    
-    if (num_of_elements != NUM_OF_ELEMENTS)
-        printf("Error in linear search\n");
-
-    // sort the vector
-    vector_sort(vec, compareFunction);
-
-    // test binary search
-    num_of_elements = 0;
-    for (int i = 0; i < NUM_OF_ELEMENTS; i++)
-        if (vector_binary_search(vec, arr + i, compareFunction))
-            num_of_elements++;
-    
-    if (num_of_elements != NUM_OF_ELEMENTS)
-        printf("Error in binary search\n");
-
-    free(arr);
+    TEST_ASSERT(vec != NULL);
+    TEST_ASSERT(vector_size(vec) == 0 && is_vector_empty(vec));
     vector_destroy(vec);
 }
 
-int* createData(int a)
+void test_push_back(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create vector
+    Vector vec = vector_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
+    
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        vector_push_back(vec, createData(arr[i]));
 
-    *val = a;
-    return val;
+        TEST_ASSERT(*((int*)vector_at(vec, i)) == arr[i]);
+
+        // the size has changed
+        TEST_ASSERT(vector_size(vec) == i+1);
+    } 
+
+    // free memory used
+    vector_destroy(vec);
+    free(arr);
 }
 
-// print function
-void printFunc(Pointer value)
+void test_clear_at(void)
 {
-    int* val = (int*)(value);
-    printf("%d ", *val);
+    // create vector
+    Vector vec = vector_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
+
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        vector_push_back(vec, createData(arr[i]));
+    
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        vector_clear_at(vec, i);
+
+        TEST_ASSERT(vector_at(vec, i) == NULL);
+
+        // the size has changed
+        TEST_ASSERT(vector_size(vec) == NUM_OF_ELEMENTS-1-i);
+    } 
+
+    // free memory used
+    vector_destroy(vec);
+    free(arr);
 }
 
-// compare function (for sorted insert)
-int compareFunction(Pointer v1, Pointer v2)
+void test_search(void)
 {
-    return *((int*)v1) - *((int*)v2);
+    // create vector
+    Vector vec = vector_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
+
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        vector_push_back(vec, createData(arr[i]));
+    
+    clock_t cur_time = clock();
+
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        TEST_ASSERT(vector_search(vec, arr+i, compareFunction));
+
+    double time_insert = calc_time(cur_time);  // calculate search time
+
+    // free memory used
+    vector_destroy(vec);
+    free(arr);
+
+    printf("\n\nSearch took %f seconds to complete\n", time_insert);
 }
+
+void test_sort(void)
+{
+    // create vector
+    Vector vec = vector_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
+
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        vector_push_back(vec, createData(arr[i]));
+    
+    vector_sort(vec, compareFunction);
+
+    for (int i = 0; i < NUM_OF_ELEMENTS; i++)
+        TEST_ASSERT(*((int*)vector_at(vec, i)) == i);
+
+    // free memory used
+    vector_destroy(vec);
+    free(arr);
+}
+
+void test_binary_search(void)
+{
+    // create vector
+    Vector vec = vector_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
+
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        vector_push_back(vec, createData(arr[i]));
+
+    clock_t cur_time = clock();
+
+    vector_sort(vec, compareFunction);
+    
+    for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        TEST_ASSERT(vector_binary_search(vec, arr+i, compareFunction));
+
+    double time_insert = calc_time(cur_time);  // calculate binary search time
+
+    // free memory used
+    vector_destroy(vec);
+    free(arr);
+
+    printf("\n\nBinary search took %f seconds to complete\n", time_insert);
+}
+
+TEST_LIST = {
+        { "create", test_create  },
+        { "push back", test_push_back  },
+        { "clear at", test_clear_at  },
+        { "search", test_search  },
+        { "sort", test_sort  },
+        { "binary search", test_binary_search  },
+        { NULL, NULL }
+};

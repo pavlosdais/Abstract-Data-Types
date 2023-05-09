@@ -109,6 +109,7 @@ void pq_insert(const PQueue, const Pointer);                  // inserts value a
 Pointer pq_remove(const PQueue);                              // returns the element with the highest priority
 uint64_t pq_size(const PQueue);                               // returns the size of the priority queue
 bool is_pq_empty(const PQueue);                               // returns true if the priority queue is empty, false otherwise
+Pointer pq_peek(const PQueue);                                // returns the element with the highest priority without removing it
 DestroyFunc pq_set_destroy(const PQueue, const DestroyFunc);  // changes the destroy function and returns the old one
 void pq_destroy(const PQueue);                                // destroys memory used by the priority queue
 

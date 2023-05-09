@@ -6,9 +6,6 @@ CFLAGS = -Wall -Wextra -Werror -g
 # compiler
 CC = gcc
 
-# flags
-CFLAGS = -Wall -Wextra -Werror -ggdb3
-
 # object file
 OBJS = test_$(ADT_TO_BE_TESTED).o
 

@@ -1,95 +1,125 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <time.h>
 #include "../lib/ADT.h"
-
-// function prototypes
-int compareFunction(Pointer v1, Pointer v2);
-int* createData(int a);
+#include "./include/common.h"
 
 #define NUM_OF_ELEMENTS 100000
 
-int main(void)
+void test_create(void)
 {
-    // create rbt table
     RBTree rbt = rbt_create(compareFunction, free);
+    TEST_ASSERT(rbt != NULL);
+    TEST_ASSERT(rbt_size(rbt) == 0 && is_rbt_empty(rbt));
+    rbt_destroy(rbt);
+}
 
-    // create random input
-    int* arr = malloc(sizeof(int) * NUM_OF_ELEMENTS);
-    assert(arr != NULL);  // allocation failure
-
-    uint64_t i;
+void test_insert(void)
+{
+    // create create rbt
+    RBTree rbt = rbt_create(compareFunction, free);
+    
     time_t t;
     srand((unsigned) time(&t));
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
-        arr[i] = rand() % RAND_MAX;
-
     
-    clock_t cur_time;
-    double time_insert, time_search, time_delete;
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
 
-    // test insert
-    cur_time = clock();
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
-        rbt_insert(rbt, createData(arr[i]));
-    time_insert = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate insert time
-
-    // test search
-    unsigned int out_of_place = 0;
-    cur_time = clock();
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
+    clock_t cur_time = clock();
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        if (!rbt_exists(rbt, arr+i))
-            out_of_place++;
+        // the value does not exist
+        TEST_ASSERT(!rbt_exists(rbt, arr+i));
+
+        // insert the value
+        rbt_insert(rbt, createData(arr[i]));
+
+        // the value now exists
+        TEST_ASSERT(rbt_exists(rbt, arr+i));
+
+        // the size has changed
+        TEST_ASSERT(rbt_size(rbt) == i+1);
     }
-    time_search = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate search time
-    
-    i = rbt_size(rbt);
-    printf("Total number of elements after insertion: %ld\n", i);
-    if (out_of_place != 0)
-        printf("ERROR IN INSERTING");
-    else
-        printf("NO ERROR IN INSERTING");
-    printf("\n\n");
-    
-    // test remove
-    uint a = 0, to_be_deleted = (rand() % (i/4)) + (rand() % (i/2));
-    cur_time = clock();
-    for (uint j = 0; j < to_be_deleted; j++)
-        a += rbt_remove(rbt, arr+j);
-    time_delete = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate remove time
 
-    printf("Deleted %d items\n", a);
-    printf("Total number of elements after deletion: %ld\n", rbt_size(rbt));
-    if (rbt_size(rbt) + a != i)
-        printf("ERROR IN DELETION");
-    else
-        printf("NO ERROR IN DELETION");
+    double time_insert = calc_time(cur_time);  // calculate insert time
 
-    // free the red-black tree
+    // free memory used
     rbt_destroy(rbt);
     free(arr);
 
-    // report benchmarks
-    printf("\n\nInsertion took %f seconds to execute\n", time_insert);
-    printf("Search took %f seconds to execute\n", time_search);
-    printf("Deletion took %f seconds to execute\n", time_delete);
+    // report time taken
+    printf("\n\nInsertion took %f seconds to complete\n", time_insert);
+}
+
+void test_remove(void)
+{
+    // create create rbt
+    RBTree rbt = rbt_create(compareFunction, free);
     
-    return 0;
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
+
+    clock_t cur_time = clock();
+
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        rbt_insert(rbt, createData(arr[i]));
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // the value exists
+        TEST_ASSERT(rbt_exists(rbt, arr+i));
+
+        rbt_remove(rbt, arr+i);
+
+        // the value now does not exist
+        TEST_ASSERT(!rbt_exists(rbt, arr+i));
+
+        // the size has changed
+        TEST_ASSERT(rbt_size(rbt) == NUM_OF_ELEMENTS-i-1);
+    }
+
+    double time_insert = calc_time(cur_time);  // calculate remove time
+
+    // free memory used
+    rbt_destroy(rbt);
+    free(arr);
+
+    // report time taken
+    printf("\n\nDelete took %f seconds to complete\n", time_insert);
 }
 
-int* createData(int a)
+void test_traversal(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create rbt
+    RBTree rbt = rbt_create(compareFunction, free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
 
-    *val = a;
-    return val;
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        rbt_insert(rbt, createData(arr[i]));
+
+    // test forward traversal
+    int value = 0;
+    for (RBTreeNode node = rbt_first(rbt); node != NULL; node = rbt_find_next(node), value++)
+        TEST_ASSERT( *((int*)rbt_node_value(node)) == value);
+
+    // test backward traversal
+    value = NUM_OF_ELEMENTS-1;
+    for (RBTreeNode node = rbt_last(rbt); node != NULL; node = rbt_find_previous(node), value--)
+        TEST_ASSERT( *((int*)rbt_node_value(node)) == value);
+
+    // free memory used
+    rbt_destroy(rbt);
+    free(arr);
 }
 
-// compare function
-int compareFunction(Pointer v1, Pointer v2)
-{
-    return *((int*)v1) - *((int*)v2);
-}
+TEST_LIST = {
+        { "create", test_create  },
+        { "insert", test_insert  },
+        { "remove", test_remove  },
+        { "traversal", test_traversal  },
+        { NULL, NULL }
+};

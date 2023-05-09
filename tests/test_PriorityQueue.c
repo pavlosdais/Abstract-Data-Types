@@ -1,71 +1,84 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <time.h>
 #include "../lib/ADT.h"
+#include "./include/common.h"
 
-// function prototypes
-int compareFunction(Pointer v1, Pointer v2);
-int* createData(int a);
-void printFunc(Pointer value);
+#define NUM_OF_ELEMENTS 100000
 
-int main(void)
+void test_create(void)
 {
-    // create priority queue
     PQueue pq = pq_create(compareFunction, free);
-
-    // test insert
-    int a = 1000;
-    pq_insert(pq, createData(a));
-    a = 8000;
-    pq_insert(pq, createData(a));
-    a = 5000;
-    pq_insert(pq, createData(a));
-    a = 10000;
-    pq_insert(pq, createData(a));
-    a = 7000;
-    pq_insert(pq, createData(a));
-
-    printf("Total number of elements after insertion: %ld\n", pq_size(pq));
-
-    // test remove
-    int *b = pq_remove(pq);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = pq_remove(pq);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = pq_remove(pq);
-    printFunc(b); printf("\n");
-    free(b);
-
-    printf("Total number of elements after deletion: %ld\n", pq_size(pq));
-
-    // free priority queue
+    TEST_ASSERT(pq != NULL);
+    TEST_ASSERT(pq_size(pq) == 0 && is_pq_empty(pq));
     pq_destroy(pq);
-
-    return 0;
 }
 
-int* createData(int a)
+void test_insert(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create hash table
+    PQueue pq = pq_create(compareFunction, free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
 
-    *val = a;
-    return val;
+    clock_t cur_time = clock();        
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        pq_insert(pq, createData(arr[i]));
+
+        // the size has changed
+        TEST_ASSERT(pq_size(pq) == i+1);
+    } 
+
+    double time_insert = calc_time(cur_time);  // calculate insert time
+
+    // free memory used
+    pq_destroy(pq);
+    free(arr);
+
+    // report time taken
+    printf("\n\nInsertion took %f seconds to complete\n", time_insert);
 }
 
-// compare function
-int compareFunction(Pointer v1, Pointer v2)
+void test_remove(void)
 {
-    return *((int*)v1) - *((int*)v2);
+    // create hash table
+    PQueue pq = pq_create(compareFunction, free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_ordered_array(NUM_OF_ELEMENTS);
+
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        pq_insert(pq, createData(arr[i]));
+
+    clock_t cur_time = clock();
+    
+    for (uint32_t i = NUM_OF_ELEMENTS-1; i > 0; i--)
+    {
+        TEST_ASSERT( *((int*)pq_remove(pq)) == arr[i]);
+
+        // the size has changed
+        TEST_ASSERT(pq_size(pq) == i);
+    } 
+
+    double time_insert = calc_time(cur_time);  // calculate remove time
+
+    // free memory used
+    pq_destroy(pq);
+    free(arr);
+
+    // report time taken
+    printf("\n\nRemove took %f seconds to complete\n", time_insert);
 }
 
-// print function
-void printFunc(Pointer value)
-{
-    int* val = (int*)(value);
-    printf("%d ", *val);
-}
+TEST_LIST = {
+        { "create", test_create  },
+        { "insert", test_insert  },
+        { "remove", test_remove  },
+        { NULL, NULL }
+};

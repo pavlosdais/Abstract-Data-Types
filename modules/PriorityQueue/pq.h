@@ -15,9 +15,6 @@ typedef int (*CompareFunc)(Pointer a, Pointer b);
 // Pointer to function that destroys an element value
 typedef void (*DestroyFunc)(Pointer value);
 
-// heap's minimum starting size
-#define MIN_SIZE 16
-
 typedef struct pq* PQueue;
 
 
@@ -40,6 +37,9 @@ uint64_t pq_size(const PQueue);
 
 // returns true if the priority queue is empty, false otherwise
 bool is_pq_empty(const PQueue);
+
+// returns the element with the highest priority without removing it
+Pointer pq_peek(const PQueue);
 
 // changes the destroy function and returns the old one
 DestroyFunc pq_set_destroy(const PQueue, const DestroyFunc);

@@ -15,9 +15,6 @@ typedef void (*DestroyFunc)(Pointer value);
 // Pointer to function that hashes a value to a positive (unsigned) integer
 typedef unsigned int (*HashFunc)(Pointer value);
 
-// when max load factor is exceeded, rehashing operation occurs
-#define MAX_LOAD_FACTOR 1.2
-
 typedef struct hash_table* HashTable;
 
 

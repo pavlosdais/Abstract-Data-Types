@@ -236,7 +236,8 @@ void vector_destroy(const Vector vector)
     assert(vector != NULL);
 
     // first destroy the data, if a destroy function was given
-    if (vector->destroy != NULL)
+    if (vector->destroy != NULL && vector->elements != 0)
+    {
         for (uint64_t element_ind = 0 ;; element_ind++)
         {
             if (vector->arr[element_ind].data != NULL)
@@ -245,6 +246,7 @@ void vector_destroy(const Vector vector)
                 if ((--(vector->elements)) == 0) break;  // all of the elements are deleted
             }
         }
+    }
     
     // destroy the rest of the vector
     free(vector->arr);

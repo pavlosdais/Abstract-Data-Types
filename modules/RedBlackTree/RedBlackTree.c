@@ -81,8 +81,8 @@ static inline RBTreeNode CreateNode()
 
 RBTreeNode rbt_find_node(const RBTree Tree, const Pointer value)
 {
-    assert(Tree != NULL);
-
+    if (Tree->size == 0) return false;
+    
     RBTreeNode node = Tree->root;
     
     while (node != &NULLNode)
@@ -422,7 +422,8 @@ bool rbt_exists(const RBTree Tree, const Pointer value)
 {
     assert(Tree != NULL);
 
-    return rbt_find_node(Tree, value) != NULL;
+    if (rbt_find_node(Tree, value) == NULL) return false;
+    return true;
 }
 
 static inline RBTreeNode node_max(const RBTreeNode node)
@@ -489,12 +490,16 @@ RBTreeNode rbt_first(const RBTree Tree)
 {
     assert(Tree != NULL);
 
+    if (Tree->size == 0) return NULL;
+
     return node_min(Tree->root);
 }
 
 RBTreeNode rbt_last(const RBTree Tree)
 {
     assert(Tree != NULL);
+
+    if (Tree->size == 0) return NULL;
 
     return node_max(Tree->root);
 }

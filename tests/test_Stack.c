@@ -1,73 +1,85 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <time.h>
 #include "../lib/ADT.h"
+#include "./include/common.h"
 
-// function prototypes
-int* createData(int a);
-void printFunc(Pointer value);
+#define NUM_OF_ELEMENTS 10000000
 
-int main(void)
+void test_create(void)
+{
+    Stack st = stack_create(free);
+    TEST_ASSERT(st != NULL);
+    TEST_ASSERT(stack_size(st) == 0 && is_stack_empty(st));
+    stack_destroy(st);
+}
+
+void test_push(void)
 {
     // create stack
     Stack st = stack_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
 
-    // test push
-    int a = 1000;
-    stack_push(st, createData(a));
-    a = 8000;
-    stack_push(st, createData(a));
-    a = 5000;
-    stack_push(st, createData(a));
-    a = 10000;
-    stack_push(st, createData(a));
-    a = 7000;
-    stack_push(st, createData(a));
+    clock_t cur_time = clock();
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        stack_push(st, createData(arr[i]));
 
-    printf("Total number of elements after insertion: %ld\n", stack_size(st));
+        // the size has changed
+        TEST_ASSERT(stack_size(st) == i+1);
+    } 
 
-    /*
-    Stack, by now, looks like this:
-    7000  <-- top
-    10000
-    5000
-    8000
-    1000
-    */
+    double time_insert = calc_time(cur_time);  // calculate insert time
 
-    // test pop
-    int *b = stack_pop(st);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = stack_pop(st);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = stack_pop(st);
-    printFunc(b); printf("\n");
-    free(b);
-
-    printf("Total number of elements after deletion: %ld\n", stack_size(st));
-
-    // free stack
+    // free memory used
     stack_destroy(st);
+    free(arr);
 
-    return 0;
+    // report time taken
+    printf("\n\nPush took %f seconds to complete\n", time_insert);
 }
 
-int* createData(int a)
+void test_pop(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create stack
+    Stack st = stack_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
 
-    *val = a;
-    return val;
+    clock_t cur_time = clock();
+
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        stack_push(st, createData(arr[i]));
+    
+    for (uint32_t i = NUM_OF_ELEMENTS-1; i > 0; i--)
+    {
+        // insert the value
+        TEST_ASSERT( *((int*)stack_pop(st)) == arr[i]);
+
+        // the size has changed
+        TEST_ASSERT(stack_size(st) == i);
+    } 
+
+    double time_insert = calc_time(cur_time);  // calculate insert time
+
+    // free memory used
+    stack_destroy(st);
+    free(arr);
+
+    // report time taken
+    printf("\n\nPop took %f seconds to complete\n", time_insert);
 }
 
-// print function
-void printFunc(Pointer value)
-{
-    int* val = (int*)(value);
-    printf("%d ", *val);
-}
+TEST_LIST = {
+        { "create", test_create  },
+        { "push", test_push  },
+        { "pop", test_pop  },
+        { NULL, NULL }
+};

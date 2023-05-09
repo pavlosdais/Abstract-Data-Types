@@ -19,7 +19,7 @@ typedef void (*DestroyFunc)(Pointer value);
 typedef unsigned int (*HashFunc)(Pointer value);
 
 // number of buckets used
-#define NUM_OF_BUCKETS 1543
+#define NUM_OF_BUCKETS 32749
 
 typedef struct hash_table* HashTable;
 

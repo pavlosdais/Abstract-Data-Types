@@ -3,16 +3,18 @@
 #include <assert.h>
 #include "pq.h"
 
-typedef struct n
+// heap's minimum starting size
+#define MIN_SIZE 64
+
+typedef struct node
 {
     Pointer data;
 }
-n;
-typedef struct n* node;
+node;
 
 typedef struct pq
 {
-    node arr;             // array of nodes containing the data
+    node* arr;            // array of nodes containing the data
     uint64_t curr_size;   // current size of the heap
     uint64_t capacity;    // max capacity of the heap
     CompareFunc compare;  // function that compares the data - dictates the order of the elements
@@ -21,7 +23,7 @@ typedef struct pq
 pq;
 
 // Function prototypes
-static inline void swap_nodes(node, node);
+static inline void swap_nodes(node*, node*);
 static inline void bubble_up(const PQueue, uint64_t);
 static void bubble_down(const PQueue, const uint64_t);
 
@@ -61,6 +63,8 @@ bool is_pq_empty(const PQueue PQ)
     assert(PQ != NULL);
     return PQ->curr_size == 0;
 }
+
+Pointer pq_peek(const PQueue PQ)  { return PQ->arr[ROOT].data; }
 
 void pq_insert(const PQueue PQ, const Pointer value)
 {
@@ -163,9 +167,9 @@ void pq_destroy(const PQueue PQ)
     free(PQ);
 }
 
-static inline void swap_nodes(const node a, const node b)
+static inline void swap_nodes(node* a, node* b)
 {
-    node tmp = a->data;
+    node* tmp = a->data;
     a->data = b->data;
     b->data = tmp;
 }

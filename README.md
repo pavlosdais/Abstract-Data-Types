@@ -67,8 +67,8 @@ Use `ADTlib.a` on compilation.
 ~$ gcc -o my_prog_exec my_prog.c -L. lib/ADTlib.a
 ```
 
-# Examples
-The library can be recompiled by running `make`. Check the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory for some detailed examples on its usage.
+# Tests
+The library comes with a somewhat comprehensive suite of tests covering the ADT's, using the [acutest](https://github.com/mity/acutest) library. The tests are located in the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory, and they are designed to ensure that the library functions as expected.
 
 ---
 © Pavlos Dais

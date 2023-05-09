@@ -1,93 +1,97 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <time.h>
 #include "../lib/ADT.h"
-
-// function prototypes
-int compareFunction(Pointer v1, Pointer v2);
-int* createData(int a);
+#include "./include/common.h"
 
 #define NUM_OF_ELEMENTS 100000
 
-int main(void)
+void test_create(void)
+{
+    HashTable ht = hash_create(hash_int, compareFunction, free);
+    TEST_ASSERT(ht != NULL);
+    TEST_ASSERT(hash_size(ht) == 0 && is_ht_empty(ht));
+    hash_destroy(ht);
+}
+
+void test_insert(void)
 {
     // create hash table
     HashTable ht = hash_create(hash_int, compareFunction, free);
-
-    // create random input
-    int* arr = malloc(sizeof(int) * NUM_OF_ELEMENTS);
-    assert(arr != NULL);  // allocation failure
-
-    unsigned int i;
+    
     time_t t;
     srand((unsigned) time(&t));
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
-        arr[i] = rand() % RAND_MAX;
+    
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
 
-    clock_t cur_time;
-    double time_insert, time_search, time_delete;
-
-    // test insert
-    cur_time = clock();
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
-        hash_insert(ht, createData(arr[i]));
-    time_insert = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate insert time
-
-    // test search
-    unsigned int out_of_place = 0;
-    cur_time = clock();
-    for (i = 0; i < NUM_OF_ELEMENTS; i++)
+    clock_t cur_time = clock();        
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        if (!hash_exists(ht, arr+i))
-            out_of_place++;
+        // the value does not exist
+        TEST_ASSERT(!hash_exists(ht, arr+i));
+
+        // insert the value
+        hash_insert(ht, createData(arr[i]));
+
+        // the value now exists
+        TEST_ASSERT(hash_exists(ht, arr+i));
+
+        // the size has changed
+        TEST_ASSERT(hash_size(ht) == i+1);
     }
-    time_search = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate search time
-    
-    i = hash_size(ht);
-    printf("Total number of elements after insertion: %d\n", i);
-    if (out_of_place != 0)
-        printf("ERROR IN INSERTING");
-    else
-        printf("NO ERROR IN INSERTING");
-    printf("\n\n");
-    
-    // test remove
-    uint a = 0, to_be_deleted = (rand() % (i/4)) + (rand() % (i/2));
-    cur_time = clock();
-    for (uint j = 0; j < to_be_deleted; j++)
-        a += hash_remove(ht, arr+j);
-    time_delete = ((double)(clock() - cur_time))/CLOCKS_PER_SEC;  // calculate remove time
 
-    printf("Deleted %d items\n", a);
-    printf("Total number of elements after deletion: %ld\n", hash_size(ht));
-    if (hash_size(ht) + a != i)
-        printf("ERROR IN DELETION");
-    else
-        printf("NO ERROR IN DELETION");
+    double time_insert = calc_time(cur_time);  // calculate insert time
 
-    // free the hash table
+    // free memory used
     hash_destroy(ht);
     free(arr);
 
-    // report benchmarks
-    printf("\n\nInsertion took %f seconds to execute\n", time_insert);
-    printf("Search took %f seconds to execute\n", time_search);
-    printf("Deletion took %f seconds to execute\n", time_delete);
-    return 0;
+    // report time taken
+    printf("\n\nInsertion took %f seconds to complete\n", time_insert);
 }
 
-int* createData(int a)
+void test_remove(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create hash table
+    HashTable ht = hash_create(hash_int, compareFunction, free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
 
-    *val = a;
-    return val;
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        hash_insert(ht, createData(arr[i]));
+
+    clock_t cur_time = clock();
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // the value exists
+        TEST_ASSERT(hash_exists(ht, arr+i));
+
+        // remove the value
+        hash_remove(ht, arr+i);
+
+        // the value now does not exist
+        TEST_ASSERT(!hash_exists(ht, arr+i));
+
+        // the size has changed
+        TEST_ASSERT(hash_size(ht) == NUM_OF_ELEMENTS-i-1);
+    } 
+
+    double time_insert = calc_time(cur_time);  // calculate remove time
+
+    // free memory used
+    hash_destroy(ht);
+    free(arr);
+
+    // report time taken
+    printf("\n\nRemove took %f seconds to complete\n", time_insert);
 }
 
-// compare function
-int compareFunction(Pointer v1, Pointer v2)
-{
-    return *((int*)v1) - *((int*)v2);
-}
+TEST_LIST = {
+        { "create", test_create  },
+        { "insert", test_insert  },
+        { "remove", test_remove  },
+        { NULL, NULL }
+};

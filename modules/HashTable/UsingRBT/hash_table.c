@@ -9,17 +9,17 @@
 #define OVERFLOW_SIZE 4  // size at which elements are inserted at a rbt (FIXED_SIZE+1)
 
 // bucket
-typedef struct n
+typedef struct node
 {
-    RBTree rbt;        // red-black tree
-    Pointer* data;     // array
-    uint8_t arr_el;    // number of elements in the array (if it is equal to FIXED_SIZE, the elements are in the rbt)
+    RBTree rbt;      // red-black tree
+    Pointer* data;   // array
+    uint8_t arr_el;  // number of elements in the array (if it is equal to FIXED_SIZE, the elements are in the rbt)
 }
-n;
+node;
 
 typedef struct hash_table
 {
-    n* buckets;           // buckets (red-black trees) storing the data
+    node* buckets;        // buckets (red-black trees) storing the data
     uint64_t capacity;    // number of buckets
     uint64_t elements;    // number of elements in the hash table
     HashFunc hash;        // function that hashes an element into a positive integer
@@ -37,7 +37,7 @@ HashTable hash_create(const HashFunc hash, const CompareFunc compare, const Dest
 
     ht->capacity = NUM_OF_BUCKETS;
 
-    ht->buckets = calloc(sizeof(n), NUM_OF_BUCKETS);  // allocate memory for the buckets
+    ht->buckets = calloc(sizeof(node), NUM_OF_BUCKETS);  // allocate memory for the buckets
     assert(ht->buckets != NULL);  // allocation failure
 
     // allocate memory for the buckets

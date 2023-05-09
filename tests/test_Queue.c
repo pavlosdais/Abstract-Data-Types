@@ -1,80 +1,85 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <time.h>
 #include "../lib/ADT.h"
+#include "./include/common.h"
 
-// function prototypes
-int* createData(int a);
-void printFunc(Pointer value);
-int compareFunction(Pointer v1, Pointer v2);
+#define NUM_OF_ELEMENTS 100000
 
-int main(void)
+void test_create(void)
+{
+    Queue Q = queue_create(free);
+    TEST_ASSERT(Q != NULL);
+    TEST_ASSERT(queue_size(Q) == 0 && is_queue_empty(Q));
+    queue_destroy(Q);
+}
+
+void test_enqueue(void)
 {
     // create queue
     Queue Q = queue_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
 
-    // test enqueue
-    int a = 1000;
-    queue_enqueue(Q, createData(a));
-    a = 8000;
-    queue_enqueue(Q, createData(a));
-    a = 5000;
-    queue_enqueue(Q, createData(a));
-    a = 10000;
-    queue_enqueue(Q, createData(a));
-    a = 7000;
-    queue_enqueue(Q, createData(a));
+    clock_t cur_time = clock();
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        queue_enqueue(Q, createData(arr[i]));
 
-    printf("Total number of elements after insertion: %ld\n", queue_size(Q));
+        // the size has changed
+        TEST_ASSERT(queue_size(Q) == i+1);
+    }
 
-    /*
-    Queue, by now, looks like this:
-    7000  <-- rear
-    10000
-    5000
-    8000
-    1000  <-- front
-    */
+    double time_insert = calc_time(cur_time);  // calculate insert time
 
-    // test dequeue
-    int *b = queue_dequeue(Q);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = queue_dequeue(Q);
-    printFunc(b); printf("\n");
-    free(b);
-
-    b = queue_dequeue(Q);
-    printFunc(b); printf("\n");
-    free(b);
-
-    printf("Total number of elements after deletion: %ld\n", queue_size(Q));
-
-    // free queue
+    // free memory used
     queue_destroy(Q);
+    free(arr);
 
-    return 0;
+    // report time taken
+    printf("\n\nEnqueue took %f seconds to complete\n", time_insert);
 }
 
-int* createData(int a)
+void test_dequeue(void)
 {
-    int* val = malloc(sizeof(int));
-    assert(val != NULL);  // allocation failure
+    // create queue
+    Queue Q = queue_create(free);
+    
+    time_t t;
+    srand((unsigned) time(&t));
+    
+    int* arr = create_random_array(NUM_OF_ELEMENTS);
 
-    *val = a;
-    return val;
+    clock_t cur_time = clock();
+
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+        queue_enqueue(Q, createData(arr[i]));
+    
+    for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
+    {
+        // insert the value
+        TEST_ASSERT( *((int*)queue_dequeue(Q)) == arr[i]);
+
+        // the size has changed
+        TEST_ASSERT(queue_size(Q) == NUM_OF_ELEMENTS-i-1);
+    }
+
+    double time_insert = calc_time(cur_time);  // calculate insert time
+
+    // free memory used
+    queue_destroy(Q);
+    free(arr);
+
+    // report time taken
+    printf("\n\nDequeue took %f seconds to complete\n", time_insert);
 }
 
-// print function
-void printFunc(Pointer value)
-{
-    int* val = (int*)(value);
-    printf("%d ", *val);
-}
-
-// compare function (for sorted insert)
-int compareFunction(Pointer v1, Pointer v2)
-{
-    return *((int*)v1) - *((int*)v2);
-}
+TEST_LIST = {
+        { "create", test_create  },
+        { "enqueue", test_enqueue  },
+        { "dequeue", test_dequeue  },
+        { NULL, NULL }
+};

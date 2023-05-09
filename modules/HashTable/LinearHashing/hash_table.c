@@ -7,27 +7,26 @@
 typedef unsigned char uint8_t;
 
 // bucket
-typedef struct n
+typedef struct node
 {
-    Pointer data;         // pointer to the data we are storing
-    uint32_t hash_value;  // hash value of the data
-    struct n* next;       // next element in the bucket (NULL if it's the last)
+    Pointer data;           // pointer to the data we are storing
+    uint32_t hash_value;    // hash value of the data
+    struct node* next;  // next element in the bucket (NULL if it's the last)
 }
-n;
-typedef struct n* node;
+node;
 
 typedef struct hash_table
 {
-    uint64_t curr_size;               // used number of buckets
-    uint64_t max_capacity;            // max number of buckets
-    uint64_t elements;                // number of elements in the hash table
-    uint64_t exponent;                // current explonent (in collaboration with find_func, it is used to find the hash value)
-    uint64_t next_split;              // next bucket to be splited
-    uint8_t* curr_num_of_elements;    // number of elements in each bucket
-    node* buckets;                    // buckets (lists) storing the data
-    HashFunc hash;                    // function that hashes an element into a positive integer
-    CompareFunc compare;              // function that compares the elements
-    DestroyFunc destroy;              // function that destroys the elements, NULL if not
+    uint64_t curr_size;             // used number of buckets
+    uint64_t max_capacity;          // max number of buckets
+    uint64_t elements;              // number of elements in the hash table
+    uint64_t exponent;              // current explonent (in collaboration with find_func, it is used to find the hash value)
+    uint64_t next_split;            // next bucket to be splited
+    uint8_t* curr_num_of_elements;  // number of elements in each bucket
+    node** buckets;                  // buckets (lists) storing the data
+    HashFunc hash;                  // function that hashes an element into a positive integer
+    CompareFunc compare;            // function that compares the elements
+    DestroyFunc destroy;            // function that destroys the elements, NULL if not
 }
 hash_table;
 
@@ -46,7 +45,7 @@ HashTable hash_create(const HashFunc hash, const CompareFunc compare, const Dest
     HashTable ht = malloc(sizeof(hash_table));
     assert(ht != NULL);  // allocation failure
 
-    ht->buckets = calloc(sizeof(n), STARTING_HASH_CAPACITY);  // allocate memory for the buckets
+    ht->buckets = calloc(sizeof(node), STARTING_HASH_CAPACITY);  // allocate memory for the buckets
     assert(ht->buckets != NULL);  // allocation failure
 
     ht->curr_num_of_elements = calloc(sizeof(uint8_t), STARTING_HASH_CAPACITY);
@@ -92,7 +91,7 @@ bool hash_insert(const HashTable ht, const Pointer value)
     }
     
     // create new node
-    node new_node = malloc(sizeof(n));
+    node* new_node = malloc(sizeof(node));
     assert(new_node != NULL);  // allocation failure
 
     // fill node's contents
@@ -115,10 +114,10 @@ bool hash_insert(const HashTable ht, const Pointer value)
         if (ht->curr_size == ht->max_capacity)
             hash_resize(ht);
         
-        node* new_bucket = &(ht->buckets[ht->curr_size-1]);
+        node** new_bucket = &(ht->buckets[ht->curr_size-1]);
 
         // bucket to be splitted
-        node* old_bucket = &(ht->buckets[ht->next_split]);
+        node** old_bucket = &(ht->buckets[ht->next_split]);
 
         ht->next_split++;        
         
@@ -158,7 +157,7 @@ bool hash_remove(const HashTable ht, const Pointer value)
     
     // find the potential bucket the value belongs to
     const uint64_t h = get_bucket(ht, ht->hash(value));
-    node* bkt = &(ht->buckets[h]);
+    node** bkt = &(ht->buckets[h]);
     
     // search for the value at the bucket
     while (*bkt != NULL)
@@ -167,7 +166,7 @@ bool hash_remove(const HashTable ht, const Pointer value)
         
         if (ht->compare(value, bkt_value) == 0)  // value found
         {
-            node tmp = *bkt;
+            node* tmp = *bkt;
             (*bkt) = (*bkt)->next;
 
             // if a destroy function exists, destroy the value
@@ -202,7 +201,7 @@ static inline uint64_t hash_search(const HashTable ht, const Pointer value)
     const uint64_t h = get_bucket(ht, ht->hash(value));
 
     // search for the value in the bucket
-    node bkt = ht->buckets[h];
+    node* bkt = ht->buckets[h];
     while (bkt != NULL)
     {
         Pointer bkt_value = bkt->data;
@@ -258,10 +257,10 @@ void hash_destroy(const HashTable ht)
     // destroy buckets
     for (uint64_t i = 0; i < ht->max_capacity; i++)
     {
-        node bkt = ht->buckets[i];
+        node* bkt = ht->buckets[i];
         while (bkt != NULL)
         {
-            node tmp = bkt;
+            node* tmp = bkt;
             bkt = bkt->next;
 
             // if a destroy function exists, destroy the elements
