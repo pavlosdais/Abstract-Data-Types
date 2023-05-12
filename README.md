@@ -1,5 +1,5 @@
 # Abstract Data Types in C
-This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications whilst also being educational, having an relatively non-challenging code to follow. All ADT's have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs etc). The library contains the following ADT's:
+This is a modern C library containing implementations designed to provide fast and efficient data structure operations for a wide range of applications while also being educational, having a relatively non-challenging code to follow. All ADTs have been implemented using [void pointers](https://www.geeksforgeeks.org/void-pointer-c-cpp/) to make them generic, allowing the same code to handle different data types (eg integers, strings, structs, etc). The library contains the following ADTs:
 
 * [Vector](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Vector#readme)
 * [Stack](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Stack#readme)
