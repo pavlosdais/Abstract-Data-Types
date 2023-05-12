@@ -29,37 +29,18 @@ Include the header file of the ADT library
 ```
 
 ### Step 2
-Depending on the ADT, provide a number of the following functions upon initialization:
-- **Destroy function** <br/>
+Depending on the ADT, provide a number of the following functions upon its creation:
+- **[Destroy function](https://github.com/pavlosdais/Abstract-Data-Types/blob/main/tests/test_HashTable.c#L9)** <br/>
     Destroys the data allocated for the elements.
-```c
-void free(void* ptr);  // function provided by <stdio.h> that deallocates memory previously allocated by ptr.
-```
 
-- **Compare function** <br/>
+- **[Compare function](https://github.com/pavlosdais/Abstract-Data-Types/blob/main/tests/include/common.h#L69)** <br/>
     Compares two Pointers a and b, and returns < 0 if a < b, 0 if a = b or > 0 if a > b.
-```c
-int compareFunction(Pointer v1, Pointer v2)  { return *((int*)v1) - *((int*)v2); }
-```
 
-- **Hash function** <br/>
+- **[Hash function](https://github.com/pavlosdais/Abstract-Data-Types/blob/main/modules/HashTable/hash_functions.c)** <br/>
     Takes a Pointer and returns a unsigned integer (Used by the hash table).
-```c
-unsigned int hash_int(Pointer value)
-{
-    unsigned int val = (*((int*)value));
-    val = ((val >> 16) ^ val) * 0x45d9f3b;
-    val = ((val >> 16) ^ val) * 0x45d9f3b;
-    val = (val >> 16) ^ val;
-    return val;
-}
-```
 
-- **Visit function** <br/>
+- **[Visit function](https://github.com/pavlosdais/Abstract-Data-Types/blob/main/tests/test_DirectedGraph.c#L44)** <br/>
     Visits a vertex (Used by the graph).
-```c
-void visit(Vertex x)  { printf("%d ", x); }
-```
 
 ### Step 3
 Use `ADTlib.a` on compilation.
@@ -68,7 +49,10 @@ Use `ADTlib.a` on compilation.
 ```
 
 # Tests
-The library comes with a comprehensive suite of tests covering the ADT's, using the [acutest](https://github.com/mity/acutest) library. The tests are located in the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory, and are designed to ensure that the library functions as expected.
+The library comes with a comprehensive suite of tests covering the ADT's, using the [acutest](https://github.com/mity/acutest) library. The tests are located in the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory, and are designed to ensure that the library functions as expected. In order to test a certain ADT, navigate to the directory and simply execute:
+```bash
+~$ make run ADT=<ADT>
+```
 
 ---
 © Pavlos Dais
