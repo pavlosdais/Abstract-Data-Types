@@ -69,6 +69,7 @@ void test_remove(void)
         // the value exists
         TEST_ASSERT(rbt_exists(rbt, arr+i));
 
+        // remove the value
         rbt_remove(rbt, arr+i);
 
         // the value now does not exist

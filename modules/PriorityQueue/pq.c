@@ -6,6 +6,11 @@
 // heap's minimum starting size
 #define MIN_SIZE 64
 
+#define ROOT 1
+#define find_parent(a) (a/2)
+#define find_left_child(a) (a*2)
+#define find_right_child(a) (a*2 + 1)
+
 typedef struct node
 {
     Pointer data;
@@ -22,15 +27,10 @@ typedef struct pq
 }
 pq;
 
-// Function prototypes
+// function prototypes
 static inline void swap_nodes(node*, node*);
 static inline void bubble_up(const PQueue, uint64_t);
 static void bubble_down(const PQueue, const uint64_t);
-
-#define ROOT 1
-#define find_parent(a) (a/2)
-#define find_left_child(a) (a*2)
-#define find_right_child(a) (a*2 + 1)
 
 PQueue pq_create(const CompareFunc compare, const DestroyFunc destroy)
 {
@@ -126,9 +126,7 @@ static void bubble_down(const PQueue PQ, const uint64_t node)
         return;
     
     // find the child with the highest priority
-    uint64_t right_child = find_right_child(node);
-    uint64_t max_child = left_child;
-
+    uint64_t right_child = find_right_child(node), max_child = left_child;
     if (right_child <= PQ->curr_size && PQ->compare(PQ->arr[left_child].data, PQ->arr[right_child].data) < 0)
         max_child = right_child;
     
@@ -157,11 +155,8 @@ void pq_destroy(const PQueue PQ)
     // if a destroy function was given, destroy the data
     if (PQ->destroy != NULL)
     {
-        for (uint64_t i = 0; i < PQ->capacity; i++)
-        {
-            if (PQ->arr[i].data != NULL)
-                PQ->destroy(PQ->arr[i].data);
-        }
+        for (uint64_t i = 0, size = PQ->curr_size+1; i < size; i++)
+            PQ->destroy(PQ->arr[i].data);
     }
     free(PQ->arr);
     free(PQ);

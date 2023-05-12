@@ -68,7 +68,7 @@ Use `ADTlib.a` on compilation.
 ```
 
 # Tests
-The library comes with a somewhat comprehensive suite of tests covering the ADT's, using the [acutest](https://github.com/mity/acutest) library. The tests are located in the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory, and they are designed to ensure that the library functions as expected.
+The library comes with a comprehensive suite of tests covering the ADT's, using the [acutest](https://github.com/mity/acutest) library. The tests are located in the [tests](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/tests) directory, and are designed to ensure that the library functions as expected.
 
 ---
 © Pavlos Dais

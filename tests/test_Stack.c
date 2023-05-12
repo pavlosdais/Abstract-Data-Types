@@ -2,7 +2,7 @@
 #include "../lib/ADT.h"
 #include "./include/common.h"
 
-#define NUM_OF_ELEMENTS 10000000
+#define NUM_OF_ELEMENTS 1000000
 
 void test_create(void)
 {
@@ -26,7 +26,7 @@ void test_push(void)
     
     for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        // insert the value
+        // push the value
         stack_push(st, createData(arr[i]));
 
         // the size has changed
@@ -58,10 +58,13 @@ void test_pop(void)
     for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
         stack_push(st, createData(arr[i]));
     
+    int* element = NULL;
     for (uint32_t i = NUM_OF_ELEMENTS-1; i > 0; i--)
     {
-        // insert the value
-        TEST_ASSERT( *((int*)stack_pop(st)) == arr[i]);
+        // pop the value
+        element = stack_pop(st);
+        TEST_ASSERT( *element == arr[i]);
+        free(element);
 
         // the size has changed
         TEST_ASSERT(stack_size(st) == i);

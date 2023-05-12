@@ -58,19 +58,22 @@ void test_remove(void)
 
     clock_t cur_time = clock();
     
+    int* element = NULL;
     for (uint32_t i = NUM_OF_ELEMENTS-1; i > 0; i--)
     {
-        TEST_ASSERT( *((int*)pq_remove(pq)) == arr[i]);
+        element = pq_remove(pq);
+        TEST_ASSERT(*element == arr[i]);
+        free(element);
 
         // the size has changed
         TEST_ASSERT(pq_size(pq) == i);
-    } 
+    }
 
     double time_insert = calc_time(cur_time);  // calculate remove time
 
     // free memory used
-    pq_destroy(pq);
     free(arr);
+    pq_destroy(pq);
 
     // report time taken
     printf("\n\nRemove took %f seconds to complete\n", time_insert);

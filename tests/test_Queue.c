@@ -2,7 +2,7 @@
 #include "../lib/ADT.h"
 #include "./include/common.h"
 
-#define NUM_OF_ELEMENTS 100000
+#define NUM_OF_ELEMENTS 1000000
 
 void test_create(void)
 {
@@ -58,10 +58,13 @@ void test_dequeue(void)
     for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
         queue_enqueue(Q, createData(arr[i]));
     
+    int* element = NULL;
     for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        // insert the value
-        TEST_ASSERT( *((int*)queue_dequeue(Q)) == arr[i]);
+        // dequeue the value
+        element = queue_dequeue(Q);
+        TEST_ASSERT(*element == arr[i]);
+        free(element);
 
         // the size has changed
         TEST_ASSERT(queue_size(Q) == NUM_OF_ELEMENTS-i-1);

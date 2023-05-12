@@ -24,7 +24,7 @@ void test_push_back(void)
     
     for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        // insert the value
+        // push the value
         vector_push_back(vec, createData(arr[i]));
 
         TEST_ASSERT(*((int*)vector_at(vec, i)) == arr[i]);
@@ -53,7 +53,7 @@ void test_clear_at(void)
     
     for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
-        // insert the value
+        // clear the value
         vector_clear_at(vec, i);
 
         TEST_ASSERT(vector_at(vec, i) == NULL);
@@ -107,6 +107,7 @@ void test_sort(void)
     for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
         vector_push_back(vec, createData(arr[i]));
     
+    // sort the vector
     vector_sort(vec, compareFunction);
 
     for (int i = 0; i < NUM_OF_ELEMENTS; i++)
@@ -132,6 +133,7 @@ void test_binary_search(void)
 
     clock_t cur_time = clock();
 
+    // sort the vector
     vector_sort(vec, compareFunction);
     
     for (uint64_t i = 0; i < NUM_OF_ELEMENTS; i++)
