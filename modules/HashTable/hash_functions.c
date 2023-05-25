@@ -44,12 +44,40 @@ unsigned int hash_string3(Pointer value)
     return sum;
 }
 
-// source: https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
-unsigned int hash_int(Pointer value)
+// FNV-1a algorithm
+unsigned int hash_int1(Pointer value)
 {
-    unsigned int val = (*((int*)value));
-    val = ((val >> 16) ^ val) * 0x45d9f3b;
-    val = ((val >> 16) ^ val) * 0x45d9f3b;
-    val = (val >> 16) ^ val;
-    return val;
+    int val = (*((int*)value));
+
+    unsigned int hash = 2166136261u;  // FNV offset basis
+    const unsigned char* data = (unsigned char*)&val;
+    for (int i = 0; i < sizeof(int); i++) 
+    {
+        hash ^= data[i];
+        hash *= 16777619;  // FNV prime
+    }
+    return hash;
+}
+
+unsigned int hash_int2(Pointer value)
+{
+    int val = (*((int*)value));
+
+    val = val ^ (val >> 4);
+    val = (val ^ 0xdeadbeef) + (val << 5);
+    val = val ^ (val >> 11);
+    return (unsigned int)val;
+}
+
+unsigned int hash_int3(Pointer value)
+{
+    unsigned int hash = (unsigned int)(*((int*)value));
+
+    hash = (hash + 0x7ed55d16) + (hash << 12);
+    hash = (hash ^ 0xc761c23c) ^ (hash >> 19);
+    hash = (hash + 0x165667b1) + (hash << 5);
+    hash = (hash + 0xd3a2646c) ^ (hash << 9);
+    hash = (hash + 0xfd7046c5) + (hash << 3);
+    hash = (hash ^ 0xb55a4f09) ^ (hash >> 16);
+    return hash;
 }

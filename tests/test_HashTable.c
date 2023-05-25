@@ -2,11 +2,11 @@
 #include "../lib/ADT.h"
 #include "./include/common.h"
 
-#define NUM_OF_ELEMENTS 500000
+#define NUM_OF_ELEMENTS 2000000
 
 void test_create(void)
 {
-    HashTable ht = hash_create(hash_int, compareFunction, free);
+    HashTable ht = hash_create(hash_int1, compareFunction, free);
     TEST_ASSERT(ht != NULL);
     TEST_ASSERT(hash_size(ht) == 0 && is_ht_empty(ht));
     hash_destroy(ht);
@@ -15,14 +15,14 @@ void test_create(void)
 void test_insert(void)
 {
     // create hash table
-    HashTable ht = hash_create(hash_int, compareFunction, free);
+    HashTable ht = hash_create(hash_int1, compareFunction, free);
     
     time_t t;
     srand((unsigned) time(&t));
     
     int* arr = create_shuffled_array(NUM_OF_ELEMENTS);
 
-    clock_t cur_time = clock();        
+    clock_t cur_time = clock();
     
     for (uint32_t i = 0; i < NUM_OF_ELEMENTS; i++)
     {
@@ -52,7 +52,7 @@ void test_insert(void)
 void test_remove(void)
 {
     // create hash table
-    HashTable ht = hash_create(hash_int, compareFunction, free);
+    HashTable ht = hash_create(hash_int1, compareFunction, free);
     
     time_t t;
     srand((unsigned) time(&t));

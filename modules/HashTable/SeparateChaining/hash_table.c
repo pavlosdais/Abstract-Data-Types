@@ -4,7 +4,7 @@
 #include "hash_table.h"
 
 // when max load factor is exceeded, rehashing operation occurs
-#define MAX_LOAD_FACTOR 1
+#define MAX_LOAD_FACTOR 0.8
 
 // bucket
 typedef struct node

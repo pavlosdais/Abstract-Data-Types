@@ -1,10 +1,10 @@
 # tested ADT 
-# Vector/ Stack/ Queue/ PriorityQueue/ RedBlackTree/ HashTable/ DirectedGraph/ UndirectedGraph/ WeightedUndirectedGraph
+# Vector/ Stack/ Queue/ PriorityQueue/ RedBlackTree/ HashTable/ BloomFilter/ DirectedGraph/ UndirectedGraph/ WeightedUndirectedGraph
 ADT ?= HashTable
 
 # compiler settings
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS =
 
 # ADTlib directory path
 LIB = ../lib

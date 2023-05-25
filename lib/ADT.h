@@ -48,6 +48,7 @@ typedef struct queue* Queue;               // queue (Queue)
 typedef struct pq* PQueue;                 // priority queue (PQueue)
 typedef struct Set* RBTree;                // red-black tree (RBTree)
 typedef struct hash_table* HashTable;      // hash table (HashTable)
+typedef struct bfilter* bloom_filter;      // bloom filter (bloom_filter)
 typedef struct _dir_graph* dir_graph;      // directed graph (dir_graph)
 typedef struct _undir_graph* undir_graph;  // undirected graph (undir_graph)
 typedef struct _wu_graph* wu_graph;        // weighted undirected (wu_graph)
@@ -145,10 +146,20 @@ DestroyFunc hash_set_destroy(const HashTable, const DestroyFunc);             //
 void hash_destroy(const HashTable);                                           // destroys the memory used by the hash table
 
 // provided hash functions
-unsigned int hash_int(Pointer);      // hashes an integer
+unsigned int hash_int1(Pointer);     // hashes an integer (1)
+unsigned int hash_int2(Pointer);     // hashes an integer (2)
+unsigned int hash_int3(Pointer);     // hashes an integer (3)
 unsigned int hash_string1(Pointer);  // hashes a string (1)
 unsigned int hash_string2(Pointer);  // hashes a string (2)
 unsigned int hash_string3(Pointer);  // hashes a string (3)
+
+
+// BLOOM FILTER
+// -requires an array of hash functions
+bloom_filter bf_create(const uint32_t, HashFunc*, const uint8_t);  // creates bloom filter (number of elements, hash functions, number of hash functions)
+void bf_insert(const bloom_filter, const Pointer);                 // inserts value at the bloom filter
+bool bf_exists(const bloom_filter, const Pointer);                 // returns true if value exists (possibly falsely) in the bloom filter, false otherwise
+void bf_destroy(bloom_filter);                               // destroys the memory used by the bloom filter
 
 
 // DIRECTED GRAPH

@@ -7,6 +7,7 @@ This is a modern C library containing implementations designed to provide fast a
 * [Priority Queue](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/PriorityQueue#readme)
 * [Red-Black Tree](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/RedBlackTree#readme)
 * [Hash Table](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable#readme)
+* [Bloom Filter](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/BloomFilter#readme)
 * [Graph](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/Graph#readme)
 
 The source code of every ADT can be found over at the [modules](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules) directory.

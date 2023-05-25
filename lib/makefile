@@ -4,7 +4,7 @@
 ADTs = ../modules
 
 # implementation of the hash table (LinearHashing/ SeparateChaining/ DoubleHashing/ UsingRBT)
-HT_IMPLEMENTATION = DoubleHashing
+HT_IMPLEMENTATION = SeparateChaining
 
 # object files - modules
 OBJ = $(ADTs)/Vector/vector.o \
@@ -14,6 +14,7 @@ OBJ = $(ADTs)/Vector/vector.o \
 	  $(ADTs)/RedBlackTree/RedBlackTree.o \
 	  $(ADTs)/HashTable/$(HT_IMPLEMENTATION)/hash_table.o \
 	  $(ADTs)/HashTable/hash_functions.o \
+	  $(ADTs)/BloomFilter/bloom_filter.o \
 	  $(ADTs)/Graph/DirectedGraph/DirectedGraph.o \
 	  $(ADTs)/Graph/UndirectedGraph/UndirectedGraph.o \
 	  $(ADTs)/Graph/WeightedUndirectedGraph/WeightedUndirectedGraph.o
