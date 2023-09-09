@@ -2,7 +2,7 @@
 #include "../lib/ADT.h"
 #include "./include/common.h"
 
-#define NUM_OF_ELEMENTS 100000
+#define NUM_OF_ELEMENTS 10000000
 
 void test_create(void)
 {

@@ -6,10 +6,10 @@
 // heap's minimum starting size
 #define MIN_SIZE 64
 
-#define ROOT 1
-#define find_parent(a) (a/2)
-#define find_left_child(a) (a*2)
-#define find_right_child(a) (a*2 + 1)
+#define ROOT 0
+#define find_parent(a) ((a-1)/2)
+#define find_left_child(a) (a*2 + 1)
+#define find_right_child(a) (a*2 + 2)
 
 typedef struct node
 {
@@ -70,8 +70,6 @@ void pq_insert(const PQueue PQ, const Pointer value)
 {
     assert(PQ != NULL);
 
-    PQ->curr_size++;
-
     // heap is full, double its size
     if (PQ->curr_size == PQ->capacity)
     {
@@ -83,7 +81,10 @@ void pq_insert(const PQueue PQ, const Pointer value)
 
     PQ->arr[PQ->curr_size].data = value;
 
+    // fix the heap
     bubble_up(PQ, PQ->curr_size);
+
+    PQ->curr_size++;
 }
 
 static inline void bubble_up(const PQueue PQ, uint64_t node)
@@ -109,25 +110,25 @@ Pointer pq_remove(const PQueue PQ)
     const Pointer hp = PQ->arr[ROOT].data;
     PQ->arr[ROOT].data = NULL;
     
-    // root and far right leaf swap
-    swap_nodes(&(PQ->arr[ROOT]), &(PQ->arr[PQ->curr_size]));
-
     PQ->curr_size--;
 
-    bubble_down(PQ, ROOT);
+    // root and far right leaf swap
+    swap_nodes(&(PQ->arr[ROOT]), &(PQ->arr[PQ->curr_size]));
     
+    bubble_down(PQ, ROOT);
+
     return hp;
 }
 
 static void bubble_down(const PQueue PQ, const uint64_t node)
 {
     uint64_t left_child = find_left_child(node);
-    if (left_child > PQ->curr_size)  // children do not exist
+    if (left_child >= PQ->curr_size)  // children do not exist
         return;
     
     // find the child with the highest priority
     uint64_t right_child = find_right_child(node), max_child = left_child;
-    if (right_child <= PQ->curr_size && PQ->compare(PQ->arr[left_child].data, PQ->arr[right_child].data) < 0)
+    if (right_child < PQ->curr_size && PQ->compare(PQ->arr[left_child].data, PQ->arr[right_child].data) < 0)
         max_child = right_child;
     
     // bubble down if the the child with the highest priority

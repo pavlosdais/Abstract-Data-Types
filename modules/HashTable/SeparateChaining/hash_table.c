@@ -38,7 +38,6 @@ static uint64_t hash_sizes[] =
 #define get_hash(i) (hash_sizes[i])
 
 // function prototypes
-static inline void insert(const HashTable ht, const Pointer value, const uint32_t hash_value);
 static inline void rehash(const HashTable ht);
 static inline bool hash_search(const HashTable ht, const Pointer value, uint32_t* hash_value);
 
@@ -90,15 +89,6 @@ bool hash_insert(const HashTable ht, const Pointer value)
     }
     
     // insert value
-    insert(ht, value, hash_value);
-
-    ht->elements++;  // value inserted, increment the number of elements in the hash table
-    return true;
-}
-
-static inline void insert(const HashTable ht, const Pointer value, const uint32_t hash_value)
-{
-    // create new bucket (list)
     node* new_node = malloc(sizeof(node));
     assert(new_node != NULL);  // allocation failure
 
@@ -107,9 +97,12 @@ static inline void insert(const HashTable ht, const Pointer value, const uint32_
     new_node->hash_value = hash_value;
 
     // insert value at the start of the bucket
-    uint32_t bucket = hash_value % get_hash(ht->capacity);
+    const uint32_t bucket = hash_value % get_hash(ht->capacity);
     new_node->next = ht->buckets[bucket];
     ht->buckets[bucket] = new_node;
+
+    ht->elements++;  // value inserted, increment the number of elements in the hash table
+    return true;
 }
 
 static inline void rehash(HashTable ht)
@@ -130,12 +123,14 @@ static inline void rehash(HashTable ht)
     
         while (bkt != NULL)
         {
-            node* tmp = bkt;
-            bkt = bkt->next;
+            node* next = bkt->next;
             
-            insert(ht, tmp->data, tmp->hash_value);
+            // reuse the bucket
+            const uint32_t bucket = bkt->hash_value % get_hash(ht->capacity);
+            bkt->next = ht->buckets[bucket];
+            ht->buckets[bucket] = bkt;
 
-            free(tmp);
+            bkt = next;
         }
     }
     free(old_buckets);
