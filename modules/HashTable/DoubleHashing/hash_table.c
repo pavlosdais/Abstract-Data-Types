@@ -84,7 +84,7 @@ bool hash_insert(const HashTable ht, const Pointer value)
 {
     assert(ht != NULL);
 
-    if (((float)ht->elements / get_hash(ht->capacity)) > MAX_LOAD_FACTOR)  // max load factor exceeded, rehash
+    if (((float)ht->elements / get_hash(ht->capacity)) > MAX_LOAD_FACTOR)  // max load factor exceeded, start rehash
         rehash(ht);
     
     const uint32_t hash_value = ht->hash(value), interval = hash_func2(get_hash(ht->sec_prime), hash_value);

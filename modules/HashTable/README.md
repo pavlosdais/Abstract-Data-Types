@@ -6,7 +6,6 @@
 This ADT has the following implementations:
 - [Separate chaining](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable/SeparateChaining#readme)
 - [Double hashing](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable/DoubleHashing#readme)
-- [Linear hashing](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable/LinearHashing#readme)
 - [Using Red-Black Trees](https://github.com/pavlosdais/Abstract-Data-Types/tree/main/modules/HashTable/UsingRBT#readme)
 
 # Hash Functions

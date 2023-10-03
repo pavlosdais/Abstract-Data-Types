@@ -3,7 +3,7 @@
 # path to the modules directory
 ADTs = ../modules
 
-# implementation of the hash table (LinearHashing/ SeparateChaining/ DoubleHashing/ UsingRBT)
+# implementation of the hash table (SeparateChaining/ DoubleHashing/ UsingRBT)
 HT_IMPLEMENTATION = SeparateChaining
 
 # object files - modules

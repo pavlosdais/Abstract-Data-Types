@@ -110,7 +110,7 @@ static inline void rehash(HashTable ht)
     node** old_buckets = ht->buckets;  // save previous buckets
 
     uint8_t old_capacity = ht->capacity;
-    (ht->capacity)++;  // get next size
+    (ht->capacity)++;  // get the next size
 
     // create the new number of buckets
     ht->buckets = calloc(sizeof(node), get_hash(ht->capacity));

@@ -54,6 +54,3 @@ The library comes with a comprehensive suite of tests covering the ADT's, using 
 ```bash
 ~$ make run ADT=<ADT>
 ```
-
----
-© Pavlos Dais

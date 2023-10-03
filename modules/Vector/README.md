@@ -1,4 +1,4 @@
-[Vector](https://en.wikipedia.org/wiki/Dynamic_array) (or dynamic array) is a data structure that allows elements to be added or removed. Vectors overcome the limit of static arrays, which have a fixed capacity that needs to be specified at allocation. This limitation is overcomed by growing in size, in this implementation by doubling.
+[Vector](https://en.wikipedia.org/wiki/Dynamic_array) (or dynamic array) is a data structure that allows elements to be added or removed. Vectors overcome the limit of static arrays, which have a fixed capacity that needs to be specified at allocation. In this implementation this limitation is overcomed by by doubling.
 
 # Performance
 <img align="right" width=330 alt="vector picture" src="https://www.interviewcake.com/images/svgs/dynamic_arrays__capacity_size_end_index.svg?bust=210">
